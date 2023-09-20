@@ -66,3 +66,13 @@ tests:
         tags.datadoghq.com/service: steadybit-extension
     asserts:
       - matchSnapshot: {}
+  - it: manifest should match snapshot with settings
+    set:
+      loadtest:
+        clusterName: "my-cluster"
+        nodeCount: 1
+        deploymentsPerNode: 2
+        podsPerDeployment: 3
+        containerPerPod: 4
+    asserts:
+      - matchSnapshot: {}

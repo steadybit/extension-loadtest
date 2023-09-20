@@ -10,6 +10,13 @@ image:
   # image.pullPolicy -- Specifies when to pull the image container.
   pullPolicy: Always
 
+loadtest:
+  clusterName: null
+  nodeCount: null
+  deploymentsPerNode: null
+  podsPerDeployment: null
+  containerPerPod: null
+
 tls:
   server:
     certificate:
