@@ -13,6 +13,14 @@ import (
 // through environment variables. Learn more through the documentation of the envconfig package.
 // https://github.com/kelseyhightower/envconfig
 type Specification struct {
+	ClusterName string `json:"clusterName" split_words:"true" required:"false" default:"cluster-1"`
+
+	NodeCount          int `json:"nodeCount" split_words:"true" required:"false" default:"2"`
+	DeploymentsPerNode int `json:"deploymentsPerNode" split_words:"true" required:"false" default:"5"`
+	PodsPerDeployment  int `json:"podsPerDeployment" split_words:"true" required:"false" default:"2"`
+	ContainerPerPod    int `json:"containerPerPod" split_words:"true" required:"false" default:"2"`
+
+	//2 containers per pod * 4 pods per deployment * 5 deployments per node * 400 nodes = 16000 containers
 }
 
 var (
@@ -27,5 +35,4 @@ func ParseConfiguration() {
 }
 
 func ValidateConfiguration() {
-	// You may optionally validate the configuration here.
 }

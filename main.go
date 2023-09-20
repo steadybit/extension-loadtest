@@ -16,6 +16,7 @@ import (
 	"github.com/steadybit/extension-kit/extlogging"
 	"github.com/steadybit/extension-kit/extruntime"
 	"github.com/steadybit/extension-loadtest/config"
+	"github.com/steadybit/extension-loadtest/extloadtest"
 )
 
 func main() {
@@ -24,12 +25,19 @@ func main() {
 	extruntime.LogRuntimeInformation(zerolog.DebugLevel)
 
 	exthealth.SetReady(false)
-	exthealth.StartProbes(8081)
+	exthealth.StartProbes(8083)
 
 	config.ParseConfiguration()
 	config.ValidateConfiguration()
 
 	exthttp.RegisterHttpHandler("/", exthttp.GetterAsHandler(getExtensionList))
+
+	extloadtest.RegisterDiscoveryHost()
+	extloadtest.RegisterDiscoveryContainer()
+	extloadtest.RegisterDiscoveryEc2Instance()
+	extloadtest.RegisterDiscoveryKubernetesCluster()
+	extloadtest.RegisterDiscoveryKubernetesDeployment()
+	extloadtest.RegisterDiscoveryKubernetesContainer()
 
 	action_kit_sdk.InstallSignalHandler()
 	action_kit_sdk.RegisterCoverageEndpoints()
@@ -37,7 +45,7 @@ func main() {
 	exthealth.SetReady(true)
 
 	exthttp.Listen(exthttp.ListenOpts{
-		Port: 8080,
+		Port: 8082,
 	})
 }
 
@@ -50,6 +58,33 @@ type ExtensionListResponse struct {
 func getExtensionList() ExtensionListResponse {
 	return ExtensionListResponse{
 		ActionList: action_kit_sdk.GetActionList(),
-		//DiscoveryList: extrobots.GetDiscoveryList(),
+		DiscoveryList: discovery_kit_api.DiscoveryList{
+			Discoveries: []discovery_kit_api.DescribingEndpointReference{
+				{
+					Method: "GET",
+					Path:   "/discovery/host",
+				},
+				{
+					Method: "GET",
+					Path:   "/discovery/container",
+				},
+				{
+					Method: "GET",
+					Path:   "/discovery/ec2-instance",
+				},
+				{
+					Method: "GET",
+					Path:   "/discovery/kubernetes-cluster",
+				},
+				{
+					Method: "GET",
+					Path:   "/discovery/kubernetes-deployment",
+				},
+				{
+					Method: "GET",
+					Path:   "/discovery/kubernetes-container",
+				},
+			},
+		},
 	}
 }

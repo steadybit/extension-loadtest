@@ -34,12 +34,12 @@ manifest should match snapshot using podAnnotations and Labels:
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8083
               name: extension
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8083
               resources:
                 limits:
                   cpu: 200m
@@ -97,12 +97,12 @@ manifest should match snapshot with TLS:
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8083
               name: extension
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8083
               resources:
                 limits:
                   cpu: 200m
@@ -170,12 +170,12 @@ manifest should match snapshot with extra env vars:
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8083
               name: extension
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8083
               resources:
                 limits:
                   cpu: 200m
@@ -231,12 +231,12 @@ manifest should match snapshot with extra labels:
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8083
               name: extension
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8083
               resources:
                 limits:
                   cpu: 200m
@@ -296,12 +296,12 @@ manifest should match snapshot with mutual TLS:
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8083
               name: extension
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8083
               resources:
                 limits:
                   cpu: 200m
@@ -375,12 +375,12 @@ manifest should match snapshot with mutual TLS using containerPaths:
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8083
               name: extension
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8083
               resources:
                 limits:
                   cpu: 200m
@@ -434,12 +434,12 @@ manifest should match snapshot without TLS:
               livenessProbe:
                 httpGet:
                   path: /health/liveness
-                  port: 8081
+                  port: 8083
               name: extension
               readinessProbe:
                 httpGet:
                   path: /health/readiness
-                  port: 8081
+                  port: 8083
               resources:
                 limits:
                   cpu: 200m
