@@ -37,12 +37,9 @@ func getDiscoveryKubernetesContainerTargets() discovery_kit_api.DiscoveryData {
 }
 
 func initKubernetesContainerTargets() []discovery_kit_api.EnrichmentData {
-	result := make([]discovery_kit_api.EnrichmentData, 0, 0)
-	//for i := 1; i <= config.Config.DiscoveryContainerCount; i++ {
-	//	containerIdStripped := fmt.Sprintf("container-%d", i)
-	//	hostName := getRandomHostname()
-
-	//2 containers per pod * 4 pods per deployment * 5 deployments per node * 400 nodes = 16000 containers
+	//example: 2 containers per pod * 4 pods per deployment * 5 deployments per node * 400 nodes = 16000 containers
+	count := config.Config.NodeCount * config.Config.DeploymentsPerNode * config.Config.PodsPerDeployment * config.Config.ContainerPerPod
+	result := make([]discovery_kit_api.EnrichmentData, 0, count)
 
 	hostTargets := *getDiscoveryHostTargets().Targets
 	deploymentTargets := *getDiscoveryKubernetesDeploymentTargets().Targets
