@@ -1,11 +1,15 @@
 package extloadtest
 
 import (
-	"fmt"
-	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
-	"github.com/steadybit/extension-kit/exthttp"
-	"github.com/steadybit/extension-kit/extutil"
-	"github.com/steadybit/extension-loadtest/config"
+  "context"
+  "fmt"
+  "github.com/procyon-projects/chrono"
+  "github.com/rs/zerolog/log"
+  "github.com/steadybit/discovery-kit/go/discovery_kit_api"
+  "github.com/steadybit/extension-kit/exthttp"
+  "github.com/steadybit/extension-kit/extutil"
+  "github.com/steadybit/extension-loadtest/config"
+  "time"
 )
 
 func RegisterDiscoveryKubernetesContainer() {
@@ -25,18 +29,37 @@ func getDiscoveryKubernetesContainer() discovery_kit_api.DiscoveryDescription {
 	}
 }
 
-var kubernetesContainer []discovery_kit_api.EnrichmentData
+var kubernetesContainer *[]discovery_kit_api.EnrichmentData
 
 func getDiscoveryKubernetesContainerTargets() discovery_kit_api.DiscoveryData {
 	if kubernetesContainer == nil {
 		kubernetesContainer = initKubernetesContainerTargets()
+		taskScheduler := chrono.NewDefaultTaskScheduler()
+		_, err := taskScheduler.ScheduleWithFixedDelay(func(ctx context.Context) {
+			changeLabelsOfRandomContainer(kubernetesContainer)
+		}, time.Duration(config.Config.ChangeTimeKubernetesContainer)*time.Second)
+		if err != nil {
+			log.Error().Err(err).Msg("Could not schedule task")
+		}
 	}
 	return discovery_kit_api.DiscoveryData{
-		EnrichmentData: &kubernetesContainer,
+		EnrichmentData: kubernetesContainer,
 	}
 }
 
-func initKubernetesContainerTargets() []discovery_kit_api.EnrichmentData {
+func changeLabelsOfRandomContainer(enrichmentData *[]discovery_kit_api.EnrichmentData) {
+	enrichmentDataCopy := *enrichmentData
+	count2Change := int(float64(len(enrichmentDataCopy)) / float64(100) * float64(config.Config.ChangeRateKubernetesContainer))
+	log.Debug().Msgf("Changing labels of %d containers", count2Change)
+	indicesToChange := getRandomIndices(count2Change, len(enrichmentDataCopy))
+  for _, index := range indicesToChange {
+    container := enrichmentDataCopy[index]
+    container.Attributes["k8s.label.tags.changeTimestamp"] = []string{time.Now().String()}
+  }
+  enrichmentData = &enrichmentDataCopy
+}
+
+func initKubernetesContainerTargets() *[]discovery_kit_api.EnrichmentData {
 	//example: 2 containers per pod * 4 pods per deployment * 5 deployments per node * 400 nodes = 16000 containers
 	count := config.Config.NodeCount * config.Config.DeploymentsPerNode * config.Config.PodsPerDeployment * config.Config.ContainerPerPod
 	result := make([]discovery_kit_api.EnrichmentData, 0, count)
@@ -71,6 +94,7 @@ func initKubernetesContainerTargets() []discovery_kit_api.EnrichmentData {
 							"k8s.label.service-tier":                   {"2"},
 							"k8s.label.tags.datadoghq.com/service":     {"loadtest"},
 							"k8s.label.tags.datadoghq.com/version":     {"1.0.0"},
+							"k8s.label.tags.changeTimestamp":           {time.Now().String()},
 							"k8s.namespace":                            deployment.Attributes["k8s.namespace"],
 							"k8s.node.name":                            {host.Id},
 							"k8s.pod.label.domain":                     {"loadtest"},
@@ -89,5 +113,5 @@ func initKubernetesContainerTargets() []discovery_kit_api.EnrichmentData {
 		}
 	}
 
-	return result
+	return &result
 }

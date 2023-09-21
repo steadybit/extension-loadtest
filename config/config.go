@@ -15,10 +15,12 @@ import (
 type Specification struct {
 	ClusterName string `json:"clusterName" split_words:"true" required:"false" default:"cluster-1"`
 
-	NodeCount          int `json:"nodeCount" split_words:"true" required:"false" default:"2"`
-	DeploymentsPerNode int `json:"deploymentsPerNode" split_words:"true" required:"false" default:"5"`
-	PodsPerDeployment  int `json:"podsPerDeployment" split_words:"true" required:"false" default:"2"`
-	ContainerPerPod    int `json:"containerPerPod" split_words:"true" required:"false" default:"2"`
+	NodeCount                     int `json:"nodeCount" split_words:"true" required:"false" default:"2"`
+	DeploymentsPerNode            int `json:"deploymentsPerNode" split_words:"true" required:"false" default:"5"`
+	PodsPerDeployment             int `json:"podsPerDeployment" split_words:"true" required:"false" default:"2"`
+	ContainerPerPod               int `json:"containerPerPod" split_words:"true" required:"false" default:"2"`
+	ChangeRateKubernetesContainer int `json:"changeRateKubernetesContainer" split_words:"true" required:"false" default:"13"` // 13% of containers will be changed
+	ChangeTimeKubernetesContainer int `json:"changeRateContainer" split_words:"true" required:"false" default:"180"`          // 180 seconds between changes
 
 	//2 containers per pod * 4 pods per deployment * 5 deployments per node * 400 nodes = 16000 containers
 }
