@@ -38,6 +38,7 @@ func main() {
 	extloadtest.RegisterDiscoveryKubernetesCluster()
 	extloadtest.RegisterDiscoveryKubernetesDeployment()
 	extloadtest.RegisterDiscoveryKubernetesContainer()
+	extloadtest.InitKubernetesContainerChangeHandler()
 
 	action_kit_sdk.InstallSignalHandler()
 	action_kit_sdk.RegisterCoverageEndpoints()
