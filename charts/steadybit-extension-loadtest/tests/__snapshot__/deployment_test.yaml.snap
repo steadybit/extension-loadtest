@@ -43,7 +43,7 @@ manifest should match snapshot using podAnnotations and Labels:
               resources:
                 limits:
                   cpu: 200m
-                  memory: 128Mi
+                  memory: 512Mi
                 requests:
                   cpu: 50m
                   memory: 32Mi
@@ -106,7 +106,7 @@ manifest should match snapshot with TLS:
               resources:
                 limits:
                   cpu: 200m
-                  memory: 128Mi
+                  memory: 512Mi
                 requests:
                   cpu: 50m
                   memory: 32Mi
@@ -179,7 +179,7 @@ manifest should match snapshot with extra env vars:
               resources:
                 limits:
                   cpu: 200m
-                  memory: 128Mi
+                  memory: 512Mi
                 requests:
                   cpu: 50m
                   memory: 32Mi
@@ -240,7 +240,7 @@ manifest should match snapshot with extra labels:
               resources:
                 limits:
                   cpu: 200m
-                  memory: 128Mi
+                  memory: 512Mi
                 requests:
                   cpu: 50m
                   memory: 32Mi
@@ -305,7 +305,7 @@ manifest should match snapshot with mutual TLS:
               resources:
                 limits:
                   cpu: 200m
-                  memory: 128Mi
+                  memory: 512Mi
                 requests:
                   cpu: 50m
                   memory: 32Mi
@@ -384,7 +384,7 @@ manifest should match snapshot with mutual TLS using containerPaths:
               resources:
                 limits:
                   cpu: 200m
-                  memory: 128Mi
+                  memory: 512Mi
                 requests:
                   cpu: 50m
                   memory: 32Mi
@@ -432,13 +432,13 @@ manifest should match snapshot with settings:
                 - name: STEADYBIT_EXTENSION_CLUSTER_NAME
                   value: my-cluster
                 - name: STEADYBIT_EXTENSION_CONTAINER_PER_POD
-                  value: 4
+                  value: "4"
                 - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
-                  value: 2
+                  value: "2"
                 - name: STEADYBIT_EXTENSION_NODE_COUNT
-                  value: 1
+                  value: "1"
                 - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
-                  value: 3
+                  value: "3"
               image: ghcr.io/steadybit/extension-loadtest:latest
               imagePullPolicy: Always
               livenessProbe:
@@ -453,7 +453,7 @@ manifest should match snapshot with settings:
               resources:
                 limits:
                   cpu: 200m
-                  memory: 128Mi
+                  memory: 512Mi
                 requests:
                   cpu: 50m
                   memory: 32Mi
@@ -512,7 +512,7 @@ manifest should match snapshot without TLS:
               resources:
                 limits:
                   cpu: 200m
-                  memory: 128Mi
+                  memory: 512Mi
                 requests:
                   cpu: 50m
                   memory: 32Mi

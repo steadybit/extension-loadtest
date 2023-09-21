@@ -52,19 +52,19 @@ spec:
             {{ end }}
             {{ if .Values.loadtest.containerPerPod -}}
             - name: STEADYBIT_EXTENSION_CONTAINER_PER_POD
-              value: {{ .Values.loadtest.containerPerPod }}
+              value: "{{ .Values.loadtest.containerPerPod }}"
             {{ end }}
             {{ if .Values.loadtest.deploymentsPerNode -}}
             - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
-              value: {{ .Values.loadtest.deploymentsPerNode }}
+              value: "{{ .Values.loadtest.deploymentsPerNode }}"
             {{ end }}
             {{ if .Values.loadtest.nodeCount -}}
             - name: STEADYBIT_EXTENSION_NODE_COUNT
-              value: {{ .Values.loadtest.nodeCount }}
+              value: "{{ .Values.loadtest.nodeCount }}"
             {{ end }}
             {{ if .Values.loadtest.podsPerDeployment -}}
             - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
-              value: {{ .Values.loadtest.podsPerDeployment }}
+              value: "{{ .Values.loadtest.podsPerDeployment }}"
             {{ end }}
             {{- with .Values.extraEnv }}
               {{- toYaml . | nindent 12 }}
