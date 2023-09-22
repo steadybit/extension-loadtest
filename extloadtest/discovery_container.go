@@ -59,7 +59,7 @@ func initContainerTargets() []discovery_kit_api.Target {
 				"container.label.io.cri-containerd.kind": {"container"},
 				"container.label.io.kubernetes.pod.uid":  {"6418b03c-147c-4685-854b-9ffc324216f2"},
 				"container.name":                         {},
-				"host.hostname":                          kubernetesContainer.Attributes["host.hostname"],
+				"host.hostname":                          kubernetesContainer.Attributes["k8s.node.name"],
 				"k8s.container.name":                     kubernetesContainer.Attributes["k8s.container.name"],
 				"k8s.namespace":                          kubernetesContainer.Attributes["k8s.namespace"],
 				"k8s.pod.name":                           kubernetesContainer.Attributes["k8s.pod.name"],
