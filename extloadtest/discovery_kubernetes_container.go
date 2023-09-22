@@ -41,6 +41,10 @@ func getDiscoveryKubernetesContainerTargets() discovery_kit_api.DiscoveryData {
 }
 
 func InitKubernetesContainerChangeHandler() {
+	if config.Config.ChangeTimeKubernetesContainer == 0 {
+		log.Info().Msg("ChangeTimeKubernetesContainer is set to 0, no changes will be made")
+		return
+	}
 	taskScheduler := chrono.NewDefaultTaskScheduler()
 	_, err := taskScheduler.ScheduleWithFixedDelay(func(ctx context.Context) {
 		changeLabelsOfRandomContainer()
