@@ -16,6 +16,8 @@ loadtest:
   deploymentsPerNode: null
   podsPerDeployment: null
   containerPerPod: null
+  changeRateKubernetesContainer: null
+  changeTimeKubernetesContainer: null
 
 tls:
   server:

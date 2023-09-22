@@ -439,6 +439,10 @@ manifest should match snapshot with settings:
                   value: "1"
                 - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
                   value: "3"
+                - name: STEADYBIT_EXTENSION_CHANGE_RATE_KUBERNETES_CONTAINER
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_CHANGE_TIME_KUBERNETES_CONTAINER
+                  value: "6"
               image: ghcr.io/steadybit/extension-loadtest:latest
               imagePullPolicy: Always
               livenessProbe:
