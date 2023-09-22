@@ -3,15 +3,9 @@ package extloadtest
 import (
 	"fmt"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
-	"github.com/steadybit/extension-kit/exthttp"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
 )
-
-func RegisterDiscoveryKubernetesDeployment() {
-	exthttp.RegisterHttpHandler("/discovery/kubernetes-deployment", exthttp.GetterAsHandler(getDiscoveryKubernetesDeployment))
-	exthttp.RegisterHttpHandler("/discovery/kubernetes-deployment/targets", exthttp.GetterAsHandler(getDiscoveryKubernetesDeploymentTargets))
-}
 
 func getDiscoveryKubernetesDeployment() discovery_kit_api.DiscoveryDescription {
 	return discovery_kit_api.DiscoveryDescription{
@@ -22,17 +16,6 @@ func getDiscoveryKubernetesDeployment() discovery_kit_api.DiscoveryDescription {
 			Path:         "/discovery/kubernetes-deployment/targets",
 			CallInterval: extutil.Ptr("1m"),
 		},
-	}
-}
-
-var kubernetesDeployments []discovery_kit_api.Target
-
-func getDiscoveryKubernetesDeploymentTargets() discovery_kit_api.DiscoveryData {
-	if kubernetesDeployments == nil {
-		kubernetesDeployments = initKubernetesDeploymentTargets()
-	}
-	return discovery_kit_api.DiscoveryData{
-		Targets: &kubernetesDeployments,
 	}
 }
 

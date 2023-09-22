@@ -3,16 +3,9 @@ package extloadtest
 import (
 	"fmt"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
-	"github.com/steadybit/extension-kit/exthttp"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
-	"math/rand"
 )
-
-func RegisterDiscoveryHost() {
-	exthttp.RegisterHttpHandler("/discovery/host", exthttp.GetterAsHandler(getDiscoveryHost))
-	exthttp.RegisterHttpHandler("/discovery/host/targets", exthttp.GetterAsHandler(getDiscoveryHostTargets))
-}
 
 func getDiscoveryHost() discovery_kit_api.DiscoveryDescription {
 	return discovery_kit_api.DiscoveryDescription{
@@ -28,23 +21,6 @@ func getDiscoveryHost() discovery_kit_api.DiscoveryDescription {
 
 func getHostname(i int) string {
 	return fmt.Sprintf("host-%d", i)
-}
-
-func getRandomHostname() string {
-	targets := getDiscoveryHostTargets()
-	i := rand.Intn(len(*targets.Targets)) + 1
-	return getHostname(i)
-}
-
-var hosts []discovery_kit_api.Target
-
-func getDiscoveryHostTargets() discovery_kit_api.DiscoveryData {
-	if hosts == nil {
-		hosts = initHostTargets()
-	}
-	return discovery_kit_api.DiscoveryData{
-		Targets: &hosts,
-	}
 }
 
 func initHostTargets() []discovery_kit_api.Target {

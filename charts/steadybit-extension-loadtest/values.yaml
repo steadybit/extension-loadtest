@@ -16,8 +16,24 @@ loadtest:
   deploymentsPerNode: null
   podsPerDeployment: null
   containerPerPod: null
-  changeRateKubernetesContainer: null
-  changeTimeKubernetesContainer: null
+  attributeUpdates:
+    - type: "com.steadybit.extension_aws.ec2-instance"
+      attributeName: "aws-ec2.label.change-ts"
+      rate: 0.20
+      interval: 600
+    - type: "com.steadybit.extension_container.container"
+      attributeName: "container.label.change-ts"
+      rate: 0.20
+      interval: 180
+    - type: "com.steadybit.extension_kubernetes.kubernetes-container"
+      attributeName: "k8s.label.change-ts"
+      rate: 0.20
+      interval: 180
+    - type: "com.steadybit.extension_kubernetes.kubernetes-deployment"
+      attributeName: "k8s.label.change-ts"
+      rate: 0.20
+      interval: 180
+
 
 tls:
   server:

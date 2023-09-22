@@ -5,6 +5,8 @@
 package config
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/rs/zerolog/log"
 )
@@ -21,14 +23,32 @@ type Specification struct {
 	PodsPerDeployment  int `json:"podsPerDeployment" split_words:"true" required:"false" default:"2"`
 	ContainerPerPod    int `json:"containerPerPod" split_words:"true" required:"false" default:"2"`
 
-	ChangeRateKubernetesContainer int `json:"changeRateKubernetesContainer" split_words:"true" required:"false" default:"13"` // 13% of containers will be changed
-	ChangeTimeKubernetesContainer int `json:"changeRateContainer" split_words:"true" required:"false" default:"180"`          // 180 seconds between changes
+	AttributeUpdates AttributeUpdateSpecifications `split_words:"true" required:"false" default:"[{\"type\": \"com.steadybit.extension_aws.ec2-instance\", \"attributeName\": \"aws-ec2.label.change-ts\", \"rate\": 0.20, \"interval\": 600},{\"type\": \"com.steadybit.extension_container.container\", \"attributeName\": \"container.label.change-ts\", \"rate\": 0.20, \"interval\": 180},{\"type\": \"com.steadybit.extension_kubernetes.kubernetes-container\", \"attributeName\": \"k8s.label.change-ts\", \"rate\": 0.20, \"interval\": 180},{\"type\": \"com.steadybit.extension_kubernetes.kubernetes-deployment\", \"attributeName\": \"k8s.label.change-ts\", \"rate\": 0.20, \"interval\": 180}]"`
 
 	DiscoveryAttributeExcludesContainer            []string `json:"discoveryAttributeExcludesContainer" split_words:"true" required:"false"`
 	DiscoveryAttributeExcludesEc2                  []string `json:"discoveryAttributeExcludesEc2" split_words:"true" required:"false"`
 	DiscoveryAttributeExcludesHost                 []string `json:"discoveryAttributeExcludesHost" split_words:"true" required:"false"`
 	DiscoveryAttributeExcludesKubernetesDeployment []string `json:"discoveryAttributeExcludesKubernetesDeployment" split_words:"true" required:"false"`
 	DiscoveryAttributeExcludesKubernetesContainer  []string `json:"discoveryAttributeExcludesKubernetesContainer" split_words:"true" required:"false"`
+}
+
+type AttributeUpdateSpecifications []AttributeUpdateSpecification
+
+func (s *AttributeUpdateSpecifications) Decode(value string) error {
+	var specs []AttributeUpdateSpecification
+	err := json.Unmarshal([]byte(value), &specs)
+	if err != nil {
+		return fmt.Errorf("invalid json: %w", err)
+	}
+	*s = specs
+	return nil
+}
+
+type AttributeUpdateSpecification struct {
+	Type          string  `json:"type" split_words:"true"`
+	AttributeName string  `json:"attributeName" split_words:"true"`
+	Rate          float64 `json:"rate" split_words:"true" default:"0.20"`
+	Interval      int     `json:"interval" split_words:"true" default:"180s"`
 }
 
 var (
@@ -43,4 +63,13 @@ func ParseConfiguration() {
 }
 
 func ValidateConfiguration() {
+}
+
+func (s *Specification) FindAttributeUpdate(t string) *AttributeUpdateSpecification {
+	for _, attributeUpdate := range s.AttributeUpdates {
+		if attributeUpdate.Type == t {
+			return &attributeUpdate
+		}
+	}
+	return nil
 }

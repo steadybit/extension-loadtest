@@ -32,13 +32,7 @@ func main() {
 
 	exthttp.RegisterHttpHandler("/", exthttp.GetterAsHandler(getExtensionList))
 
-	extloadtest.RegisterDiscoveryHost()
-	extloadtest.RegisterDiscoveryContainer()
-	extloadtest.RegisterDiscoveryEc2Instance()
-	extloadtest.RegisterDiscoveryKubernetesCluster()
-	extloadtest.RegisterDiscoveryKubernetesDeployment()
-	extloadtest.RegisterDiscoveryKubernetesContainer()
-	extloadtest.InitKubernetesContainerChangeHandler()
+	extloadtest.RegisterAllDiscoveryHandlers()
 
 	action_kit_sdk.InstallSignalHandler()
 	action_kit_sdk.RegisterCoverageEndpoints()

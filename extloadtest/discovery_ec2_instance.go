@@ -3,15 +3,9 @@ package extloadtest
 import (
 	"fmt"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
-	"github.com/steadybit/extension-kit/exthttp"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
 )
-
-func RegisterDiscoveryEc2Instance() {
-	exthttp.RegisterHttpHandler("/discovery/ec2-instance", exthttp.GetterAsHandler(getDiscoveryEc2Instance))
-	exthttp.RegisterHttpHandler("/discovery/ec2-instance/targets", exthttp.GetterAsHandler(getDiscoveryEc2InstanceTargets))
-}
 
 func getDiscoveryEc2Instance() discovery_kit_api.DiscoveryDescription {
 	return discovery_kit_api.DiscoveryDescription{
@@ -22,17 +16,6 @@ func getDiscoveryEc2Instance() discovery_kit_api.DiscoveryDescription {
 			Path:         "/discovery/ec2-instance/targets",
 			CallInterval: extutil.Ptr("30s"),
 		},
-	}
-}
-
-var ec2Instances []discovery_kit_api.Target
-
-func getDiscoveryEc2InstanceTargets() discovery_kit_api.DiscoveryData {
-	if ec2Instances == nil {
-		ec2Instances = initEc2InstanceTargets()
-	}
-	return discovery_kit_api.DiscoveryData{
-		Targets: &ec2Instances,
 	}
 }
 

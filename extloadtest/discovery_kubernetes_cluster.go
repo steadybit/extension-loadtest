@@ -2,15 +2,9 @@ package extloadtest
 
 import (
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
-	"github.com/steadybit/extension-kit/exthttp"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
 )
-
-func RegisterDiscoveryKubernetesCluster() {
-	exthttp.RegisterHttpHandler("/discovery/kubernetes-cluster", exthttp.GetterAsHandler(getDiscoveryKubernetesCluster))
-	exthttp.RegisterHttpHandler("/discovery/kubernetes-cluster/targets", exthttp.GetterAsHandler(getDiscoveryKubernetesClusterTargets))
-}
 
 func getDiscoveryKubernetesCluster() discovery_kit_api.DiscoveryDescription {
 	return discovery_kit_api.DiscoveryDescription{
@@ -21,17 +15,6 @@ func getDiscoveryKubernetesCluster() discovery_kit_api.DiscoveryDescription {
 			Path:         "/discovery/kubernetes-cluster/targets",
 			CallInterval: extutil.Ptr("60m"),
 		},
-	}
-}
-
-var kubernetesCluster []discovery_kit_api.Target
-
-func getDiscoveryKubernetesClusterTargets() discovery_kit_api.DiscoveryData {
-	if kubernetesCluster == nil {
-		kubernetesCluster = initKubernetesClusterTargets()
-	}
-	return discovery_kit_api.DiscoveryData{
-		Targets: &kubernetesCluster,
 	}
 }
 

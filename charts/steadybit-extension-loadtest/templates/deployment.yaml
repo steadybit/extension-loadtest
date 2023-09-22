@@ -70,12 +70,8 @@ spec:
               {{- toYaml . | nindent 12 }}
             {{- end }}
             {{ if .Values.loadtest.changeRateKubernetesContainer -}}
-            - name: STEADYBIT_EXTENSION_CHANGE_RATE_KUBERNETES_CONTAINER
-              value: "{{ .Values.loadtest.changeRateKubernetesContainer }}"
-            {{ end }}
-            {{ if .Values.loadtest.changeTimeKubernetesContainer -}}
-            - name: STEADYBIT_EXTENSION_CHANGE_TIME_KUBERNETES_CONTAINER
-              value: "{{ .Values.loadtest.changeTimeKubernetesContainer }}"
+            - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
+              value: {{ .Values.loadtest.attributeUpdates | toJson | quote }}
             {{ end }}
             - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_CONTAINER
               value: {{ join "," .Values.discovery.attributes.excludes.container | quote }}

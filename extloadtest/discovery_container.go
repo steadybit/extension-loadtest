@@ -3,15 +3,9 @@ package extloadtest
 import (
 	"fmt"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
-	"github.com/steadybit/extension-kit/exthttp"
 	"github.com/steadybit/extension-kit/extutil"
-  "github.com/steadybit/extension-loadtest/config"
+	"github.com/steadybit/extension-loadtest/config"
 )
-
-func RegisterDiscoveryContainer() {
-	exthttp.RegisterHttpHandler("/discovery/container", exthttp.GetterAsHandler(getDiscoveryContainer))
-	exthttp.RegisterHttpHandler("/discovery/container/targets", exthttp.GetterAsHandler(getDiscoveryContainerTargets))
-}
 
 func getDiscoveryContainer() discovery_kit_api.DiscoveryDescription {
 	return discovery_kit_api.DiscoveryDescription{
@@ -25,23 +19,10 @@ func getDiscoveryContainer() discovery_kit_api.DiscoveryDescription {
 	}
 }
 
-var container []discovery_kit_api.Target
+func initContainerTargets(kubernetesContainers []discovery_kit_api.EnrichmentData) []discovery_kit_api.Target {
+	result := make([]discovery_kit_api.Target, 0, len(kubernetesContainers))
 
-func getDiscoveryContainerTargets() discovery_kit_api.DiscoveryData {
-	if container == nil {
-		container = initContainerTargets()
-	}
-	return discovery_kit_api.DiscoveryData{
-		Targets: &container,
-	}
-}
-
-func initContainerTargets() []discovery_kit_api.Target {
-	kubernetesContainerTargets := *getDiscoveryKubernetesContainerTargets().EnrichmentData
-
-	result := make([]discovery_kit_api.Target, 0, len(kubernetesContainerTargets))
-
-	for _, kubernetesContainer := range kubernetesContainerTargets {
+	for _, kubernetesContainer := range kubernetesContainers {
 		containerIdStripped := kubernetesContainer.Attributes["k8s.container.id.stripped"][0]
 		target := discovery_kit_api.Target{
 			Id:         containerIdStripped,
@@ -50,7 +31,8 @@ func initContainerTargets() []discovery_kit_api.Target {
 			Attributes: map[string][]string{
 				"container.engine":                       {"containerd"},
 				"container.engine.version":               {"1.6.6"},
-				"container.host":                         kubernetesContainer.Attributes["host.hostname"],
+				"container.host":                         kubernetesContainer.Attributes["k8s.node.name"],
+				"host.hostname":                          kubernetesContainer.Attributes["k8s.node.name"],
 				"container.id":                           {fmt.Sprintf("containerd://%s", containerIdStripped)},
 				"container.id.stripped":                  {containerIdStripped},
 				"container.image":                        {"docker.io/steadybit/loadtest:latest"},
@@ -59,8 +41,6 @@ func initContainerTargets() []discovery_kit_api.Target {
 				"container.image.tag":                    {"latest"},
 				"container.label.io.cri-containerd.kind": {"container"},
 				"container.label.io.kubernetes.pod.uid":  {"6418b03c-147c-4685-854b-9ffc324216f2"},
-				"container.name":                         {},
-				"host.hostname":                          kubernetesContainer.Attributes["k8s.node.name"],
 				"k8s.container.name":                     kubernetesContainer.Attributes["k8s.container.name"],
 				"k8s.namespace":                          kubernetesContainer.Attributes["k8s.namespace"],
 				"k8s.pod.name":                           kubernetesContainer.Attributes["k8s.pod.name"],
