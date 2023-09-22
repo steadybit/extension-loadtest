@@ -5,6 +5,7 @@ import (
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/extension-kit/exthttp"
 	"github.com/steadybit/extension-kit/extutil"
+  "github.com/steadybit/extension-loadtest/config"
 )
 
 func RegisterDiscoveryContainer() {
@@ -68,5 +69,5 @@ func initContainerTargets() []discovery_kit_api.Target {
 		result = append(result, target)
 	}
 
-	return result
+	return discovery_kit_api.ApplyAttributeExcludes(result, config.Config.DiscoveryAttributeExcludesContainer)
 }

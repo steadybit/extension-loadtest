@@ -77,6 +77,16 @@ spec:
             - name: STEADYBIT_EXTENSION_CHANGE_TIME_KUBERNETES_CONTAINER
               value: "{{ .Values.loadtest.changeTimeKubernetesContainer }}"
             {{ end }}
+            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_CONTAINER
+              value: {{ join "," .Values.discovery.attributes.excludes.container | quote }}
+            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_EC2
+              value: {{ join "," .Values.discovery.attributes.excludes.ec2 | quote }}
+            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_HOST
+              value: {{ join "," .Values.discovery.attributes.excludes.host | quote }}
+            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_KUBERNETES_CONTAINER
+              value: {{ join "," .Values.discovery.attributes.excludes.kubernetes.container | quote }}
+            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_KUBERNETES_DEPLOYMENT
+              value: {{ join "," .Values.discovery.attributes.excludes.kubernetes.deployment | quote }}
           {{- with .Values.extraEnvFrom }}
           envFrom:
             {{- toYaml . | nindent 12 }}

@@ -103,3 +103,18 @@ extraEnv: []
 #  - secretRef:
 #    name: env-secrets
 extraEnvFrom: []
+
+discovery:
+  attributes:
+    excludes:
+      # discovery.attributes.excludes.container -- List of attributes to exclude from container discovery.
+      container: []
+      # discovery.attributes.excludes.ec2 -- List of attributes to exclude from ec2 discovery.
+      ec2: []
+      # discovery.attributes.excludes.host -- List of attributes to exclude from host discovery.
+      host: []
+      kubernetes:
+        # discovery.attributes.excludes.kubernetes.container -- List of attributes to exclude from kubernetes container discovery.
+        container: []
+        # discovery.attributes.excludes.kubernetes.deployment -- List of attributes to exclude from kubernetes container discovery.
+        deployment: []

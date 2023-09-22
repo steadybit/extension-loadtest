@@ -66,7 +66,7 @@ func changeLabelsOfRandomContainer() {
 		container := enrichmentDataCopy[index]
 		container.Attributes["k8s.label.tags.changeTimestamp"] = []string{time.Now().String()}
 	}
-	kubernetesContainer = &enrichmentDataCopy
+	kubernetesContainer = extutil.Ptr(discovery_kit_api.ApplyAttributeExcludesToEnrichmentData(enrichmentDataCopy, config.Config.DiscoveryAttributeExcludesKubernetesContainer))
 }
 
 func initKubernetesContainerTargets() *[]discovery_kit_api.EnrichmentData {
@@ -123,5 +123,5 @@ func initKubernetesContainerTargets() *[]discovery_kit_api.EnrichmentData {
 		}
 	}
 
-	return &result
+	return extutil.Ptr(discovery_kit_api.ApplyAttributeExcludesToEnrichmentData(result, config.Config.DiscoveryAttributeExcludesKubernetesContainer))
 }
