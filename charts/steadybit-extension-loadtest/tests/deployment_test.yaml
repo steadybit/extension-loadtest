@@ -74,7 +74,5 @@ tests:
         deploymentsPerNode: 2
         podsPerDeployment: 3
         containerPerPod: 4
-        changeRateKubernetesContainer: 5
-        changeTimeKubernetesContainer: 6
     asserts:
       - matchSnapshot: {}

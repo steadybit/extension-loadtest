@@ -69,7 +69,7 @@ spec:
             {{- with .Values.extraEnv }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
-            {{ if .Values.loadtest.changeRateKubernetesContainer -}}
+            {{ if .Values.loadtest.attributeUpdates -}}
             - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
               value: {{ .Values.loadtest.attributeUpdates | toJson | quote }}
             {{ end }}
