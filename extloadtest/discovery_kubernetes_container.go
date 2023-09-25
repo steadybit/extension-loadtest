@@ -61,7 +61,7 @@ func initKubernetesContainerTargets(hostTargets, deploymentTargets []discovery_k
 							"k8s.pod.label.tags.datadoghq.com/version": {"1.0.0"},
 							"k8s.pod.name":                             {podName},
 							"k8s.replicaset":                           deployment.Attributes["k8s.deployment"],
-							"k8s.service.name":                         {fmt.Sprintf("%-service", deployment.Attributes["k8s.deployment"][0])},
+							"k8s.service.name":                         {fmt.Sprintf("%s-service", deployment.Attributes["k8s.deployment"][0])},
 						},
 					}
 					result = append(result, target)
