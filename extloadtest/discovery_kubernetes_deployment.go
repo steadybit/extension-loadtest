@@ -67,5 +67,5 @@ func initKubernetesDeploymentTargets() []discovery_kit_api.Target {
 		}
 		result = append(result, target)
 	}
-	return discovery_kit_api.ApplyAttributeExcludes(result, config.Config.DiscoveryAttributeExcludesKubernetesDeployment)
+	return discovery_kit_api.ApplyAttributeExcludes(result, config.Config.DiscoveryAttributesExcludesKubernetesDeployment)
 }

@@ -49,5 +49,5 @@ func initContainerTargets(kubernetesContainers []discovery_kit_api.EnrichmentDat
 		result = append(result, target)
 	}
 
-	return discovery_kit_api.ApplyAttributeExcludes(result, config.Config.DiscoveryAttributeExcludesContainer)
+	return discovery_kit_api.ApplyAttributeExcludes(result, config.Config.DiscoveryAttributesExcludesContainer)
 }

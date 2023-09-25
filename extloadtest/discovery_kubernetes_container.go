@@ -70,5 +70,5 @@ func initKubernetesContainerTargets(hostTargets, deploymentTargets []discovery_k
 		}
 	}
 
-	return discovery_kit_api.ApplyAttributeExcludesToEnrichmentData(result, config.Config.DiscoveryAttributeExcludesKubernetesContainer)
+	return discovery_kit_api.ApplyAttributeExcludesToEnrichmentData(result, config.Config.DiscoveryAttributesExcludesKubernetesContainer)
 }

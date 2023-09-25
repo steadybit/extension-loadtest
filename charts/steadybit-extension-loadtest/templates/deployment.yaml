@@ -74,23 +74,23 @@ spec:
               value: {{ .Values.loadtest.attributeUpdates | toJson | quote }}
             {{ end }}
             {{ if .Values.discovery.attributes.excludes.container -}}
-            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_CONTAINER
+            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_CONTAINER
               value: {{ join "," .Values.discovery.attributes.excludes.container | quote }}
             {{ end }}
             {{ if .Values.discovery.attributes.excludes.ec2 -}}
-            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_EC2
+            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_EC2
               value: {{ join "," .Values.discovery.attributes.excludes.ec2 | quote }}
             {{ end }}
             {{ if .Values.discovery.attributes.excludes.host -}}
-            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_HOST
+            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_HOST
               value: {{ join "," .Values.discovery.attributes.excludes.host | quote }}
             {{ end }}
             {{ if .Values.discovery.attributes.excludes.kubernetes.container -}}
-            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_KUBERNETES_CONTAINER
+            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_KUBERNETES_CONTAINER
               value: {{ join "," .Values.discovery.attributes.excludes.kubernetes.container | quote }}
             {{ end }}
             {{ if .Values.discovery.attributes.excludes.kubernetes.deployment -}}
-            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_KUBERNETES_DEPLOYMENT
+            - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_KUBERNETES_DEPLOYMENT
               value: {{ join "," .Values.discovery.attributes.excludes.kubernetes.deployment | quote }}
             {{ end }}
           {{- with .Values.extraEnvFrom }}

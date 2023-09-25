@@ -25,11 +25,11 @@ type Specification struct {
 
 	AttributeUpdates AttributeUpdateSpecifications `split_words:"true" required:"false" default:"[{\"type\": \"com.steadybit.extension_aws.ec2-instance\", \"attributeName\": \"aws-ec2.label.change-ts\", \"rate\": 0.20, \"interval\": 600},{\"type\": \"com.steadybit.extension_container.container\", \"attributeName\": \"container.label.change-ts\", \"rate\": 0.20, \"interval\": 180},{\"type\": \"com.steadybit.extension_kubernetes.kubernetes-container\", \"attributeName\": \"k8s.label.change-ts\", \"rate\": 0.20, \"interval\": 180},{\"type\": \"com.steadybit.extension_kubernetes.kubernetes-deployment\", \"attributeName\": \"k8s.label.change-ts\", \"rate\": 0.20, \"interval\": 180}]"`
 
-	DiscoveryAttributeExcludesContainer            []string `json:"discoveryAttributeExcludesContainer" split_words:"true" required:"false"`
-	DiscoveryAttributeExcludesEc2                  []string `json:"discoveryAttributeExcludesEc2" split_words:"true" required:"false"`
-	DiscoveryAttributeExcludesHost                 []string `json:"discoveryAttributeExcludesHost" split_words:"true" required:"false"`
-	DiscoveryAttributeExcludesKubernetesDeployment []string `json:"discoveryAttributeExcludesKubernetesDeployment" split_words:"true" required:"false"`
-	DiscoveryAttributeExcludesKubernetesContainer  []string `json:"discoveryAttributeExcludesKubernetesContainer" split_words:"true" required:"false"`
+	DiscoveryAttributesExcludesContainer            []string `json:"discoveryAttributesExcludesContainer" split_words:"true" required:"false"`
+	DiscoveryAttributesExcludesEc2                  []string `json:"discoveryAttributesExcludesEc2" split_words:"true" required:"false"`
+	DiscoveryAttributesExcludesHost                 []string `json:"discoveryAttributesExcludesHost" split_words:"true" required:"false"`
+	DiscoveryAttributesExcludesKubernetesDeployment []string `json:"discoveryAttributesExcludesKubernetesDeployment" split_words:"true" required:"false"`
+	DiscoveryAttributesExcludesKubernetesContainer  []string `json:"discoveryAttributesExcludesKubernetesContainer" split_words:"true" required:"false"`
 }
 
 type AttributeUpdateSpecifications []AttributeUpdateSpecification

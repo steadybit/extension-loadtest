@@ -76,5 +76,5 @@ func initHostTargets() []discovery_kit_api.Target {
 		result = append(result, target)
 	}
 
-	return discovery_kit_api.ApplyAttributeExcludes(result, config.Config.DiscoveryAttributeExcludesEc2)
+	return discovery_kit_api.ApplyAttributeExcludes(result, config.Config.DiscoveryAttributesExcludesEc2)
 }
