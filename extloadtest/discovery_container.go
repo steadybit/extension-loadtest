@@ -3,7 +3,8 @@ package extloadtest
 import (
 	"fmt"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
-	"github.com/steadybit/extension-kit/extutil"
+  "github.com/steadybit/discovery-kit/go/discovery_kit_commons"
+  "github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
 )
 
@@ -49,5 +50,5 @@ func initContainerTargets(kubernetesContainers []discovery_kit_api.EnrichmentDat
 		result = append(result, target)
 	}
 
-	return discovery_kit_api.ApplyAttributeExcludes(result, config.Config.DiscoveryAttributesExcludesContainer)
+	return discovery_kit_commons.ApplyAttributeExcludes(result, config.Config.DiscoveryAttributesExcludesContainer)
 }
