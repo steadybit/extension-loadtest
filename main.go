@@ -15,6 +15,7 @@ import (
 	"github.com/steadybit/extension-kit/exthttp"
 	"github.com/steadybit/extension-kit/extlogging"
 	"github.com/steadybit/extension-kit/extruntime"
+	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
 	"github.com/steadybit/extension-loadtest/extloadtest"
 )
@@ -36,6 +37,27 @@ func main() {
 
 	action_kit_sdk.InstallSignalHandler()
 	action_kit_sdk.RegisterCoverageEndpoints()
+
+	action_kit_sdk.RegisterAction(extloadtest.NewLogAction("com.steadybit.extension_host.host", action_kit_api.TargetSelectionTemplate{
+		Label:       "by host name",
+		Description: extutil.Ptr("Find host by host name."),
+		Query:       "host.hostname=\"\"",
+	}))
+	action_kit_sdk.RegisterAction(extloadtest.NewLogAction("com.steadybit.extension_aws.ec2-instance", action_kit_api.TargetSelectionTemplate{
+		Label:       "by instance-id",
+		Description: extutil.Ptr("Find ec2-instance by instance-id"),
+		Query:       "aws-ec2.instance.id=\"\"",
+	}))
+	action_kit_sdk.RegisterAction(extloadtest.NewLogAction("com.steadybit.extension_container.container", action_kit_api.TargetSelectionTemplate{
+		Label:       "by kubernetes deployment",
+		Description: extutil.Ptr("Find container by kubernetes deployment."),
+		Query:       "k8s.cluster-name=\"\" and k8s.namespace=\"\" and k8s.deployment=\"\"",
+	}))
+	action_kit_sdk.RegisterAction(extloadtest.NewLogAction("com.steadybit.extension_kubernetes.kubernetes-deployment", action_kit_api.TargetSelectionTemplate{
+		Label:       "default",
+		Description: extutil.Ptr("Find deployment by cluster, namespace and deployment"),
+		Query:       "k8s.cluster-name=\"\" AND k8s.namespace=\"\" AND k8s.deployment=\"\"",
+	}))
 
 	exthealth.SetReady(true)
 
