@@ -29,6 +29,16 @@ manifest should match snapshot using podAnnotations and Labels:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
+                - name: STEADYBIT_EXTENSION_CLUSTER_NAME
+                  value: cluster-loadtest
+                - name: STEADYBIT_EXTENSION_CONTAINER_PER_POD
+                  value: "2"
+                - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                  value: "400"
+                - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
+                  value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
                 - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_CONTAINER
@@ -104,6 +114,16 @@ manifest should match snapshot with TLS:
                   value: /etc/extension/certificates/server-cert/tls.crt
                 - name: STEADYBIT_EXTENSION_TLS_SERVER_KEY
                   value: /etc/extension/certificates/server-cert/tls.key
+                - name: STEADYBIT_EXTENSION_CLUSTER_NAME
+                  value: cluster-loadtest
+                - name: STEADYBIT_EXTENSION_CONTAINER_PER_POD
+                  value: "2"
+                - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                  value: "400"
+                - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
+                  value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
                 - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_CONTAINER
@@ -182,6 +202,16 @@ manifest should match snapshot with extra env vars:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
+                - name: STEADYBIT_EXTENSION_CLUSTER_NAME
+                  value: cluster-loadtest
+                - name: STEADYBIT_EXTENSION_CONTAINER_PER_POD
+                  value: "2"
+                - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                  value: "400"
+                - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
+                  value: "4"
                 - name: FOO
                   value: bar
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
@@ -262,6 +292,16 @@ manifest should match snapshot with extra labels:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
+                - name: STEADYBIT_EXTENSION_CLUSTER_NAME
+                  value: cluster-loadtest
+                - name: STEADYBIT_EXTENSION_CONTAINER_PER_POD
+                  value: "2"
+                - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                  value: "400"
+                - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
+                  value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
                 - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_CONTAINER
@@ -339,6 +379,16 @@ manifest should match snapshot with mutual TLS:
                   value: /etc/extension/certificates/server-cert/tls.key
                 - name: STEADYBIT_EXTENSION_TLS_CLIENT_CAS
                   value: /etc/extension/certificates/client-cert-a/tls.crt,/etc/extension/certificates/client-cert-a/tls.crt
+                - name: STEADYBIT_EXTENSION_CLUSTER_NAME
+                  value: cluster-loadtest
+                - name: STEADYBIT_EXTENSION_CONTAINER_PER_POD
+                  value: "2"
+                - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                  value: "400"
+                - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
+                  value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
                 - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_CONTAINER
@@ -430,6 +480,16 @@ manifest should match snapshot with mutual TLS using containerPaths:
                   value: /etc/tls/server.key
                 - name: STEADYBIT_EXTENSION_TLS_CLIENT_CAS
                   value: /etc/tls/ca.crt,/etc/tls/ca2.crt
+                - name: STEADYBIT_EXTENSION_CLUSTER_NAME
+                  value: cluster-loadtest
+                - name: STEADYBIT_EXTENSION_CONTAINER_PER_POD
+                  value: "2"
+                - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                  value: "400"
+                - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
+                  value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
                 - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_CONTAINER
@@ -582,6 +642,16 @@ manifest should match snapshot without TLS:
                   value: INFO
                 - name: STEADYBIT_LOG_FORMAT
                   value: text
+                - name: STEADYBIT_EXTENSION_CLUSTER_NAME
+                  value: cluster-loadtest
+                - name: STEADYBIT_EXTENSION_CONTAINER_PER_POD
+                  value: "2"
+                - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                  value: "400"
+                - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
+                  value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
                 - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTE_EXCLUDES_CONTAINER

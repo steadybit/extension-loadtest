@@ -11,11 +11,11 @@ image:
   pullPolicy: Always
 
 loadtest:
-  clusterName: null
-  nodeCount: null
-  deploymentsPerNode: null
-  podsPerDeployment: null
-  containerPerPod: null
+  clusterName: "cluster-loadtest"
+  nodeCount: 400
+  deploymentsPerNode: 5
+  podsPerDeployment: 4
+  containerPerPod: 2
   attributeUpdates:
     - type: "com.steadybit.extension_aws.ec2-instance"
       attributeName: "aws-ec2.label.change-ts"
