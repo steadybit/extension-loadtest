@@ -1,0 +1,18 @@
+loadtest:
+  attributeUpdates:
+    - type: "com.steadybit.extension_aws.ec2-instance"
+      attributeName: "aws-ec2.no-copy-rule"
+      rate: 0.005
+      interval: 600
+    - type: "com.steadybit.extension_container.container"
+      attributeName: "container.no-copy-rule"
+      rate: 0.002
+      interval: 180
+    - type: "com.steadybit.extension_kubernetes.kubernetes-container"
+      attributeName: "k8s.container.no-copy-rule"
+      rate: 0.002
+      interval: 120
+    - type: "com.steadybit.extension_kubernetes.kubernetes-deployment"
+      attributeName: "k8s.deployment.no-copy-rule"
+      rate: 0.001
+      interval: 60
