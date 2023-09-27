@@ -44,7 +44,7 @@ func (l *doNothingAction) NewEmptyState() DoNothingActionState {
 
 func (l *doNothingAction) Describe() action_kit_api.ActionDescription {
 	return action_kit_api.ActionDescription{
-		Id:          fmt.Sprintf("%s.log", l.targetId),
+		Id:          fmt.Sprintf("%s.nothing", l.targetId),
 		Label:       "do nothing",
 		Description: "nothing",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
