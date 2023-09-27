@@ -18,6 +18,7 @@ import (
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
 	"github.com/steadybit/extension-loadtest/extloadtest"
+	_ "net/http/pprof" //allow pprof
 )
 
 func main() {
