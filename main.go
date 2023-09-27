@@ -58,7 +58,7 @@ func main() {
 		Description: extutil.Ptr("Find deployment by cluster, namespace and deployment"),
 		Query:       "k8s.cluster-name=\"\" AND k8s.namespace=\"\" AND k8s.deployment=\"\"",
 	}))
-  action_kit_sdk.RegisterAction(extloadtest.NewDoNothingAction("com.steadybit.extension_container.container", action_kit_api.TargetSelectionTemplate{
+	action_kit_sdk.RegisterAction(extloadtest.NewDoNothingAction("com.steadybit.extension_container.container", action_kit_api.TargetSelectionTemplate{
 		Label:       "by kubernetes deployment",
 		Description: extutil.Ptr("Find container by kubernetes deployment."),
 		Query:       "k8s.cluster-name=\"\" and k8s.namespace=\"\" and k8s.deployment=\"\"",

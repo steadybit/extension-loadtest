@@ -3,8 +3,8 @@ package extloadtest
 import (
 	"fmt"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
-  "github.com/steadybit/discovery-kit/go/discovery_kit_commons"
-  "github.com/steadybit/extension-kit/extutil"
+	"github.com/steadybit/discovery-kit/go/discovery_kit_commons"
+	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
 )
 

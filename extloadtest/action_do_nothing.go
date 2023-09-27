@@ -5,14 +5,14 @@
 package extloadtest
 
 import (
-  "context"
-  "fmt"
-  "github.com/steadybit/action-kit/go/action_kit_api/v2"
-  "github.com/steadybit/action-kit/go/action_kit_sdk"
-  extension_kit "github.com/steadybit/extension-kit"
-  "github.com/steadybit/extension-kit/extbuild"
-  "github.com/steadybit/extension-kit/extconversion"
-  "github.com/steadybit/extension-kit/extutil"
+	"context"
+	"fmt"
+	"github.com/steadybit/action-kit/go/action_kit_api/v2"
+	"github.com/steadybit/action-kit/go/action_kit_sdk"
+	extension_kit "github.com/steadybit/extension-kit"
+	"github.com/steadybit/extension-kit/extbuild"
+	"github.com/steadybit/extension-kit/extconversion"
+	"github.com/steadybit/extension-kit/extutil"
 )
 
 type doNothingAction struct {
@@ -22,7 +22,7 @@ type doNothingAction struct {
 
 // Make sure action implements all required interfaces
 var (
-	_ action_kit_sdk.Action[DoNothingActionState]           = (*doNothingAction)(nil)
+	_ action_kit_sdk.Action[DoNothingActionState] = (*doNothingAction)(nil)
 )
 
 type DoNothingActionState struct {
@@ -77,11 +77,11 @@ func (l *doNothingAction) Prepare(_ context.Context, state *DoNothingActionState
 	}
 
 	return &action_kit_api.PrepareResult{Messages: extutil.Ptr([]action_kit_api.Message{
-    {
-      Level:   extutil.Ptr(action_kit_api.Info),
-      Message: "Prepared do nothing",
-    },
-  })}, nil
+		{
+			Level:   extutil.Ptr(action_kit_api.Info),
+			Message: "Prepared do nothing",
+		},
+	})}, nil
 }
 
 func (l *doNothingAction) Start(_ context.Context, state *DoNothingActionState) (*action_kit_api.StartResult, error) {
