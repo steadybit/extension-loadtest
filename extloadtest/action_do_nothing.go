@@ -13,6 +13,7 @@ import (
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extconversion"
 	"github.com/steadybit/extension-kit/extutil"
+	"time"
 )
 
 type doNothingAction struct {
@@ -26,6 +27,8 @@ var (
 )
 
 type DoNothingActionState struct {
+	started  time.Time
+	prepared time.Time
 }
 
 type DoNothingActionConfig struct {
