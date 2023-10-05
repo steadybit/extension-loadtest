@@ -24,7 +24,7 @@ func getHostname(i int) string {
 	return fmt.Sprintf("host-%d", i)
 }
 
-func initHostTargets() []discovery_kit_api.Target {
+func createHostTargets() []discovery_kit_api.Target {
 	result := make([]discovery_kit_api.Target, 0, config.Config.NodeCount)
 	for i := 1; i <= config.Config.NodeCount; i++ {
 		hostname := getHostname(i)
@@ -76,6 +76,5 @@ func initHostTargets() []discovery_kit_api.Target {
 		}
 		result = append(result, target)
 	}
-
 	return discovery_kit_commons.ApplyAttributeExcludes(result, config.Config.DiscoveryAttributesExcludesEc2)
 }

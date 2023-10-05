@@ -1,7 +1,6 @@
 package extloadtest
 
 import (
-	"fmt"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_commons"
 	"github.com/steadybit/extension-kit/extutil"
@@ -20,22 +19,21 @@ func getDiscoveryContainer() discovery_kit_api.DiscoveryDescription {
 	}
 }
 
-func initContainerTargets(kubernetesContainers []discovery_kit_api.EnrichmentData) []discovery_kit_api.Target {
+func createContainerTargets(kubernetesContainers []discovery_kit_api.EnrichmentData) []discovery_kit_api.Target {
 	result := make([]discovery_kit_api.Target, 0, len(kubernetesContainers))
 
 	for _, kubernetesContainer := range kubernetesContainers {
-		containerIdStripped := kubernetesContainer.Attributes["k8s.container.id.stripped"][0]
 		target := discovery_kit_api.Target{
-			Id:         containerIdStripped,
+			Id:         kubernetesContainer.Id,
 			TargetType: "com.steadybit.extension_container.container",
-			Label:      containerIdStripped,
+			Label:      kubernetesContainer.Id,
 			Attributes: map[string][]string{
 				"container.engine":                       {"containerd"},
 				"container.engine.version":               {"1.6.6"},
 				"container.host":                         kubernetesContainer.Attributes["k8s.node.name"],
 				"host.hostname":                          kubernetesContainer.Attributes["k8s.node.name"],
-				"container.id":                           {fmt.Sprintf("containerd://%s", containerIdStripped)},
-				"container.id.stripped":                  {containerIdStripped},
+				"container.id":                           kubernetesContainer.Attributes["k8s.container.id"],
+				"container.id.stripped":                  kubernetesContainer.Attributes["k8s.container.id.stripped"],
 				"container.image":                        {"docker.io/steadybit/loadtest:latest"},
 				"container.image.registry":               {"docker.io"},
 				"container.image.repository":             {"docker.io/steadybit/loadtest"},

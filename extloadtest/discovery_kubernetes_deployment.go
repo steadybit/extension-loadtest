@@ -20,7 +20,7 @@ func getDiscoveryKubernetesDeployment() discovery_kit_api.DiscoveryDescription {
 	}
 }
 
-func initKubernetesDeploymentTargets() []discovery_kit_api.Target {
+func createKubernetesDeploymentTargets() []discovery_kit_api.Target {
 	count := config.Config.NodeCount * config.Config.DeploymentsPerNode
 	result := make([]discovery_kit_api.Target, 0, count)
 	for i := 1; i <= count; i++ {

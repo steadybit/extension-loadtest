@@ -20,22 +20,24 @@ func getDiscoveryKubernetesContainer() discovery_kit_api.DiscoveryDescription {
 	}
 }
 
-func initKubernetesContainerTargets(hostTargets, deploymentTargets []discovery_kit_api.Target) []discovery_kit_api.EnrichmentData {
-	//example: 2 containers per pod * 4 pods per deployment * 5 deployments per node * 400 nodes = 16000 containers
-	count := config.Config.NodeCount * config.Config.DeploymentsPerNode * config.Config.PodsPerDeployment * config.Config.ContainerPerPod
+func createKubernetesContainerTargets(hostTargets, deploymentTargets []discovery_kit_api.Target) []discovery_kit_api.EnrichmentData {
+	count := len(deploymentTargets) * config.Config.PodsPerDeployment * config.Config.ContainerPerPod
 	result := make([]discovery_kit_api.EnrichmentData, 0, count)
 
 	for hostIndex := 0; hostIndex < len(hostTargets); hostIndex++ {
 		host := hostTargets[hostIndex]
+
 		for deploymentIndex := 0; deploymentIndex < config.Config.DeploymentsPerNode; deploymentIndex++ {
 			deployment := deploymentTargets[(hostIndex*config.Config.DeploymentsPerNode)+deploymentIndex]
 			pods := deployment.Attributes["k8s.pod.name"]
 			containerIdsStripped := deployment.Attributes["k8s.container.id.stripped"]
+
 			for podIndex := 0; podIndex < len(pods); podIndex++ {
 				podName := pods[podIndex]
+
 				for containerIndex := 0; containerIndex < config.Config.ContainerPerPod; containerIndex++ {
 					containerIdStripped := containerIdsStripped[(podIndex*config.Config.ContainerPerPod)+containerIndex]
-					containerId := fmt.Sprintf("containerd://%s", containerIdStripped)
+					containerId := fmt.Sprintf("dummy://%s", containerIdStripped)
 					target := discovery_kit_api.EnrichmentData{
 						Id:                 containerId,
 						EnrichmentDataType: "com.steadybit.extension_kubernetes.kubernetes-container",

@@ -15,43 +15,46 @@ import (
 	"github.com/steadybit/extension-kit/extutil"
 )
 
-type doNothingAction struct {
+type recreateAction struct {
 	targetId          string
 	selectionTemplate action_kit_api.TargetSelectionTemplate
+	callbackFn        func(name string)
 }
 
 // Make sure action implements all required interfaces
 var (
-	_ action_kit_sdk.Action[DoNothingActionState] = (*doNothingAction)(nil)
+	_ action_kit_sdk.Action[RecreateActionState] = (*recreateAction)(nil)
 )
 
-type DoNothingActionState struct {
+type RecreateActionState struct {
+	Name string `json:"name"`
 }
 
-type DoNothingActionConfig struct {
+type RecreateActionConfig struct {
 }
 
-func NewDoNothingAction(targetId string, selectionTemplate action_kit_api.TargetSelectionTemplate) action_kit_sdk.Action[DoNothingActionState] {
-	return &doNothingAction{
+func NewRecreateAction(targetId string, selectionTemplate action_kit_api.TargetSelectionTemplate, callbackFn func(name string)) action_kit_sdk.Action[RecreateActionState] {
+	return &recreateAction{
 		targetId:          targetId,
 		selectionTemplate: selectionTemplate,
+		callbackFn:        callbackFn,
 	}
 }
 
-func (l *doNothingAction) NewEmptyState() DoNothingActionState {
-	return DoNothingActionState{}
+func (r *recreateAction) NewEmptyState() RecreateActionState {
+	return RecreateActionState{}
 }
 
-func (l *doNothingAction) Describe() action_kit_api.ActionDescription {
+func (r *recreateAction) Describe() action_kit_api.ActionDescription {
 	return action_kit_api.ActionDescription{
-		Id:          fmt.Sprintf("%s.nothing", l.targetId),
-		Label:       "Do nothing",
-		Description: "This action does nothing.",
+		Id:          fmt.Sprintf("%s.recreate", r.targetId),
+		Label:       "Recreate targets",
+		Description: "Simulate targets removal and creation by altering the id",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{
-			TargetType: l.targetId,
+			TargetType: r.targetId,
 			SelectionTemplates: extutil.Ptr([]action_kit_api.TargetSelectionTemplate{
-				l.selectionTemplate,
+				r.selectionTemplate,
 			}),
 		}),
 		Category:    extutil.Ptr("internal"),
@@ -60,26 +63,24 @@ func (l *doNothingAction) Describe() action_kit_api.ActionDescription {
 	}
 }
 
-func (l *doNothingAction) Prepare(_ context.Context, _ *DoNothingActionState, request action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {
-	var config DoNothingActionConfig
+func (r *recreateAction) Prepare(_ context.Context, state *RecreateActionState, request action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {
+	var config RecreateActionConfig
 	if err := extconversion.Convert(request.Config, &config); err != nil {
 		return nil, extension_kit.ToError("Failed to unmarshal the config.", err)
 	}
 
-	return &action_kit_api.PrepareResult{Messages: extutil.Ptr([]action_kit_api.Message{
-		{
-			Level:   extutil.Ptr(action_kit_api.Info),
-			Message: "Prepared do nothing",
-		},
-	})}, nil
+	state.Name = request.Target.Name
+
+	return &action_kit_api.PrepareResult{}, nil
 }
 
-func (l *doNothingAction) Start(_ context.Context, _ *DoNothingActionState) (*action_kit_api.StartResult, error) {
+func (r *recreateAction) Start(_ context.Context, state *RecreateActionState) (*action_kit_api.StartResult, error) {
+	r.callbackFn(state.Name)
 	return &action_kit_api.StartResult{
 		Messages: extutil.Ptr([]action_kit_api.Message{
 			{
 				Level:   extutil.Ptr(action_kit_api.Info),
-				Message: "Started do nothing",
+				Message: fmt.Sprintf("Recreated %s", state.Name),
 			},
 		})}, nil
 }

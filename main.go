@@ -34,7 +34,10 @@ func main() {
 
 	exthttp.RegisterHttpHandler("/", exthttp.GetterAsHandler(getExtensionList))
 
-	extloadtest.RegisterAllDiscoveryHandlers()
+	targetData := extloadtest.NewTargetData()
+	targetData.ScheduleUpdates()
+	targetData.RegisterDiscoveryHandlers()
+	targetData.RegisterRecreateActions()
 
 	action_kit_sdk.InstallSignalHandler()
 	action_kit_sdk.RegisterCoverageEndpoints()

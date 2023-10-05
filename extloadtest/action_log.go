@@ -50,8 +50,8 @@ func (l *logAction) NewEmptyState() LogActionState {
 func (l *logAction) Describe() action_kit_api.ActionDescription {
 	return action_kit_api.ActionDescription{
 		Id:          fmt.Sprintf("%s.log", l.targetId),
-		Label:       "log message",
-		Description: "logs",
+		Label:       "Log message",
+		Description: "Logs a message for the given duration to the agent log",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{
 			TargetType: l.targetId,
