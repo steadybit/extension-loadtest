@@ -37,7 +37,7 @@ func createEc2InstanceTargets(hosts []discovery_kit_api.Target) []discovery_kit_
 				"aws-ec2.image":                                   {"ami-02fc9c535f43bbc91"},
 				"aws-ec2.instance.id":                             {instanceId},
 				"aws-ec2.instance.name":                           {instanceName},
-				"aws-ec2.ipv4.private":                            {fmt.Sprintf("10.40.95.%d", i)},
+				"aws-ec2.ipv4.private":                            host.Attributes["host.ipv4"],
 				"aws-ec2.label.account_name":                      {"sandbox"},
 				"aws-ec2.label.application":                       {"demo"},
 				"aws-ec2.label.aws:autoscaling:groupname":         {"eks-sandbox-demo-ngroup2-c2c3879b-0659-aac4-0524-b06eedbf55b7"},
