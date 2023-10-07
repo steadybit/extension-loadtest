@@ -13,6 +13,8 @@ import (
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extconversion"
 	"github.com/steadybit/extension-kit/extutil"
+	"math/rand"
+	"time"
 )
 
 type recreateAction struct {
@@ -27,10 +29,13 @@ var (
 )
 
 type RecreateActionState struct {
-	Name string `json:"name"`
+	Name             string  `json:"name"`
+	StartFailureRate float64 `json:"startFailureRate"`
 }
 
 type RecreateActionConfig struct {
+	PrepareFailureRate int `json:"prepareFailureRate"`
+	StartFailureRate   int `json:"startFailureRate"`
 }
 
 func NewRecreateAction(targetId string, selectionTemplate action_kit_api.TargetSelectionTemplate, callbackFn func(name string)) action_kit_sdk.Action[RecreateActionState] {
@@ -60,6 +65,26 @@ func (r *recreateAction) Describe() action_kit_api.ActionDescription {
 		Category:    extutil.Ptr("internal"),
 		Kind:        action_kit_api.Attack,
 		TimeControl: action_kit_api.TimeControlInstantaneous,
+		Parameters: []action_kit_api.ActionParameter{
+			{
+				Name:         "prepareFailureRate",
+				Label:        "Prepare Failure Rate",
+				Description:  extutil.Ptr("The rate of prepare calls to fail"),
+				Type:         action_kit_api.Percentage,
+				DefaultValue: extutil.Ptr("0"),
+				Required:     extutil.Ptr(true),
+				Order:        extutil.Ptr(1),
+			},
+			{
+				Name:         "startFailureRate",
+				Label:        "Start Failure Rate",
+				Description:  extutil.Ptr("The rate of Start calls to fail"),
+				Type:         action_kit_api.Percentage,
+				DefaultValue: extutil.Ptr("0"),
+				Required:     extutil.Ptr(true),
+				Order:        extutil.Ptr(2),
+			},
+		},
 	}
 }
 
@@ -69,13 +94,23 @@ func (r *recreateAction) Prepare(_ context.Context, state *RecreateActionState, 
 		return nil, extension_kit.ToError("Failed to unmarshal the config.", err)
 	}
 
-	state.Name = request.Target.Name
+	var prepareFailureRate = float64(config.PrepareFailureRate) / 100.0
+	state.StartFailureRate = float64(config.StartFailureRate) / 100.0
+
+	sleepRandom()
+	randomPanic(prepareFailureRate)
+	sleepRandom()
 
 	return &action_kit_api.PrepareResult{}, nil
 }
 
 func (r *recreateAction) Start(_ context.Context, state *RecreateActionState) (*action_kit_api.StartResult, error) {
 	r.callbackFn(state.Name)
+
+	sleepRandom()
+	randomPanic(state.StartFailureRate)
+	sleepRandom()
+
 	return &action_kit_api.StartResult{
 		Messages: extutil.Ptr([]action_kit_api.Message{
 			{
@@ -83,4 +118,13 @@ func (r *recreateAction) Start(_ context.Context, state *RecreateActionState) (*
 				Message: fmt.Sprintf("Recreated %s", state.Name),
 			},
 		})}, nil
+}
+
+func sleepRandom() {
+	time.Sleep(time.Duration(rand.Intn(3)) * time.Second)
+}
+func randomPanic(rate float64) {
+	if rand.Float64() < rate {
+		panic("Random panic!")
+	}
 }
