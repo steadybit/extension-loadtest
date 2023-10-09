@@ -11,7 +11,7 @@ require (
 	github.com/steadybit/discovery-kit/go/discovery_kit_api v1.4.2
 	github.com/steadybit/discovery-kit/go/discovery_kit_commons v0.1.0
 	github.com/steadybit/event-kit/go/event_kit_api v1.2.3
-	github.com/steadybit/extension-kit v1.8.8
+	github.com/steadybit/extension-kit v1.8.9
 )
 
 require (
