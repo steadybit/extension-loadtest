@@ -13,6 +13,7 @@ type TargetData struct {
 	ec2Instances          []discovery_kit_api.Target
 	kubernetesClusters    []discovery_kit_api.Target
 	kubernetesDeployments []discovery_kit_api.Target
+	kubernetesPods        []discovery_kit_api.Target
 	kubernetesContainers  []discovery_kit_api.EnrichmentData
 	containers            []discovery_kit_api.Target
 }
@@ -22,7 +23,8 @@ func NewTargetData() *TargetData {
 	ec2Instances := createEc2InstanceTargets(hosts)
 	kubernetesClusters := createKubernetesClusterTargets()
 	kubernetesDeployments := createKubernetesDeploymentTargets()
-	kubernetesContainers := createKubernetesContainerTargets(hosts, kubernetesDeployments)
+	kubernetesPods := createKubernetesPodTargets(hosts, kubernetesDeployments)
+	kubernetesContainers := createKubernetesContainerTargets(kubernetesPods)
 	containers := createContainerTargets(kubernetesContainers)
 
 	return &TargetData{
@@ -30,6 +32,7 @@ func NewTargetData() *TargetData {
 		ec2Instances:          ec2Instances,
 		kubernetesClusters:    kubernetesClusters,
 		kubernetesDeployments: kubernetesDeployments,
+		kubernetesPods:        kubernetesPods,
 		kubernetesContainers:  kubernetesContainers,
 		containers:            containers,
 	}
@@ -48,6 +51,9 @@ func (t *TargetData) RegisterDiscoveryHandlers() {
 	exthttp.RegisterHttpHandler("/discovery/kubernetes-deployment", exthttp.GetterAsHandler(getDiscoveryKubernetesDeployment))
 	exthttp.RegisterHttpHandler("/discovery/kubernetes-deployment/targets", exthttp.GetterAsHandler(targets(t.kubernetesDeployments)))
 
+	exthttp.RegisterHttpHandler("/discovery/kubernetes-pod", exthttp.GetterAsHandler(getDiscoveryKubernetesPods))
+	exthttp.RegisterHttpHandler("/discovery/kubernetes-pod/targets", exthttp.GetterAsHandler(targets(t.kubernetesPods)))
+
 	exthttp.RegisterHttpHandler("/discovery/kubernetes-container", exthttp.GetterAsHandler(getDiscoveryKubernetesContainer))
 	exthttp.RegisterHttpHandler("/discovery/kubernetes-container/targets", exthttp.GetterAsHandler(enrichmentData(t.kubernetesContainers)))
 
@@ -60,6 +66,7 @@ func (t *TargetData) ScheduleUpdates() {
 	scheduleTargetAttributeUpdateIfNecessary(t.ec2Instances, "com.steadybit.extension_aws.ec2-instance")
 	scheduleTargetAttributeUpdateIfNecessary(t.kubernetesClusters, "com.steadybit.extension_kubernetes.kubernetes-cluster")
 	scheduleTargetAttributeUpdateIfNecessary(t.kubernetesDeployments, "com.steadybit.extension_kubernetes.kubernetes-deployment")
+	scheduleTargetAttributeUpdateIfNecessary(t.kubernetesPods, "com.steadybit.extension_kubernetes.kubernetes-pod")
 	scheduleTargetAttributeUpdateIfNecessary(t.containers, "com.steadybit.extension_container.container")
 	scheduleEnrichmentDataAttributeUpdateIfNecessary(t.kubernetesContainers, "com.steadybit.extension_kubernetes.kubernetes-container")
 }
@@ -75,7 +82,8 @@ func (t *TargetData) RegisterRecreateActions() {
 		func(name string) {
 			updateTargetId(t.hosts, name, "com.steadybit.extension_host.host")
 			t.ec2Instances = createEc2InstanceTargets(t.hosts)
-			t.kubernetesContainers = createKubernetesContainerTargets(t.hosts, t.kubernetesDeployments)
+			t.kubernetesPods = createKubernetesPodTargets(t.hosts, t.kubernetesDeployments)
+			t.kubernetesContainers = createKubernetesContainerTargets(t.kubernetesPods)
 			t.containers = createContainerTargets(t.kubernetesContainers)
 		},
 	))

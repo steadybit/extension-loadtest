@@ -28,6 +28,7 @@ type Specification struct {
 	DiscoveryAttributesExcludesContainer            []string `json:"discoveryAttributesExcludesContainer" split_words:"true" required:"false"`
 	DiscoveryAttributesExcludesEc2                  []string `json:"discoveryAttributesExcludesEc2" split_words:"true" required:"false"`
 	DiscoveryAttributesExcludesHost                 []string `json:"discoveryAttributesExcludesHost" split_words:"true" required:"false"`
+	DiscoveryAttributesExcludesKubernetesPods       []string `json:"discoveryAttributesExcludesKubernetesPods" split_words:"true" required:"false"`
 	DiscoveryAttributesExcludesKubernetesDeployment []string `json:"discoveryAttributesExcludesKubernetesDeployment" split_words:"true" required:"false"`
 	DiscoveryAttributesExcludesKubernetesContainer  []string `json:"discoveryAttributesExcludesKubernetesContainer" split_words:"true" required:"false"`
 }
