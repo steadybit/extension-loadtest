@@ -64,5 +64,5 @@ func createKubernetesPodTargets(hostTargets, deploymentTargets []discovery_kit_a
 			}
 		}
 	}
-	return discovery_kit_commons.ApplyAttributeExcludes(result, config.Config.DiscoveryAttributesExcludesKubernetesPods)
+	return discovery_kit_commons.ApplyAttributeExcludes(result, config.Config.DiscoveryAttributesExcludesKubernetesPod)
 }

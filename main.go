@@ -114,6 +114,10 @@ func getExtensionList() ExtensionListResponse {
 					Method: "GET",
 					Path:   "/discovery/kubernetes-pod",
 				},
+				{
+					Method: "GET",
+					Path:   "/discovery/kubernetes-node",
+				},
 			},
 		},
 	}

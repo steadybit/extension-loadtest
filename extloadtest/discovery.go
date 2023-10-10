@@ -15,6 +15,7 @@ type TargetData struct {
 	kubernetesDeployments []discovery_kit_api.Target
 	kubernetesPods        []discovery_kit_api.Target
 	kubernetesContainers  []discovery_kit_api.EnrichmentData
+	kubernetesNodes       []discovery_kit_api.Target
 	containers            []discovery_kit_api.Target
 }
 
@@ -25,6 +26,7 @@ func NewTargetData() *TargetData {
 	kubernetesDeployments := createKubernetesDeploymentTargets()
 	kubernetesPods := createKubernetesPodTargets(hosts, kubernetesDeployments)
 	kubernetesContainers := createKubernetesContainerTargets(kubernetesPods)
+	kubernetesNodes := createKubernetesNodeTargets(kubernetesContainers)
 	containers := createContainerTargets(kubernetesContainers)
 
 	return &TargetData{
@@ -34,6 +36,7 @@ func NewTargetData() *TargetData {
 		kubernetesDeployments: kubernetesDeployments,
 		kubernetesPods:        kubernetesPods,
 		kubernetesContainers:  kubernetesContainers,
+		kubernetesNodes:       kubernetesNodes,
 		containers:            containers,
 	}
 }
@@ -56,6 +59,9 @@ func (t *TargetData) RegisterDiscoveryHandlers() {
 
 	exthttp.RegisterHttpHandler("/discovery/kubernetes-container", exthttp.GetterAsHandler(getDiscoveryKubernetesContainer))
 	exthttp.RegisterHttpHandler("/discovery/kubernetes-container/targets", exthttp.GetterAsHandler(enrichmentData(t.kubernetesContainers)))
+
+	exthttp.RegisterHttpHandler("/discovery/kubernetes-node", exthttp.GetterAsHandler(getDiscoveryKubernetesNode))
+	exthttp.RegisterHttpHandler("/discovery/kubernetes-node/targets", exthttp.GetterAsHandler(targets(t.kubernetesNodes)))
 
 	exthttp.RegisterHttpHandler("/discovery/container", exthttp.GetterAsHandler(getDiscoveryContainer))
 	exthttp.RegisterHttpHandler("/discovery/container/targets", exthttp.GetterAsHandler(targets(t.containers)))
@@ -84,6 +90,7 @@ func (t *TargetData) RegisterRecreateActions() {
 			t.ec2Instances = createEc2InstanceTargets(t.hosts)
 			t.kubernetesPods = createKubernetesPodTargets(t.hosts, t.kubernetesDeployments)
 			t.kubernetesContainers = createKubernetesContainerTargets(t.kubernetesPods)
+			t.kubernetesNodes = createKubernetesNodeTargets(t.kubernetesContainers)
 			t.containers = createContainerTargets(t.kubernetesContainers)
 		},
 	))
