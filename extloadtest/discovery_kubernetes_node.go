@@ -59,6 +59,7 @@ func createKubernetesNodeTargets(containerTargets []discovery_kit_api.Enrichment
 			TargetType: "com.steadybit.extension_kubernetes.kubernetes-node",
 			Label:      hostName,
 			Attributes: map[string][]string{
+				"k8s.node.name":             {hostName},
 				"host.hostname":             {hostName},
 				"k8s.cluster-name":          {config.Config.ClusterName},
 				"k8s.distribution":          {"kubernetes"},

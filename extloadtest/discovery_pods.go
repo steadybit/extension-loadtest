@@ -43,6 +43,7 @@ func createKubernetesPodTargets(hostTargets, deploymentTargets []discovery_kit_a
 				target := discovery_kit_api.Target{
 					Id:         podName,
 					TargetType: "com.steadybit.extension_kubernetes.kubernetes-pod",
+					Label:      podName,
 					Attributes: map[string][]string{
 						"k8s.pod.name":                         {podName},
 						"k8s.namespace":                        deployment.Attributes["k8s.namespace"],
