@@ -1,4 +1,5 @@
 loadtest:
+  clusterName: "cluster-loadtest-sandbox"
   attributeUpdates:
     - type: "com.steadybit.extension_aws.ec2-instance"
       attributeName: "aws-ec2.no-copy-rule"
