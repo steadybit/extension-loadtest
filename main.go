@@ -34,6 +34,8 @@ func main() {
 
 	exthttp.RegisterHttpHandler("/", exthttp.GetterAsHandler(getExtensionList))
 
+	extloadtest.RegisterEventListenerHandlers()
+
 	targetData := extloadtest.NewTargetData()
 	targetData.ScheduleUpdates()
 	targetData.RegisterDiscoveryHandlers()
@@ -117,6 +119,32 @@ func getExtensionList() ExtensionListResponse {
 				{
 					Method: "GET",
 					Path:   "/discovery/kubernetes-node",
+				},
+			},
+		},
+		EventListenerList: event_kit_api.EventListenerList{
+			EventListeners: []event_kit_api.EventListener{
+				{
+					Method: "POST",
+					Path:   "/events/log",
+					ListenTo: []string{
+						"experiment.execution.created",
+						"experiment.execution.completed",
+						"experiment.execution.failed",
+						"experiment.execution.canceled",
+						"experiment.execution.errored",
+						"experiment.execution.step-started",
+						"experiment.execution.step-completed",
+						"experiment.execution.step-canceled",
+						"experiment.execution.step-errored",
+						"experiment.execution.step-failed",
+						"experiment.execution.target-started",
+						"experiment.execution.target-completed",
+						"experiment.execution.target-canceled",
+						"experiment.execution.target-errored",
+						"experiment.execution.target-failed",
+					},
+					RestrictTo: extutil.Ptr(event_kit_api.Leader),
 				},
 			},
 		},
