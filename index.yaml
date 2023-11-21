@@ -12,6 +12,35 @@ entries:
           url: https://hub.steadybit.com
     apiVersion: v2
     appVersion: latest
+    created: "2023-11-21T10:33:41.449793485Z"
+    dependencies:
+    - name: extensionlib
+      repository: https://steadybit.github.io/helm-charts
+      version: ^1.4.4
+    description: Steadybit loadtest extension Helm chart for Kubernetes.
+    digest: 202d6fb1faca945d1e49d7e4d9eb8114421854cba51c720cef85e19765d3f1f3
+    home: https://www.steadybit.com/
+    icon: https://steadybit-website-assets.s3.amazonaws.com/logo-symbol-transparent.png
+    maintainers:
+    - email: daniel.reuter@steadybit.com
+      name: reuda
+    name: steadybit-extension-loadtest
+    sources:
+    - https://github.com/steadybit/extension-loadtest
+    urls:
+    - https://github.com/steadybit/extension-loadtest/releases/download/steadybit-extension-loadtest-1.0.15/steadybit-extension-loadtest-1.0.15.tgz
+    version: 1.0.15
+  - annotations:
+      artifacthub.io/images: |
+        - name: logo
+          image: https://steadybit-website-assets.s3.amazonaws.com/logo-symbol-transparent.png
+      artifacthub.io/links: |-
+        - name: Steadybit website
+          url: https://www.steadybit.com
+        - name: Steadybit reliability hub
+          url: https://hub.steadybit.com
+    apiVersion: v2
+    appVersion: latest
     created: "2023-11-15T13:27:24.705676056Z"
     dependencies:
     - name: extensionlib
@@ -407,4 +436,4 @@ entries:
     urls:
     - https://github.com/steadybit/extension-loadtest/releases/download/steadybit-extension-loadtest-1.0.1/steadybit-extension-loadtest-1.0.1.tgz
     version: 1.0.1
-generated: "2023-11-15T13:27:24.705749883Z"
+generated: "2023-11-21T10:33:41.449911345Z"
