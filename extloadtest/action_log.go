@@ -29,11 +29,16 @@ var (
 )
 
 type LogActionState struct {
-	FormattedMessage string
+	FormattedMessage  string
+	Error             string
+	ErrorTargetFilter string
+	TargetName        string
 }
 
 type LogActionConfig struct {
-	Message string
+	Message           string
+	Error             string
+	ErrorTargetFilter string
 }
 
 func NewLogAction(targetId string, selectionTemplate action_kit_api.TargetSelectionTemplate) action_kit_sdk.Action[LogActionState] {
@@ -64,21 +69,61 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 		TimeControl: action_kit_api.TimeControlExternal,
 		Parameters: []action_kit_api.ActionParameter{
 			{
-				Name:         "message",
-				Label:        "Message",
-				Description:  extutil.Ptr("What should we log to the console? Use %s to insert the target name."),
-				Type:         action_kit_api.String,
-				DefaultValue: extutil.Ptr("Hello from %s"),
-				Required:     extutil.Ptr(true),
-				Order:        extutil.Ptr(0),
-			},
-			{
 				Name:         "duration",
 				Label:        "Duration",
 				Type:         action_kit_api.Duration,
 				DefaultValue: extutil.Ptr("10s"),
 				Required:     extutil.Ptr(true),
 				Order:        extutil.Ptr(0),
+			},
+			{
+				Name:         "message",
+				Label:        "Message",
+				Description:  extutil.Ptr("What should we log to the console? Use %s to insert the target name."),
+				Type:         action_kit_api.String,
+				DefaultValue: extutil.Ptr("Hello from %s"),
+				Required:     extutil.Ptr(true),
+				Order:        extutil.Ptr(1),
+			},
+			{
+				Name:         "error",
+				Label:        "Error in endpoint",
+				Description:  extutil.Ptr("Should we throw an error in the selected endpoint?"),
+				Type:         action_kit_api.String,
+				Order:        extutil.Ptr(2),
+				Advanced:     extutil.Ptr(true),
+				DefaultValue: extutil.Ptr("none"),
+				Options: extutil.Ptr([]action_kit_api.ParameterOption{
+					action_kit_api.ExplicitParameterOption{
+						Label: "no error",
+						Value: "none",
+					},
+					action_kit_api.ExplicitParameterOption{
+						Label: "prepare",
+						Value: "prepare",
+					},
+					action_kit_api.ExplicitParameterOption{
+						Label: "start",
+						Value: "start",
+					},
+					action_kit_api.ExplicitParameterOption{
+						Label: "status",
+						Value: "status",
+					},
+					action_kit_api.ExplicitParameterOption{
+						Label: "stop",
+						Value: "stop",
+					},
+				}),
+			},
+			{
+				Name:         "errorTargetFilter",
+				Label:        "Error Target Filter",
+				Description:  extutil.Ptr("For which target should we throw an error? '*' throws for all targets."),
+				DefaultValue: extutil.Ptr("*"),
+				Type:         action_kit_api.String,
+				Order:        extutil.Ptr(3),
+				Advanced:     extutil.Ptr(true),
 			},
 		},
 		Status: extutil.Ptr(action_kit_api.MutatingEndpointReferenceWithCallInterval{
@@ -89,14 +134,20 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 }
 
 func (l *logAction) Prepare(_ context.Context, state *LogActionState, request action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {
-	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **prepare**")
-
 	var config LogActionConfig
 	if err := extconversion.Convert(request.Config, &config); err != nil {
 		return nil, extension_kit.ToError("Failed to unmarshal the config.", err)
 	}
-
 	state.FormattedMessage = fmt.Sprintf(config.Message, request.Target.Name)
+	state.Error = config.Error
+	state.ErrorTargetFilter = config.ErrorTargetFilter
+	state.TargetName = request.Target.Name
+
+	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **prepare**")
+
+	if state.Error == "prepare" && (state.ErrorTargetFilter == "*" || state.ErrorTargetFilter == state.TargetName) {
+		return nil, extension_kit.ToError("Simulated error thrown in prepare endpoint", nil)
+	}
 
 	return &action_kit_api.PrepareResult{
 		Messages: extutil.Ptr([]action_kit_api.Message{
@@ -110,6 +161,10 @@ func (l *logAction) Prepare(_ context.Context, state *LogActionState, request ac
 func (l *logAction) Start(_ context.Context, state *LogActionState) (*action_kit_api.StartResult, error) {
 	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **start**")
 
+	if state.Error == "start" && (state.ErrorTargetFilter == "*" || state.ErrorTargetFilter == state.TargetName) {
+		return nil, extension_kit.ToError("Simulated error thrown in start endpoint", nil)
+	}
+
 	return &action_kit_api.StartResult{
 		Messages: extutil.Ptr([]action_kit_api.Message{
 			{
@@ -121,6 +176,10 @@ func (l *logAction) Start(_ context.Context, state *LogActionState) (*action_kit
 
 func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_kit_api.StatusResult, error) {
 	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **status**")
+
+	if state.Error == "status" && (state.ErrorTargetFilter == "*" || state.ErrorTargetFilter == state.TargetName) {
+		return nil, extension_kit.ToError("Simulated error thrown in status endpoint", nil)
+	}
 
 	return &action_kit_api.StatusResult{
 		//indicate that the action is still running
@@ -135,7 +194,11 @@ func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_ki
 }
 
 func (l *logAction) Stop(_ context.Context, state *LogActionState) (*action_kit_api.StopResult, error) {
-	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **status**")
+	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **stop**")
+
+	if state.Error == "stop" && (state.ErrorTargetFilter == "*" || state.ErrorTargetFilter == state.TargetName) {
+		return nil, extension_kit.ToError("Simulated error thrown in stop endpoint", nil)
+	}
 
 	return &action_kit_api.StopResult{
 		//These messages will show up in agent log
