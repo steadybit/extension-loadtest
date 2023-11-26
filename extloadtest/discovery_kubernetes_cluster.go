@@ -11,8 +11,6 @@ func getDiscoveryKubernetesCluster() discovery_kit_api.DiscoveryDescription {
 		Id:         "com.steadybit.extension_kubernetes.kubernetes-cluster",
 		RestrictTo: extutil.Ptr(discovery_kit_api.LEADER),
 		Discover: discovery_kit_api.DescribingEndpointReferenceWithCallInterval{
-			Method:       "GET",
-			Path:         "/discovery/kubernetes-cluster/targets",
 			CallInterval: extutil.Ptr("60m"),
 		},
 	}

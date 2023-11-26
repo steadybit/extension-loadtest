@@ -13,8 +13,6 @@ func getDiscoveryKubernetesPods() discovery_kit_api.DiscoveryDescription {
 		Id:         "com.steadybit.extension_kubernetes.kubernetes-pod",
 		RestrictTo: extutil.Ptr(discovery_kit_api.LEADER),
 		Discover: discovery_kit_api.DescribingEndpointReferenceWithCallInterval{
-			Method:       "GET",
-			Path:         "/discovery/kubernetes-pod/targets",
 			CallInterval: extutil.Ptr("1m"),
 		},
 	}

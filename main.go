@@ -9,6 +9,7 @@ import (
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
+	"github.com/steadybit/discovery-kit/go/discovery_kit_sdk"
 	"github.com/steadybit/event-kit/go/event_kit_api"
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/exthealth"
@@ -38,7 +39,7 @@ func main() {
 
 	targetData := extloadtest.NewTargetData()
 	targetData.ScheduleUpdates()
-	targetData.RegisterDiscoveryHandlers()
+	targetData.RegisterDiscoveries()
 	targetData.RegisterRecreateActions()
 
 	action_kit_sdk.InstallSignalHandler()
@@ -85,43 +86,8 @@ type ExtensionListResponse struct {
 
 func getExtensionList() ExtensionListResponse {
 	return ExtensionListResponse{
-		ActionList: action_kit_sdk.GetActionList(),
-		DiscoveryList: discovery_kit_api.DiscoveryList{
-			Discoveries: []discovery_kit_api.DescribingEndpointReference{
-				{
-					Method: "GET",
-					Path:   "/discovery/host",
-				},
-				{
-					Method: "GET",
-					Path:   "/discovery/container",
-				},
-				{
-					Method: "GET",
-					Path:   "/discovery/ec2-instance",
-				},
-				{
-					Method: "GET",
-					Path:   "/discovery/kubernetes-cluster",
-				},
-				{
-					Method: "GET",
-					Path:   "/discovery/kubernetes-deployment",
-				},
-				{
-					Method: "GET",
-					Path:   "/discovery/kubernetes-container",
-				},
-				{
-					Method: "GET",
-					Path:   "/discovery/kubernetes-pod",
-				},
-				{
-					Method: "GET",
-					Path:   "/discovery/kubernetes-node",
-				},
-			},
-		},
+		ActionList:    action_kit_sdk.GetActionList(),
+		DiscoveryList: discovery_kit_sdk.GetDiscoveryList(),
 		EventListenerList: event_kit_api.EventListenerList{
 			EventListeners: []event_kit_api.EventListener{
 				{

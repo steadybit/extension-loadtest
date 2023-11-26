@@ -1,10 +1,11 @@
 package extloadtest
 
 import (
+	"context"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
-	"github.com/steadybit/extension-kit/exthttp"
+	"github.com/steadybit/discovery-kit/go/discovery_kit_sdk"
 	"github.com/steadybit/extension-kit/extutil"
 )
 
@@ -41,30 +42,42 @@ func NewTargetData() *TargetData {
 	}
 }
 
-func (t *TargetData) RegisterDiscoveryHandlers() {
-	exthttp.RegisterHttpHandler("/discovery/host", exthttp.GetterAsHandler(getDiscoveryHost))
-	exthttp.RegisterHttpHandler("/discovery/host/targets", exthttp.GetterAsHandler(targets(t.hosts)))
+type ltTargetDiscovery struct {
+	targets     []discovery_kit_api.Target
+	description func() discovery_kit_api.DiscoveryDescription
+}
 
-	exthttp.RegisterHttpHandler("/discovery/ec2-instance", exthttp.GetterAsHandler(getDiscoveryEc2Instance))
-	exthttp.RegisterHttpHandler("/discovery/ec2-instance/targets", exthttp.GetterAsHandler(targets(t.ec2Instances)))
+func (l ltTargetDiscovery) Describe() discovery_kit_api.DiscoveryDescription {
+	return l.description()
+}
 
-	exthttp.RegisterHttpHandler("/discovery/kubernetes-cluster", exthttp.GetterAsHandler(getDiscoveryKubernetesCluster))
-	exthttp.RegisterHttpHandler("/discovery/kubernetes-cluster/targets", exthttp.GetterAsHandler(targets(t.kubernetesClusters)))
+func (l ltTargetDiscovery) DiscoverTargets(_ context.Context) ([]discovery_kit_api.Target, error) {
+	return l.targets, nil
+}
 
-	exthttp.RegisterHttpHandler("/discovery/kubernetes-deployment", exthttp.GetterAsHandler(getDiscoveryKubernetesDeployment))
-	exthttp.RegisterHttpHandler("/discovery/kubernetes-deployment/targets", exthttp.GetterAsHandler(targets(t.kubernetesDeployments)))
+type ltEdDiscovery struct {
+	data        []discovery_kit_api.EnrichmentData
+	description func() discovery_kit_api.DiscoveryDescription
+}
 
-	exthttp.RegisterHttpHandler("/discovery/kubernetes-pod", exthttp.GetterAsHandler(getDiscoveryKubernetesPods))
-	exthttp.RegisterHttpHandler("/discovery/kubernetes-pod/targets", exthttp.GetterAsHandler(targets(t.kubernetesPods)))
+func (l ltEdDiscovery) Describe() discovery_kit_api.DiscoveryDescription {
+	return l.description()
 
-	exthttp.RegisterHttpHandler("/discovery/kubernetes-container", exthttp.GetterAsHandler(getDiscoveryKubernetesContainer))
-	exthttp.RegisterHttpHandler("/discovery/kubernetes-container/targets", exthttp.GetterAsHandler(enrichmentData(t.kubernetesContainers)))
+}
 
-	exthttp.RegisterHttpHandler("/discovery/kubernetes-node", exthttp.GetterAsHandler(getDiscoveryKubernetesNode))
-	exthttp.RegisterHttpHandler("/discovery/kubernetes-node/targets", exthttp.GetterAsHandler(targets(t.kubernetesNodes)))
+func (l ltEdDiscovery) DiscoverEnrichmentData(_ context.Context) ([]discovery_kit_api.EnrichmentData, error) {
+	return l.data, nil
+}
 
-	exthttp.RegisterHttpHandler("/discovery/container", exthttp.GetterAsHandler(getDiscoveryContainer))
-	exthttp.RegisterHttpHandler("/discovery/container/targets", exthttp.GetterAsHandler(targets(t.containers)))
+func (t *TargetData) RegisterDiscoveries() {
+	discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryHost, targets: t.hosts})
+	discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryEc2Instance, targets: t.ec2Instances})
+	discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryKubernetesCluster, targets: t.kubernetesClusters})
+	discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryKubernetesDeployment, targets: t.kubernetesDeployments})
+	discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryKubernetesPods, targets: t.kubernetesPods})
+	discovery_kit_sdk.Register(&ltEdDiscovery{description: getDiscoveryKubernetesContainer, data: t.kubernetesContainers})
+	discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryKubernetesNode, targets: t.kubernetesNodes})
+	discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryContainer, targets: t.containers})
 }
 
 func (t *TargetData) ScheduleUpdates() {
