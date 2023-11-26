@@ -12,8 +12,6 @@ func getDiscoveryContainer() discovery_kit_api.DiscoveryDescription {
 		Id:         "com.steadybit.extension_container.container",
 		RestrictTo: extutil.Ptr(discovery_kit_api.LEADER),
 		Discover: discovery_kit_api.DescribingEndpointReferenceWithCallInterval{
-			Method:       "GET",
-			Path:         "/discovery/container/targets",
 			CallInterval: extutil.Ptr("1m"),
 		},
 	}

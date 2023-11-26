@@ -15,21 +15,6 @@ import (
 
 var scheduler = chrono.NewDefaultTaskScheduler()
 
-func targets(targets []discovery_kit_api.Target) func() discovery_kit_api.DiscoveryData {
-	return func() discovery_kit_api.DiscoveryData {
-		return discovery_kit_api.DiscoveryData{
-			Targets: &targets,
-		}
-	}
-}
-
-func enrichmentData(enrichmentData []discovery_kit_api.EnrichmentData) func() discovery_kit_api.DiscoveryData {
-	return func() discovery_kit_api.DiscoveryData {
-		return discovery_kit_api.DiscoveryData{
-			EnrichmentData: &enrichmentData,
-		}
-	}
-}
 func scheduleTargetAttributeUpdateIfNecessary(targets []discovery_kit_api.Target, typeId string) {
 	scheduleAttributeUpdateIfNecessary(targets, typeId, func(target discovery_kit_api.Target) map[string][]string {
 		return target.Attributes
