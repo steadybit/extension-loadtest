@@ -14,6 +14,7 @@ import (
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extconversion"
 	"github.com/steadybit/extension-kit/extutil"
+	"time"
 )
 
 type logAction struct {
@@ -29,16 +30,20 @@ var (
 )
 
 type LogActionState struct {
-	FormattedMessage  string
-	Error             string
-	ErrorTargetFilter string
-	TargetName        string
+	FormattedMessage string
+	ErrorEndpoint    string
+	LatencyEndpoint  string
+	LatencyDuration  time.Duration
+	TargetFilter     string
+	TargetName       string
 }
 
 type LogActionConfig struct {
-	Message           string
-	Error             string
-	ErrorTargetFilter string
+	Message         string
+	ErrorEndpoint   string
+	LatencyEndpoint string
+	LatencyDuration int64
+	TargetFilter    string
 }
 
 func NewLogAction(targetId string, selectionTemplate action_kit_api.TargetSelectionTemplate) action_kit_sdk.Action[LogActionState] {
@@ -86,7 +91,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Order:        extutil.Ptr(1),
 			},
 			{
-				Name:         "error",
+				Name:         "errorEndpoint",
 				Label:        "Error in endpoint",
 				Description:  extutil.Ptr("Should we throw an error in the selected endpoint?"),
 				Type:         action_kit_api.String,
@@ -117,12 +122,52 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				}),
 			},
 			{
-				Name:         "errorTargetFilter",
-				Label:        "Error Target Filter",
-				Description:  extutil.Ptr("For which target should we throw an error? '*' throws for all targets."),
-				DefaultValue: extutil.Ptr("*"),
+				Name:         "latencyEndpoint",
+				Label:        "Latency in endpoint",
+				Description:  extutil.Ptr("Should we add latency in the selected endpoint?"),
 				Type:         action_kit_api.String,
 				Order:        extutil.Ptr(3),
+				Advanced:     extutil.Ptr(true),
+				DefaultValue: extutil.Ptr("none"),
+				Options: extutil.Ptr([]action_kit_api.ParameterOption{
+					action_kit_api.ExplicitParameterOption{
+						Label: "no latency",
+						Value: "none",
+					},
+					action_kit_api.ExplicitParameterOption{
+						Label: "prepare",
+						Value: "prepare",
+					},
+					action_kit_api.ExplicitParameterOption{
+						Label: "start",
+						Value: "start",
+					},
+					action_kit_api.ExplicitParameterOption{
+						Label: "status",
+						Value: "status",
+					},
+					action_kit_api.ExplicitParameterOption{
+						Label: "stop",
+						Value: "stop",
+					},
+				}),
+			},
+			{
+				Name:         "latencyDuration",
+				Label:        "Latency",
+				Type:         action_kit_api.Duration,
+				DefaultValue: extutil.Ptr("5s"),
+				Required:     extutil.Ptr(false),
+				Order:        extutil.Ptr(4),
+				Advanced:     extutil.Ptr(true),
+			},
+			{
+				Name:         "targetFilter",
+				Label:        "Target Filter for error / latency",
+				Description:  extutil.Ptr("For which target should we throw an error / add latency? '*' throws for all targets."),
+				DefaultValue: extutil.Ptr("*"),
+				Type:         action_kit_api.String,
+				Order:        extutil.Ptr(5),
 				Advanced:     extutil.Ptr(true),
 			},
 		},
@@ -139,14 +184,20 @@ func (l *logAction) Prepare(_ context.Context, state *LogActionState, request ac
 		return nil, extension_kit.ToError("Failed to unmarshal the config.", err)
 	}
 	state.FormattedMessage = fmt.Sprintf(config.Message, request.Target.Name)
-	state.Error = config.Error
-	state.ErrorTargetFilter = config.ErrorTargetFilter
+	state.ErrorEndpoint = config.ErrorEndpoint
+	state.LatencyEndpoint = config.LatencyEndpoint
+	state.LatencyDuration = time.Duration(config.LatencyDuration * int64(time.Millisecond))
+	state.TargetFilter = config.TargetFilter
 	state.TargetName = request.Target.Name
 
 	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **prepare**")
 
-	if state.Error == "prepare" && (state.ErrorTargetFilter == "*" || state.ErrorTargetFilter == state.TargetName) {
+	if state.ErrorEndpoint == "prepare" && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
 		return nil, extension_kit.ToError("Simulated error thrown in prepare endpoint", nil)
+	}
+	if state.LatencyEndpoint == "prepare" && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
+		log.Info().Int64("latency", state.LatencyDuration.Milliseconds()).Msg("Adding latency in log action **prepare**")
+		time.Sleep(state.LatencyDuration)
 	}
 
 	return &action_kit_api.PrepareResult{
@@ -161,8 +212,12 @@ func (l *logAction) Prepare(_ context.Context, state *LogActionState, request ac
 func (l *logAction) Start(_ context.Context, state *LogActionState) (*action_kit_api.StartResult, error) {
 	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **start**")
 
-	if state.Error == "start" && (state.ErrorTargetFilter == "*" || state.ErrorTargetFilter == state.TargetName) {
+	if state.ErrorEndpoint == "start" && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
 		return nil, extension_kit.ToError("Simulated error thrown in start endpoint", nil)
+	}
+	if state.LatencyEndpoint == "start" && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
+		log.Info().Int64("latency", state.LatencyDuration.Milliseconds()).Msg("Adding latency in log action **start**")
+		time.Sleep(state.LatencyDuration)
 	}
 
 	return &action_kit_api.StartResult{
@@ -177,8 +232,12 @@ func (l *logAction) Start(_ context.Context, state *LogActionState) (*action_kit
 func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_kit_api.StatusResult, error) {
 	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **status**")
 
-	if state.Error == "status" && (state.ErrorTargetFilter == "*" || state.ErrorTargetFilter == state.TargetName) {
+	if state.ErrorEndpoint == "status" && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
 		return nil, extension_kit.ToError("Simulated error thrown in status endpoint", nil)
+	}
+	if state.LatencyEndpoint == "status" && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
+		log.Info().Int64("latency", state.LatencyDuration.Milliseconds()).Msg("Adding latency in log action **status**")
+		time.Sleep(state.LatencyDuration)
 	}
 
 	return &action_kit_api.StatusResult{
@@ -196,8 +255,12 @@ func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_ki
 func (l *logAction) Stop(_ context.Context, state *LogActionState) (*action_kit_api.StopResult, error) {
 	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **stop**")
 
-	if state.Error == "stop" && (state.ErrorTargetFilter == "*" || state.ErrorTargetFilter == state.TargetName) {
+	if state.ErrorEndpoint == "stop" && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
 		return nil, extension_kit.ToError("Simulated error thrown in stop endpoint", nil)
+	}
+	if state.LatencyEndpoint == "stop" && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
+		log.Info().Int64("latency", state.LatencyDuration.Milliseconds()).Msg("Adding latency in log action **stop**")
+		time.Sleep(state.LatencyDuration)
 	}
 
 	return &action_kit_api.StopResult{
