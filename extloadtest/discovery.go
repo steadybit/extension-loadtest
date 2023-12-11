@@ -66,10 +66,6 @@ func NewTargetData() *TargetData {
 	}
 }
 
-func xPercent(percent int, from []discovery_kit_api.Target) []discovery_kit_api.Target {
-	return from[:len(from)*percent/100]
-}
-
 type ltTargetDiscovery struct {
 	targets     []discovery_kit_api.Target
 	description func() discovery_kit_api.DiscoveryDescription

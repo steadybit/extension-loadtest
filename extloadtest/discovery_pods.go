@@ -59,6 +59,7 @@ func createKubernetesPodTargets(hostTargets, deploymentTargets []discovery_kit_a
 						"k8s.container.id.stripped":            containersStripped,
 					},
 				}
+				deployment.Attributes["host.hostname"] = append(deployment.Attributes["host.hostname"], host.Attributes["host.hostname"]...)
 				result = append(result, target)
 			}
 		}
