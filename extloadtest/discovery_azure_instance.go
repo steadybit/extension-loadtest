@@ -33,6 +33,7 @@ func createAzureInstanceTargets(hosts []discovery_kit_api.Target) []discovery_ki
 				"azure.subscription.id":     {"00000000-0000-0000-0000-000000000000"},
 				"azure-vm.vm.id":            {instanceId},
 				"azure-vm.hostname":         {hostname},
+				"azure-scale-set-instance.hostname":         {hostname},
 				"azure-vm.vm.size":          {"Standard_B1s"},
 				"azure-vm.os.name":          {"UbuntuServer"},
 				"azure-vm.os.version":       {"20.04.202108190"},
