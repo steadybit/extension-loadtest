@@ -18,7 +18,9 @@ type Specification struct {
 	ClusterName string `json:"clusterName" split_words:"true" required:"false" default:"cluster-loadtest"`
 
 	//2 containers per pod * 4 pods per deployment * 5 deployments per node * 400 nodes = 16000 containers
-	NodeCount          int `json:"nodeCount" split_words:"true" required:"false" default:"2"`
+	Ec2NodeCount   int `json:"ec2NodeCount" split_words:"true" required:"false" default:"2"`
+	AzureNodeCount     int `json:"azureNodeCount" split_words:"true" required:"false" default:"1"`
+	GcpNodeCount       int `json:"gcpNodeCount" split_words:"true" required:"false" default:"1"`
 	DeploymentsPerNode int `json:"deploymentsPerNode" split_words:"true" required:"false" default:"5"`
 	PodsPerDeployment  int `json:"podsPerDeployment" split_words:"true" required:"false" default:"2"`
 	ContainerPerPod    int `json:"containerPerPod" split_words:"true" required:"false" default:"2"`

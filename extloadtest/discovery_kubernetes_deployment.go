@@ -18,13 +18,13 @@ func getDiscoveryKubernetesDeployment() discovery_kit_api.DiscoveryDescription {
 	}
 }
 
-func createKubernetesDeploymentTargets() []discovery_kit_api.Target {
-	count := config.Config.NodeCount * config.Config.DeploymentsPerNode
+func createKubernetesDeploymentTargets(nodeCount int, suffix string) []discovery_kit_api.Target {
+	count := nodeCount * config.Config.DeploymentsPerNode
 	result := make([]discovery_kit_api.Target, 0, count)
 	for i := 1; i <= count; i++ {
 		namespace := "loadtest-namespace"
-		deployment := fmt.Sprintf("d-%d", i)
-		deploymentLabel := fmt.Sprintf("loadtest-deployment-%d", i)
+		deployment := fmt.Sprintf("d-%d-%s", i, suffix)
+		deploymentLabel := fmt.Sprintf("loadtest-deployment-%d-%s", i, suffix)
 		id := fmt.Sprintf("%s/%s/%s", config.Config.ClusterName, namespace, deployment)
 
 		pods := make([]string, 0, config.Config.PodsPerDeployment)

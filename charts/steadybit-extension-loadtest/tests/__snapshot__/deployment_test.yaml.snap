@@ -38,8 +38,12 @@ manifest should match snapshot using podAnnotations and Labels:
                   value: "2"
                 - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
                   value: "5"
-                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                - name: STEADYBIT_EXTENSION_EC2_NODE_COUNT
                   value: "400"
+                - name: STEADYBIT_EXTENSION_GCP_NODE_COUNT
+                  value: "1"
+                - name: STEADYBIT_EXTENSION_AZURE_NODE_COUNT
+                  value: "1"
                 - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
@@ -126,8 +130,12 @@ manifest should match snapshot with TLS:
                   value: "2"
                 - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
                   value: "5"
-                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                - name: STEADYBIT_EXTENSION_EC2_NODE_COUNT
                   value: "400"
+                - name: STEADYBIT_EXTENSION_GCP_NODE_COUNT
+                  value: "1"
+                - name: STEADYBIT_EXTENSION_AZURE_NODE_COUNT
+                  value: "1"
                 - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
@@ -217,8 +225,12 @@ manifest should match snapshot with extra env vars:
                   value: "2"
                 - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
                   value: "5"
-                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                - name: STEADYBIT_EXTENSION_EC2_NODE_COUNT
                   value: "400"
+                - name: STEADYBIT_EXTENSION_GCP_NODE_COUNT
+                  value: "1"
+                - name: STEADYBIT_EXTENSION_AZURE_NODE_COUNT
+                  value: "1"
                 - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
                   value: "4"
                 - name: FOO
@@ -310,8 +322,12 @@ manifest should match snapshot with extra labels:
                   value: "2"
                 - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
                   value: "5"
-                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                - name: STEADYBIT_EXTENSION_EC2_NODE_COUNT
                   value: "400"
+                - name: STEADYBIT_EXTENSION_GCP_NODE_COUNT
+                  value: "1"
+                - name: STEADYBIT_EXTENSION_AZURE_NODE_COUNT
+                  value: "1"
                 - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
@@ -400,8 +416,12 @@ manifest should match snapshot with mutual TLS:
                   value: "2"
                 - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
                   value: "5"
-                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                - name: STEADYBIT_EXTENSION_EC2_NODE_COUNT
                   value: "400"
+                - name: STEADYBIT_EXTENSION_GCP_NODE_COUNT
+                  value: "1"
+                - name: STEADYBIT_EXTENSION_AZURE_NODE_COUNT
+                  value: "1"
                 - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
@@ -504,8 +524,12 @@ manifest should match snapshot with mutual TLS using containerPaths:
                   value: "2"
                 - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
                   value: "5"
-                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                - name: STEADYBIT_EXTENSION_EC2_NODE_COUNT
                   value: "400"
+                - name: STEADYBIT_EXTENSION_GCP_NODE_COUNT
+                  value: "1"
+                - name: STEADYBIT_EXTENSION_AZURE_NODE_COUNT
+                  value: "1"
                 - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
@@ -588,8 +612,12 @@ manifest should match snapshot with podSecurityContext:
                   value: "2"
                 - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
                   value: "5"
-                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                - name: STEADYBIT_EXTENSION_EC2_NODE_COUNT
                   value: "400"
+                - name: STEADYBIT_EXTENSION_GCP_NODE_COUNT
+                  value: "1"
+                - name: STEADYBIT_EXTENSION_AZURE_NODE_COUNT
+                  value: "1"
                 - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
@@ -674,8 +702,12 @@ manifest should match snapshot with priority class:
                   value: "2"
                 - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
                   value: "5"
-                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                - name: STEADYBIT_EXTENSION_EC2_NODE_COUNT
                   value: "400"
+                - name: STEADYBIT_EXTENSION_GCP_NODE_COUNT
+                  value: "1"
+                - name: STEADYBIT_EXTENSION_AZURE_NODE_COUNT
+                  value: "1"
                 - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
@@ -759,7 +791,11 @@ manifest should match snapshot with settings:
                   value: "4"
                 - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
                   value: "2"
-                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                - name: STEADYBIT_EXTENSION_EC2_NODE_COUNT
+                  value: "400"
+                - name: STEADYBIT_EXTENSION_GCP_NODE_COUNT
+                  value: "1"
+                - name: STEADYBIT_EXTENSION_AZURE_NODE_COUNT
                   value: "1"
                 - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
                   value: "3"
@@ -843,8 +879,12 @@ manifest should match snapshot without TLS:
                   value: "2"
                 - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
                   value: "5"
-                - name: STEADYBIT_EXTENSION_NODE_COUNT
+                - name: STEADYBIT_EXTENSION_EC2_NODE_COUNT
                   value: "400"
+                - name: STEADYBIT_EXTENSION_GCP_NODE_COUNT
+                  value: "1"
+                - name: STEADYBIT_EXTENSION_AZURE_NODE_COUNT
+                  value: "1"
                 - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES

@@ -7,11 +7,14 @@ import (
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_sdk"
 	"github.com/steadybit/extension-kit/extutil"
+	"github.com/steadybit/extension-loadtest/config"
 )
 
 type TargetData struct {
 	hosts                 []discovery_kit_api.Target
 	ec2Instances          []discovery_kit_api.Target
+	azureInstances        []discovery_kit_api.Target
+	gcpInstances          []discovery_kit_api.Target
 	kubernetesClusters    []discovery_kit_api.Target
 	kubernetesDeployments []discovery_kit_api.Target
 	kubernetesPods        []discovery_kit_api.Target
@@ -21,25 +24,50 @@ type TargetData struct {
 }
 
 func NewTargetData() *TargetData {
-	hosts := createHostTargets()
-	ec2Instances := createEc2InstanceTargets(hosts)
+	ec2Hosts := createHostTargets(config.Config.Ec2NodeCount, "ec2")
+	gcpHosts := createHostTargets(config.Config.GcpNodeCount, "gcp")
+	azureHosts := createHostTargets(config.Config.AzureNodeCount, "azure")
+
+	ec2Instances := createEc2InstanceTargets(ec2Hosts)
+	gcpInstances := createGcpInstanceTargets(gcpHosts)
+	azureInstances := createAzureInstanceTargets(azureHosts)
+
 	kubernetesClusters := createKubernetesClusterTargets()
-	kubernetesDeployments := createKubernetesDeploymentTargets()
-	kubernetesPods := createKubernetesPodTargets(hosts, kubernetesDeployments)
-	kubernetesContainers := createKubernetesContainerTargets(kubernetesPods)
-	kubernetesNodes := createKubernetesNodeTargets(kubernetesContainers)
-	containers := createContainerTargets(kubernetesContainers)
+
+	ec2KubernetesDeployments := createKubernetesDeploymentTargets(config.Config.Ec2NodeCount, "ec2")
+	ec2KubernetesPods := createKubernetesPodTargets(ec2Hosts, ec2KubernetesDeployments)
+	ec2KubernetesContainers := createKubernetesContainerTargets(ec2KubernetesPods)
+	ec2KubernetesNodes := createKubernetesNodeTargets(ec2KubernetesContainers)
+	ec2Containers := createContainerTargets(ec2KubernetesContainers)
+
+	gcpKubernetesDeployments := createKubernetesDeploymentTargets(config.Config.GcpNodeCount, "gcp")
+	gcpKubernetesPods := createKubernetesPodTargets(gcpHosts, gcpKubernetesDeployments)
+	gcpKubernetesContainers := createKubernetesContainerTargets(gcpKubernetesPods)
+	gcpKubernetesNodes := createKubernetesNodeTargets(gcpKubernetesContainers)
+	gcpContainers := createContainerTargets(gcpKubernetesContainers)
+
+	azureKubernetesDeployments := createKubernetesDeploymentTargets(config.Config.AzureNodeCount, "azure")
+	azureKubernetesPods := createKubernetesPodTargets(azureHosts, azureKubernetesDeployments)
+	azureKubernetesContainers := createKubernetesContainerTargets(azureKubernetesPods)
+	azureKubernetesNodes := createKubernetesNodeTargets(azureKubernetesContainers)
+	azureContainers := createContainerTargets(azureKubernetesContainers)
 
 	return &TargetData{
-		hosts:                 hosts,
+		hosts:                 append(append(ec2Hosts, gcpHosts...), azureHosts...),
 		ec2Instances:          ec2Instances,
+		gcpInstances:          gcpInstances,
+		azureInstances:        azureInstances,
 		kubernetesClusters:    kubernetesClusters,
-		kubernetesDeployments: kubernetesDeployments,
-		kubernetesPods:        kubernetesPods,
-		kubernetesContainers:  kubernetesContainers,
-		kubernetesNodes:       kubernetesNodes,
-		containers:            containers,
+		kubernetesDeployments: append(append(ec2KubernetesDeployments, gcpKubernetesDeployments...), azureKubernetesDeployments...),
+		kubernetesPods:        append(append(ec2KubernetesPods, gcpKubernetesPods...), azureKubernetesPods...),
+		kubernetesContainers:  append(append(ec2KubernetesContainers, gcpKubernetesContainers...), azureKubernetesContainers...),
+		kubernetesNodes:       append(append(ec2KubernetesNodes, gcpKubernetesNodes...), azureKubernetesNodes...),
+		containers:            append(append(ec2Containers, gcpContainers...), azureContainers...),
 	}
+}
+
+func xPercent(percent int, from []discovery_kit_api.Target) []discovery_kit_api.Target {
+	return from[:len(from)*percent/100]
 }
 
 type ltTargetDiscovery struct {
@@ -72,6 +100,8 @@ func (l ltEdDiscovery) DiscoverEnrichmentData(_ context.Context) ([]discovery_ki
 func (t *TargetData) RegisterDiscoveries() {
 	discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryHost, targets: t.hosts})
 	discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryEc2Instance, targets: t.ec2Instances})
+	discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryGcpInstance, targets: t.gcpInstances})
+	discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryAzureInstance, targets: t.azureInstances})
 	discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryKubernetesCluster, targets: t.kubernetesClusters})
 	discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryKubernetesDeployment, targets: t.kubernetesDeployments})
 	discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryKubernetesPods, targets: t.kubernetesPods})
@@ -83,6 +113,8 @@ func (t *TargetData) RegisterDiscoveries() {
 func (t *TargetData) ScheduleUpdates() {
 	scheduleTargetAttributeUpdateIfNecessary(t.hosts, "com.steadybit.extension_host.host")
 	scheduleTargetAttributeUpdateIfNecessary(t.ec2Instances, "com.steadybit.extension_aws.ec2-instance")
+	scheduleTargetAttributeUpdateIfNecessary(t.gcpInstances, "com.steadybit.extension_gcp.vm")
+	scheduleTargetAttributeUpdateIfNecessary(t.azureInstances, "com.steadybit.extension_azure.scale_set.instance")
 	scheduleTargetAttributeUpdateIfNecessary(t.kubernetesClusters, "com.steadybit.extension_kubernetes.kubernetes-cluster")
 	scheduleTargetAttributeUpdateIfNecessary(t.kubernetesDeployments, "com.steadybit.extension_kubernetes.kubernetes-deployment")
 	scheduleTargetAttributeUpdateIfNecessary(t.kubernetesPods, "com.steadybit.extension_kubernetes.kubernetes-pod")

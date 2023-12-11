@@ -12,7 +12,9 @@ image:
 
 loadtest:
   clusterName: "cluster-loadtest"
-  nodeCount: 400
+  ec2NodeCount: 400
+  gcpNodeCount: 1
+  azureNodeCount: 1
   deploymentsPerNode: 5
   podsPerDeployment: 4
   containerPerPod: 2

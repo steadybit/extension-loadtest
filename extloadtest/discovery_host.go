@@ -18,14 +18,14 @@ func getDiscoveryHost() discovery_kit_api.DiscoveryDescription {
 	}
 }
 
-func getHostname(i int) string {
-	return fmt.Sprintf("host-%d", i)
+func getHostname(i int, suffix string) string {
+	return fmt.Sprintf("host-%d-%s", i, suffix)
 }
 
-func createHostTargets() []discovery_kit_api.Target {
-	result := make([]discovery_kit_api.Target, 0, config.Config.NodeCount)
-	for i := 1; i <= config.Config.NodeCount; i++ {
-		hostname := getHostname(i)
+func createHostTargets(count int, suffix string) []discovery_kit_api.Target {
+	result := make([]discovery_kit_api.Target, 0, count)
+	for i := 1; i <= count; i++ {
+		hostname := getHostname(i, suffix)
 		target := discovery_kit_api.Target{
 			Id:         hostname,
 			TargetType: "com.steadybit.extension_host.host",
