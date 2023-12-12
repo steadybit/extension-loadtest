@@ -20,10 +20,14 @@ func getDiscoveryGcpInstance() discovery_kit_api.DiscoveryDescription {
 
 func createGcpInstanceTargets(hosts []discovery_kit_api.Target) []discovery_kit_api.Target {
 	result := make([]discovery_kit_api.Target, 0, len(hosts))
-	for _, host := range hosts {
+	for i, host := range hosts {
 		instanceId := fmt.Sprintf("i-%s", host.Id)
 		instanceName := fmt.Sprintf("loadtest-instance-%s", host.Id)
 		hostname := host.Id
+		zone := "europe-west1-a"
+		if i%2 == 0 {
+			zone = "europe-west1-b"
+		}
 		target := discovery_kit_api.Target{
 			Id:         instanceId,
 			TargetType: "com.steadybit.extension_gcp.vm",
@@ -40,10 +44,10 @@ func createGcpInstanceTargets(hosts []discovery_kit_api.Target) []discovery_kit_
 				"gcp-vm.status":                          {"RUNNING"},
 				"gcp-vm.status-message":                  {"RUNNING"},
 				"gcp.zone-url":                        {"https://www.googleapis.com/compute/v1/projects/steadybit/zones/europe-west1-b"},
-				"gcp.zone":                            {"europe-west1-b"},
+				"gcp.zone":                            {zone},
 				"gcp.project.id":                         {"steadybit-loadtest"},
 				"gcp-kubernetes-engine.cluster.name":     {config.Config.ClusterName},
-				"gcp-kubernetes-engine.cluster.location": {"europe-west1-b"},
+				"gcp-kubernetes-engine.cluster.location": {zone},
 			},
 		}
 		result = append(result, target)

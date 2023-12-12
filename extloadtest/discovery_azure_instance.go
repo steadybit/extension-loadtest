@@ -20,10 +20,14 @@ func getDiscoveryAzureInstance() discovery_kit_api.DiscoveryDescription {
 
 func createAzureInstanceTargets(hosts []discovery_kit_api.Target) []discovery_kit_api.Target {
 	result := make([]discovery_kit_api.Target, 0, len(hosts))
-	for _, host := range hosts {
+	for i, host := range hosts {
 		instanceId := fmt.Sprintf("i-%s", host.Id)
 		instanceName := fmt.Sprintf("loadtest-instance-%s", host.Id)
 		hostname := host.Id
+		zone := "westeurope-1"
+		if i%2 == 0 {
+			zone = "westeurope-2"
+		}
 		target := discovery_kit_api.Target{
 			Id:         instanceId,
 			TargetType: "com.steadybit.extension_azure.scale_set.instance",
@@ -41,7 +45,7 @@ func createAzureInstanceTargets(hosts []discovery_kit_api.Target) []discovery_ki
 				"azure-vm.power.state":      {"VM running"},
 				"azure-vm.network.id":       {"00000000-0000-0000-0000-000000000000"},
 				"azure.location":            {"westeurope"},
-				"azure.zone":                {"westeurope-1"},
+				"azure.zone":                {zone},
 				"azure.resource-group.name": {config.Config.ClusterName},
 			},
 		}
