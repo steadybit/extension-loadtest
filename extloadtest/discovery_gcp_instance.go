@@ -24,9 +24,9 @@ func createGcpInstanceTargets(hosts []discovery_kit_api.Target) []discovery_kit_
 		instanceId := fmt.Sprintf("i-%s", host.Id)
 		instanceName := fmt.Sprintf("loadtest-instance-%s", host.Id)
 		hostname := host.Id
-		zone := "europe-west1-a"
+		zones := []string{"europe-west1-a"}
 		if i%2 == 0 {
-			zone = "europe-west1-b"
+			zones = []string{"europe-west1-a", "europe-west1-b"}
 		}
 		target := discovery_kit_api.Target{
 			Id:         instanceId,
@@ -43,11 +43,11 @@ func createGcpInstanceTargets(hosts []discovery_kit_api.Target) []discovery_kit_
 				"gcp-vm.source-machine-image":            {"projects/debian-cloud/global/images/family/debian-11"},
 				"gcp-vm.status":                          {"RUNNING"},
 				"gcp-vm.status-message":                  {"RUNNING"},
-				"gcp.zone-url":                        {"https://www.googleapis.com/compute/v1/projects/steadybit/zones/europe-west1-b"},
-				"gcp.zone":                            {zone},
+				"gcp.zone-url":                           {"https://www.googleapis.com/compute/v1/projects/steadybit/zones/europe-west1-b"},
+				"gcp.zone":                               zones,
 				"gcp.project.id":                         {"steadybit-loadtest"},
 				"gcp-kubernetes-engine.cluster.name":     {config.Config.ClusterName},
-				"gcp-kubernetes-engine.cluster.location": {zone},
+				"gcp-kubernetes-engine.cluster.location": zones,
 			},
 		}
 		result = append(result, target)
