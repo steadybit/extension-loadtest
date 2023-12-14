@@ -14,6 +14,7 @@ import (
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extconversion"
 	"github.com/steadybit/extension-kit/extutil"
+	"strings"
 	"time"
 )
 
@@ -58,8 +59,9 @@ func (l *logAction) NewEmptyState() LogActionState {
 }
 
 func (l *logAction) Describe() action_kit_api.ActionDescription {
+	targetTypeShort := l.targetId[strings.LastIndex(l.targetId, ".")+1:]
 	return action_kit_api.ActionDescription{
-		Id:          fmt.Sprintf("%s.log", l.targetId),
+		Id:          fmt.Sprintf("com.steadybit.extension_loadtest.log.%s", targetTypeShort),
 		Label:       "Log message",
 		Description: "Logs a message for the given duration to the agent log",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
