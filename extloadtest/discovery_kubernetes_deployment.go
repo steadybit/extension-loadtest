@@ -32,7 +32,7 @@ func createKubernetesDeploymentTargets(nodeCount int, suffix string) []discovery
 		containers := make([]string, 0, containerCount)
 		containersStripped := make([]string, 0, containerCount)
 		for podIndex := 1; podIndex <= config.Config.PodsPerDeployment; podIndex++ {
-			podName := fmt.Sprintf("%s-p-%d", deployment, podIndex)
+			podName := fmt.Sprintf("%s-Pod-%d", deployment, podIndex)
 			pods = append(pods, podName)
 			for containerIndex := 1; containerIndex <= config.Config.ContainerPerPod; containerIndex++ {
 				containers = append(containers, fmt.Sprintf("containerd://%s-c-%d", podName, containerIndex))

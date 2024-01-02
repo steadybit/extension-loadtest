@@ -19,7 +19,7 @@ func getDiscoveryHost() discovery_kit_api.DiscoveryDescription {
 }
 
 func getHostname(i int, suffix string) string {
-	return fmt.Sprintf("host-%d-%s", i, suffix)
+	return fmt.Sprintf("Host-%d-%s", i, suffix)
 }
 
 func createHostTargets(count int, suffix string) []discovery_kit_api.Target {
