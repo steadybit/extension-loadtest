@@ -10,8 +10,7 @@ import (
 
 func getDiscoveryAzureInstance() discovery_kit_api.DiscoveryDescription {
 	return discovery_kit_api.DiscoveryDescription{
-		Id:         "com.steadybit.extension_azure.scale_set.instance",
-		RestrictTo: extutil.Ptr(discovery_kit_api.LEADER),
+		Id: "com.steadybit.extension_azure.scale_set.instance",
 		Discover: discovery_kit_api.DescribingEndpointReferenceWithCallInterval{
 			CallInterval: extutil.Ptr("30s"),
 		},

@@ -10,8 +10,7 @@ import (
 
 func getDiscoveryHost() discovery_kit_api.DiscoveryDescription {
 	return discovery_kit_api.DiscoveryDescription{
-		Id:         "com.steadybit.extension_host.host",
-		RestrictTo: extutil.Ptr(discovery_kit_api.LEADER),
+		Id: "com.steadybit.extension_host.host",
 		Discover: discovery_kit_api.DescribingEndpointReferenceWithCallInterval{
 			CallInterval: extutil.Ptr("1m"),
 		},

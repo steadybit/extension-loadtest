@@ -111,7 +111,6 @@ func getExtensionList() ExtensionListResponse {
 						"experiment.execution.target-errored",
 						"experiment.execution.target-failed",
 					},
-					RestrictTo: extutil.Ptr(event_kit_api.Leader),
 				},
 			},
 		},

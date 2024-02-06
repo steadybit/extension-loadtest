@@ -10,8 +10,7 @@ import (
 
 func getDiscoveryKubernetesDeployment() discovery_kit_api.DiscoveryDescription {
 	return discovery_kit_api.DiscoveryDescription{
-		Id:         "com.steadybit.extension_kubernetes.kubernetes-deployment",
-		RestrictTo: extutil.Ptr(discovery_kit_api.LEADER),
+		Id: "com.steadybit.extension_kubernetes.kubernetes-deployment",
 		Discover: discovery_kit_api.DescribingEndpointReferenceWithCallInterval{
 			CallInterval: extutil.Ptr("1m"),
 		},

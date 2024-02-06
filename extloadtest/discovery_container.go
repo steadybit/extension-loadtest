@@ -9,8 +9,7 @@ import (
 
 func getDiscoveryContainer() discovery_kit_api.DiscoveryDescription {
 	return discovery_kit_api.DiscoveryDescription{
-		Id:         "com.steadybit.extension_container.container",
-		RestrictTo: extutil.Ptr(discovery_kit_api.LEADER),
+		Id: "com.steadybit.extension_container.container",
 		Discover: discovery_kit_api.DescribingEndpointReferenceWithCallInterval{
 			CallInterval: extutil.Ptr("1m"),
 		},

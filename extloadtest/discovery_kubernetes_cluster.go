@@ -8,8 +8,7 @@ import (
 
 func getDiscoveryKubernetesCluster() discovery_kit_api.DiscoveryDescription {
 	return discovery_kit_api.DiscoveryDescription{
-		Id:         "com.steadybit.extension_kubernetes.kubernetes-cluster",
-		RestrictTo: extutil.Ptr(discovery_kit_api.LEADER),
+		Id: "com.steadybit.extension_kubernetes.kubernetes-cluster",
 		Discover: discovery_kit_api.DescribingEndpointReferenceWithCallInterval{
 			CallInterval: extutil.Ptr("60m"),
 		},
