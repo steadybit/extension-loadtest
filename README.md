@@ -1,6 +1,6 @@
 # Steadybit extension-loadtest
 
-Internal extension used to load test outpost & platform.
+Internal extension used to load test agent & platform.
 
 ## Configuration
 
