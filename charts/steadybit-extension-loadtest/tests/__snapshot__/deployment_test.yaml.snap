@@ -9,7 +9,7 @@ manifest should match snapshot using podAnnotations and Labels:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 1
+      replicas: 2
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -48,6 +48,10 @@ manifest should match snapshot using podAnnotations and Labels:
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
+                - name: STEADYBIT_EXTENSION_POD_UID
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.uid
               image: ghcr.io/steadybit/extension-loadtest:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -99,7 +103,7 @@ manifest should match snapshot with TLS:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 1
+      replicas: 2
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -140,6 +144,10 @@ manifest should match snapshot with TLS:
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
+                - name: STEADYBIT_EXTENSION_POD_UID
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.uid
               image: ghcr.io/steadybit/extension-loadtest:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -198,7 +206,7 @@ manifest should match snapshot with extra env vars:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 1
+      replicas: 2
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -237,6 +245,10 @@ manifest should match snapshot with extra env vars:
                   value: bar
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
+                - name: STEADYBIT_EXTENSION_POD_UID
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.uid
               envFrom:
                 - configMapRef: null
                   name: env-configmap
@@ -294,7 +306,7 @@ manifest should match snapshot with extra labels:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 1
+      replicas: 2
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -332,6 +344,10 @@ manifest should match snapshot with extra labels:
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
+                - name: STEADYBIT_EXTENSION_POD_UID
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.uid
               image: ghcr.io/steadybit/extension-loadtest:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -383,7 +399,7 @@ manifest should match snapshot with mutual TLS:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 1
+      replicas: 2
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -426,6 +442,10 @@ manifest should match snapshot with mutual TLS:
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
+                - name: STEADYBIT_EXTENSION_POD_UID
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.uid
               image: ghcr.io/steadybit/extension-loadtest:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -491,7 +511,7 @@ manifest should match snapshot with mutual TLS using containerPaths:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 1
+      replicas: 2
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -534,6 +554,10 @@ manifest should match snapshot with mutual TLS using containerPaths:
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
+                - name: STEADYBIT_EXTENSION_POD_UID
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.uid
               image: ghcr.io/steadybit/extension-loadtest:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -585,7 +609,7 @@ manifest should match snapshot with podSecurityContext:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 1
+      replicas: 2
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -622,6 +646,10 @@ manifest should match snapshot with podSecurityContext:
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
+                - name: STEADYBIT_EXTENSION_POD_UID
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.uid
               image: ghcr.io/steadybit/extension-loadtest:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -675,7 +703,7 @@ manifest should match snapshot with priority class:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 1
+      replicas: 2
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -712,6 +740,10 @@ manifest should match snapshot with priority class:
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
+                - name: STEADYBIT_EXTENSION_POD_UID
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.uid
               image: ghcr.io/steadybit/extension-loadtest:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -764,7 +796,7 @@ manifest should match snapshot with settings:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 1
+      replicas: 2
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -801,6 +833,10 @@ manifest should match snapshot with settings:
                   value: "3"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
+                - name: STEADYBIT_EXTENSION_POD_UID
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.uid
               image: ghcr.io/steadybit/extension-loadtest:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -852,7 +888,7 @@ manifest should match snapshot without TLS:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 1
+      replicas: 2
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -889,6 +925,10 @@ manifest should match snapshot without TLS:
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
+                - name: STEADYBIT_EXTENSION_POD_UID
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.uid
               image: ghcr.io/steadybit/extension-loadtest:v0.0.0
               imagePullPolicy: IfNotPresent
               livenessProbe:

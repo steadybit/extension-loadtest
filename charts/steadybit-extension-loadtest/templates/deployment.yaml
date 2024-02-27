@@ -9,7 +9,7 @@ metadata:
   {{- end }}
   {{- include "extensionlib.labels" (list .) | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       {{- include "extensionlib.selectorLabels" . | nindent 6 }}
@@ -105,6 +105,10 @@ spec:
             - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_KUBERNETES_DEPLOYMENT
               value: {{ join "," .Values.discovery.attributes.excludes.kubernetes.deployment | quote }}
             {{ end }}
+            - name: STEADYBIT_EXTENSION_POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
           {{- with .Values.extraEnvFrom }}
           envFrom:
             {{- toYaml . | nindent 12 }}

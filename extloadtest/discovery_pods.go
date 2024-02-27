@@ -33,8 +33,8 @@ func createKubernetesPodTargets(hostTargets, deploymentTargets []discovery_kit_a
 				containers := make([]string, 0, config.Config.ContainerPerPod)
 				containersStripped := make([]string, 0, config.Config.ContainerPerPod)
 				for containerIndex := 1; containerIndex <= config.Config.ContainerPerPod; containerIndex++ {
-					containers = append(containers, fmt.Sprintf("containerd://%s-c-%d", podName, containerIndex))
-					containersStripped = append(containersStripped, fmt.Sprintf("%s-c-%d", podName, containerIndex))
+					containers = append(containers, fmt.Sprintf("containerd://%s-%s-c-%d", config.Config.PodUID, podName, containerIndex))
+					containersStripped = append(containersStripped, fmt.Sprintf("%s-%s-c-%d", config.Config.PodUID, podName, containerIndex))
 				}
 
 				target := discovery_kit_api.Target{

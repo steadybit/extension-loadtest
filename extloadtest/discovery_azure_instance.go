@@ -20,7 +20,7 @@ func getDiscoveryAzureInstance() discovery_kit_api.DiscoveryDescription {
 func createAzureInstanceTargets(hosts []discovery_kit_api.Target) []discovery_kit_api.Target {
 	result := make([]discovery_kit_api.Target, 0, len(hosts))
 	for i, host := range hosts {
-		instanceId := fmt.Sprintf("i-%s", host.Id)
+		instanceId := fmt.Sprintf("i-%s-%s", config.Config.PodUID, host.Id)
 		instanceName := fmt.Sprintf("loadtest-instance-%s", host.Id)
 		hostname := host.Id
 		zones := []string{"westeurope-1"}

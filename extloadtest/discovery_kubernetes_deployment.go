@@ -22,16 +22,17 @@ func createKubernetesDeploymentTargets(nodeCount int, suffix string) []discovery
 	result := make([]discovery_kit_api.Target, 0, count)
 	for i := 1; i <= count; i++ {
 		namespace := "loadtest-namespace"
-		deployment := fmt.Sprintf("d-%d-%s", i, suffix)
-		deploymentLabel := fmt.Sprintf("loadtest-deployment-%d-%s", i, suffix)
-		id := fmt.Sprintf("%s/%s/%s", config.Config.ClusterName, namespace, deployment)
+		deploymentWithOutPodUid := fmt.Sprintf("d-%d-%s", i, suffix)
+		deployment := fmt.Sprintf("%s-%s", config.Config.PodUID,deploymentWithOutPodUid)
+		deploymentLabel := fmt.Sprintf("%s-loadtest-deployment-%d-%s", config.Config.PodUID, i, suffix)
+		id := fmt.Sprintf("%s/%s/%s/%s", config.Config.PodUID, config.Config.ClusterName, namespace, deploymentWithOutPodUid)
 
 		pods := make([]string, 0, config.Config.PodsPerDeployment)
 		containerCount := config.Config.PodsPerDeployment * config.Config.ContainerPerPod
 		containers := make([]string, 0, containerCount)
 		containersStripped := make([]string, 0, containerCount)
 		for podIndex := 1; podIndex <= config.Config.PodsPerDeployment; podIndex++ {
-			podName := fmt.Sprintf("%s-Pod-%d", deployment, podIndex)
+			podName := fmt.Sprintf("%s-%s-Pod-%d", config.Config.PodUID, deployment, podIndex)
 			pods = append(pods, podName)
 			for containerIndex := 1; containerIndex <= config.Config.ContainerPerPod; containerIndex++ {
 				containers = append(containers, fmt.Sprintf("containerd://%s-c-%d", podName, containerIndex))
