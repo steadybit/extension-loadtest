@@ -9,7 +9,7 @@ metadata:
   {{- end }}
   {{- include "extensionlib.labels" (list .) | nindent 4 }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.loadtest.replicaCount }}
   selector:
     matchLabels:
       {{- include "extensionlib.selectorLabels" . | nindent 6 }}

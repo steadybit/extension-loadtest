@@ -9,7 +9,7 @@ manifest should match snapshot using podAnnotations and Labels:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 2
+      replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -103,7 +103,7 @@ manifest should match snapshot with TLS:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 2
+      replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -206,7 +206,7 @@ manifest should match snapshot with extra env vars:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 2
+      replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -306,7 +306,7 @@ manifest should match snapshot with extra labels:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 2
+      replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -399,7 +399,7 @@ manifest should match snapshot with mutual TLS:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 2
+      replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -511,7 +511,7 @@ manifest should match snapshot with mutual TLS using containerPaths:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 2
+      replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -609,7 +609,7 @@ manifest should match snapshot with podSecurityContext:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 2
+      replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -703,7 +703,7 @@ manifest should match snapshot with priority class:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 2
+      replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -796,7 +796,7 @@ manifest should match snapshot with settings:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 2
+      replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME
@@ -888,7 +888,7 @@ manifest should match snapshot without TLS:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
-      replicas: 2
+      replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/instance: RELEASE-NAME

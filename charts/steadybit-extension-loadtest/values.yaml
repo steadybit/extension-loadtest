@@ -11,6 +11,7 @@ image:
   pullPolicy: IfNotPresent
 
 loadtest:
+  replicaCount: 1
   clusterName: "cluster-loadtest"
   ec2NodeCount: 400
   gcpNodeCount: 1
