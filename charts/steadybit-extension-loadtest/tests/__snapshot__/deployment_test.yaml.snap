@@ -19,6 +19,8 @@ manifest should match snapshot using podAnnotations and Labels:
           annotations:
             oneagent.dynatrace.com/injection: "false"
             some-annotation: some-annotation-value
+            steadybit.com/extension-auto-discovery: |
+              {"extensions":[{"port":8082,"protocol":"http","types":["ACTION","DISCOVERY","EVENT"]}]}
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
             app.kubernetes.io/name: steadybit-extension-loadtest
@@ -112,6 +114,8 @@ manifest should match snapshot with TLS:
         metadata:
           annotations:
             oneagent.dynatrace.com/injection: "false"
+            steadybit.com/extension-auto-discovery: |
+              {"extensions":[{"port":8082,"protocol":"https","types":["ACTION","DISCOVERY","EVENT"]}]}
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
             app.kubernetes.io/name: steadybit-extension-loadtest
@@ -215,6 +219,8 @@ manifest should match snapshot with extra env vars:
         metadata:
           annotations:
             oneagent.dynatrace.com/injection: "false"
+            steadybit.com/extension-auto-discovery: |
+              {"extensions":[{"port":8082,"protocol":"http","types":["ACTION","DISCOVERY","EVENT"]}]}
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
             app.kubernetes.io/name: steadybit-extension-loadtest
@@ -315,6 +321,8 @@ manifest should match snapshot with extra labels:
         metadata:
           annotations:
             oneagent.dynatrace.com/injection: "false"
+            steadybit.com/extension-auto-discovery: |
+              {"extensions":[{"port":8082,"protocol":"http","types":["ACTION","DISCOVERY","EVENT"]}]}
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
             app.kubernetes.io/name: steadybit-extension-loadtest
@@ -408,6 +416,8 @@ manifest should match snapshot with mutual TLS:
         metadata:
           annotations:
             oneagent.dynatrace.com/injection: "false"
+            steadybit.com/extension-auto-discovery: |
+              {"extensions":[{"port":8082,"protocol":"https","types":["ACTION","DISCOVERY","EVENT"]}]}
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
             app.kubernetes.io/name: steadybit-extension-loadtest
@@ -520,6 +530,8 @@ manifest should match snapshot with mutual TLS using containerPaths:
         metadata:
           annotations:
             oneagent.dynatrace.com/injection: "false"
+            steadybit.com/extension-auto-discovery: |
+              {"extensions":[{"port":8082,"protocol":"https","types":["ACTION","DISCOVERY","EVENT"]}]}
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
             app.kubernetes.io/name: steadybit-extension-loadtest
@@ -618,6 +630,8 @@ manifest should match snapshot with podSecurityContext:
         metadata:
           annotations:
             oneagent.dynatrace.com/injection: "false"
+            steadybit.com/extension-auto-discovery: |
+              {"extensions":[{"port":8082,"protocol":"http","types":["ACTION","DISCOVERY","EVENT"]}]}
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
             app.kubernetes.io/name: steadybit-extension-loadtest
@@ -712,6 +726,8 @@ manifest should match snapshot with priority class:
         metadata:
           annotations:
             oneagent.dynatrace.com/injection: "false"
+            steadybit.com/extension-auto-discovery: |
+              {"extensions":[{"port":8082,"protocol":"http","types":["ACTION","DISCOVERY","EVENT"]}]}
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
             app.kubernetes.io/name: steadybit-extension-loadtest
@@ -805,6 +821,8 @@ manifest should match snapshot with settings:
         metadata:
           annotations:
             oneagent.dynatrace.com/injection: "false"
+            steadybit.com/extension-auto-discovery: |
+              {"extensions":[{"port":8082,"protocol":"http","types":["ACTION","DISCOVERY","EVENT"]}]}
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
             app.kubernetes.io/name: steadybit-extension-loadtest
@@ -897,6 +915,8 @@ manifest should match snapshot without TLS:
         metadata:
           annotations:
             oneagent.dynatrace.com/injection: "false"
+            steadybit.com/extension-auto-discovery: |
+              {"extensions":[{"port":8082,"protocol":"http","types":["ACTION","DISCOVERY","EVENT"]}]}
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
             app.kubernetes.io/name: steadybit-extension-loadtest
