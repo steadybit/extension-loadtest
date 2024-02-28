@@ -1,6 +1,7 @@
 package extloadtest
 
 import (
+	"fmt"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
@@ -16,9 +17,10 @@ func getDiscoveryKubernetesCluster() discovery_kit_api.DiscoveryDescription {
 }
 
 func createKubernetesClusterTargets() []discovery_kit_api.Target {
+	id := fmt.Sprintf("%s-%s", config.Config.ClusterName, config.Config.PodUID)
 	return []discovery_kit_api.Target{
 		{
-			Id:         config.Config.ClusterName,
+			Id:         id,
 			TargetType: "com.steadybit.extension_kubernetes.kubernetes-cluster",
 			Label:      config.Config.ClusterName,
 			Attributes: map[string][]string{
