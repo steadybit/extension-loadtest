@@ -17,7 +17,7 @@ func getDiscoveryKubernetesCluster() discovery_kit_api.DiscoveryDescription {
 }
 
 func createKubernetesClusterTargets() []discovery_kit_api.Target {
-	if strings.HasSuffix(config.Config.PodName, "0") {
+	if config.IsPodZero() {
 		return []discovery_kit_api.Target{
 			{
 				Id:         config.Config.ClusterName,

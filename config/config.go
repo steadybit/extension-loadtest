@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/rs/zerolog/log"
+	"strings"
 )
 
 // Specification is the configuration specification for the extension. Configuration values can be applied
@@ -17,7 +18,7 @@ import (
 type Specification struct {
 	ClusterName string `json:"clusterName" split_words:"true" required:"false" default:"cluster-loadtest"`
 	PodUID      string `json:"podUID" split_words:"true" required:"false" default:"PodUID1"`
-	PodName      string `json:"podName" split_words:"true" required:"false" default:"0"`
+	PodName      string `json:"podName" split_words:"true" required:"false" default:"pod-0"`
 
 	//2 containers per pod * 4 pods per deployment * 5 deployments per node * 400 nodes = 16000 containers
 	Ec2NodeCount       int `json:"ec2NodeCount" split_words:"true" required:"false" default:"2"`
@@ -36,6 +37,10 @@ type Specification struct {
 	DiscoveryAttributesExcludesKubernetesDeployment []string `json:"discoveryAttributesExcludesKubernetesDeployment" split_words:"true" required:"false"`
 	DiscoveryAttributesExcludesKubernetesContainer  []string `json:"discoveryAttributesExcludesKubernetesContainer" split_words:"true" required:"false"`
 	DiscoveryAttributesExcludesKubernetesNode       []string `json:"discoveryAttributesExcludesKubernetesNode" split_words:"true" required:"false"`
+}
+
+func IsPodZero() bool {
+	return strings.HasSuffix(Config.PodName, "-0")
 }
 
 type AttributeUpdateSpecifications []AttributeUpdateSpecification

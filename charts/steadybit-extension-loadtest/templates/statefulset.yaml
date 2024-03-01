@@ -18,6 +18,7 @@ spec:
     type: {{ .Values.updateStrategy.type }}
     {{- if eq .Values.updateStrategy.type "RollingUpdate" }}
   {{- end }}
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
   template:
     metadata:
       labels:

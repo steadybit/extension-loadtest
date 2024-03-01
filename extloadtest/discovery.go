@@ -25,8 +25,17 @@ type TargetData struct {
 
 func NewTargetData() *TargetData {
 	ec2Hosts := createHostTargets(config.Config.Ec2NodeCount, "ec2")
-	gcpHosts := createHostTargets(config.Config.GcpNodeCount, "gcp")
-	azureHosts := createHostTargets(config.Config.AzureNodeCount, "azure")
+	gcpNodeCount := 0
+	if config.IsPodZero() {
+		gcpNodeCount = config.Config.GcpNodeCount
+
+	}
+	gcpHosts := createHostTargets(gcpNodeCount, "gcp")
+	azureNodeCount := 0
+	if config.IsPodZero() {
+		azureNodeCount = config.Config.AzureNodeCount
+	}
+	azureHosts := createHostTargets(azureNodeCount, "azure")
 
 	ec2Instances := createEc2InstanceTargets(ec2Hosts)
 	gcpInstances := createGcpInstanceTargets(gcpHosts)
@@ -40,18 +49,31 @@ func NewTargetData() *TargetData {
 	ec2KubernetesNodes := createKubernetesNodeTargets(ec2KubernetesContainers)
 	ec2Containers := createContainerTargets(ec2KubernetesContainers)
 
-	gcpKubernetesDeployments := createKubernetesDeploymentTargets(config.Config.GcpNodeCount, "gcp")
-	gcpKubernetesPods := createKubernetesPodTargets(gcpHosts, gcpKubernetesDeployments)
-	gcpKubernetesContainers := createKubernetesContainerTargets(gcpKubernetesPods)
-	gcpKubernetesNodes := createKubernetesNodeTargets(gcpKubernetesContainers)
-	gcpContainers := createContainerTargets(gcpKubernetesContainers)
+	var gcpKubernetesDeployments []discovery_kit_api.Target
+	var gcpKubernetesPods []discovery_kit_api.Target
+	var gcpKubernetesContainers []discovery_kit_api.EnrichmentData
+	var gcpKubernetesNodes []discovery_kit_api.Target
+	var gcpContainers []discovery_kit_api.Target
+	if config.IsPodZero() {
+		gcpKubernetesDeployments = createKubernetesDeploymentTargets(config.Config.GcpNodeCount, "gcp")
+		gcpKubernetesPods = createKubernetesPodTargets(gcpHosts, gcpKubernetesDeployments)
+		gcpKubernetesContainers = createKubernetesContainerTargets(gcpKubernetesPods)
+		gcpKubernetesNodes = createKubernetesNodeTargets(gcpKubernetesContainers)
+		gcpContainers = createContainerTargets(gcpKubernetesContainers)
+	}
 
-	azureKubernetesDeployments := createKubernetesDeploymentTargets(config.Config.AzureNodeCount, "azure")
-	azureKubernetesPods := createKubernetesPodTargets(azureHosts, azureKubernetesDeployments)
-	azureKubernetesContainers := createKubernetesContainerTargets(azureKubernetesPods)
-	azureKubernetesNodes := createKubernetesNodeTargets(azureKubernetesContainers)
-	azureContainers := createContainerTargets(azureKubernetesContainers)
-
+	var azureKubernetesDeployments []discovery_kit_api.Target
+	var azureKubernetesPods []discovery_kit_api.Target
+	var azureKubernetesContainers []discovery_kit_api.EnrichmentData
+	var azureKubernetesNodes []discovery_kit_api.Target
+	var azureContainers []discovery_kit_api.Target
+	if config.IsPodZero() {
+		azureKubernetesDeployments = createKubernetesDeploymentTargets(config.Config.AzureNodeCount, "azure")
+		azureKubernetesPods = createKubernetesPodTargets(azureHosts, azureKubernetesDeployments)
+		azureKubernetesContainers = createKubernetesContainerTargets(azureKubernetesPods)
+		azureKubernetesNodes = createKubernetesNodeTargets(azureKubernetesContainers)
+		azureContainers = createContainerTargets(azureKubernetesContainers)
+	}
 	return &TargetData{
 		hosts:                 append(append(ec2Hosts, gcpHosts...), azureHosts...),
 		ec2Instances:          ec2Instances,
