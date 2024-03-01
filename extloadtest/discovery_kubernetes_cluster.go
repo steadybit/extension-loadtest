@@ -4,7 +4,6 @@ import (
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
-	"strings"
 )
 
 func getDiscoveryKubernetesCluster() discovery_kit_api.DiscoveryDescription {
