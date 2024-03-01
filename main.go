@@ -7,6 +7,7 @@ package main
 import (
 	_ "github.com/KimMachineGun/automemlimit" // By default, it sets `GOMEMLIMIT` to 90% of cgroup's memory limit.
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
@@ -74,6 +75,9 @@ func main() {
 		Query:       "k8s.cluster-name=\"\" and k8s.namespace=\"\" and k8s.deployment=\"\"",
 	}))
 
+	if config.IsPodZero() {
+		log.Info().Msg("I am pod zero")
+	}
 	exthealth.SetReady(true)
 
 	exthttp.Listen(exthttp.ListenOpts{
