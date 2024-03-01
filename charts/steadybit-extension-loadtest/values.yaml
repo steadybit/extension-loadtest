@@ -104,8 +104,6 @@ updateStrategy:
   rollingUpdate:
     maxUnavailable: 1
 
-podManagementPolicy: Parallel
-
 # extra labels to apply to the Kubernetes resources
 extraLabels: {}
 

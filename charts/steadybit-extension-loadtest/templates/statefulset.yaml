@@ -10,6 +10,7 @@ metadata:
   {{- include "extensionlib.labels" (list .) | nindent 4 }}
 spec:
   serviceName: steadybit-extension-loadtest
+  podManagementPolicy: "Parallel"
   replicas: {{ .Values.loadtest.replicaCount }}
   selector:
     matchLabels:
@@ -18,7 +19,6 @@ spec:
     type: {{ .Values.updateStrategy.type }}
     {{- if eq .Values.updateStrategy.type "RollingUpdate" }}
   {{- end }}
-  podManagementPolicy: {{ .Values.podManagementPolicy }}
   template:
     metadata:
       labels:
