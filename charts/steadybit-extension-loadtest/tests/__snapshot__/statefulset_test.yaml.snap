@@ -9,6 +9,7 @@ manifest should match snapshot:
       name: RELEASE-NAME-steadybit-extension-loadtest
       namespace: NAMESPACE
     spec:
+      podManagementPolicy: Parallel
       replicas: 1
       selector:
         matchLabels:
