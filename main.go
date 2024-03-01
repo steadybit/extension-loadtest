@@ -25,6 +25,7 @@ import (
 )
 
 func main() {
+	extloadtest.InitLeaderElection()
 	extlogging.InitZeroLog()
 	extbuild.PrintBuildInformation()
 	extruntime.LogRuntimeInformation(zerolog.DebugLevel)

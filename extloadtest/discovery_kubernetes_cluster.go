@@ -17,15 +17,18 @@ func getDiscoveryKubernetesCluster() discovery_kit_api.DiscoveryDescription {
 }
 
 func createKubernetesClusterTargets() []discovery_kit_api.Target {
-	id := fmt.Sprintf("%s-%s", config.Config.ClusterName, config.Config.PodUID)
-	return []discovery_kit_api.Target{
-		{
-			Id:         id,
-			TargetType: "com.steadybit.extension_kubernetes.kubernetes-cluster",
-			Label:      config.Config.ClusterName,
-			Attributes: map[string][]string{
-				"k8s.cluster-name": {config.Config.ClusterName},
+	if IAmTheLeader {
+		id := fmt.Sprintf("%s", config.Config.ClusterName)
+		return []discovery_kit_api.Target{
+			{
+				Id:         id,
+				TargetType: "com.steadybit.extension_kubernetes.kubernetes-cluster",
+				Label:      config.Config.ClusterName,
+				Attributes: map[string][]string{
+					"k8s.cluster-name": {config.Config.ClusterName},
+				},
 			},
-		},
+		}
 	}
+	return []discovery_kit_api.Target{}
 }
