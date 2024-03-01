@@ -1,0 +1,101 @@
+manifest should match snapshot:
+  1: |
+    apiVersion: apps/v1
+    kind: StatefulSet
+    metadata:
+      labels:
+        steadybit.com/discovery-disabled: "true"
+        steadybit.com/extension: "true"
+      name: RELEASE-NAME-steadybit-extension-loadtest
+      namespace: NAMESPACE
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: RELEASE-NAME
+          app.kubernetes.io/name: steadybit-extension-loadtest
+      serviceName: steadybit-extension-loadtest
+      template:
+        metadata:
+          annotations:
+            oneagent.dynatrace.com/injection: "false"
+            steadybit.com/extension-auto-discovery: |
+              {"extensions":[{"port":8082,"protocol":"http","types":["ACTION","DISCOVERY","EVENT"]}]}
+          labels:
+            app.kubernetes.io/instance: RELEASE-NAME
+            app.kubernetes.io/name: steadybit-extension-loadtest
+            steadybit.com/discovery-disabled: "true"
+            steadybit.com/extension: "true"
+        spec:
+          containers:
+            - env:
+                - name: STEADYBIT_LOG_LEVEL
+                  value: INFO
+                - name: STEADYBIT_LOG_FORMAT
+                  value: text
+                - name: STEADYBIT_EXTENSION_CLUSTER_NAME
+                  value: cluster-loadtest
+                - name: STEADYBIT_EXTENSION_CONTAINER_PER_POD
+                  value: "2"
+                - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_EC2_NODE_COUNT
+                  value: "400"
+                - name: STEADYBIT_EXTENSION_GCP_NODE_COUNT
+                  value: "1"
+                - name: STEADYBIT_EXTENSION_AZURE_NODE_COUNT
+                  value: "1"
+                - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
+                  value: "4"
+                - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
+                  value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
+                - name: STEADYBIT_EXTENSION_POD_UID
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.uid
+                - name: STEADYBIT_EXTENSION_POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+              image: ghcr.io/steadybit/extension-loadtest:0.0.0
+              imagePullPolicy: IfNotPresent
+              livenessProbe:
+                failureThreshold: 5
+                httpGet:
+                  path: /health/liveness
+                  port: 8083
+                initialDelaySeconds: 10
+                periodSeconds: 10
+                successThreshold: 1
+                timeoutSeconds: 5
+              name: extension
+              readinessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /health/readiness
+                  port: 8083
+                initialDelaySeconds: 10
+                periodSeconds: 10
+                successThreshold: 1
+                timeoutSeconds: 1
+              resources:
+                limits:
+                  cpu: 200m
+                  memory: 512Mi
+                requests:
+                  cpu: 50m
+                  memory: 32Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                readOnlyRootFilesystem: true
+                runAsGroup: 10000
+                runAsNonRoot: true
+                runAsUser: 10000
+              volumeMounts: null
+          serviceAccountName: steadybit-extension-loadtest
+          volumes: null
+      updateStrategy:
+        type: RollingUpdate

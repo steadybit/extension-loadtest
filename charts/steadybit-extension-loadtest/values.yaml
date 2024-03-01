@@ -98,6 +98,12 @@ serviceAccount:
   # serviceAccount.name -- The name of the ServiceAccount to use.
   name: steadybit-extension-loadtest
 
+updateStrategy:
+  # updateStrategy.type -- Which type of `updateStrategy` should be used.
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+
 # extra labels to apply to the Kubernetes resources
 extraLabels: {}
 

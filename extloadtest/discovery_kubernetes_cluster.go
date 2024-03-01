@@ -4,6 +4,7 @@ import (
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
+	"strings"
 )
 
 func getDiscoveryKubernetesCluster() discovery_kit_api.DiscoveryDescription {
@@ -16,7 +17,7 @@ func getDiscoveryKubernetesCluster() discovery_kit_api.DiscoveryDescription {
 }
 
 func createKubernetesClusterTargets() []discovery_kit_api.Target {
-	if IAmTheLeader {
+	if strings.HasSuffix(config.Config.PodName, "0") {
 		return []discovery_kit_api.Target{
 			{
 				Id:         config.Config.ClusterName,

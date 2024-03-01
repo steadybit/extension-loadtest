@@ -17,6 +17,7 @@ import (
 type Specification struct {
 	ClusterName string `json:"clusterName" split_words:"true" required:"false" default:"cluster-loadtest"`
 	PodUID      string `json:"podUID" split_words:"true" required:"false" default:"PodUID1"`
+	PodName      string `json:"podName" split_words:"true" required:"false" default:"0"`
 
 	//2 containers per pod * 4 pods per deployment * 5 deployments per node * 400 nodes = 16000 containers
 	Ec2NodeCount       int `json:"ec2NodeCount" split_words:"true" required:"false" default:"2"`

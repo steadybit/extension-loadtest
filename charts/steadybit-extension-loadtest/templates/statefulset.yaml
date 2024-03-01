@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "extensionlib.names.fullname" . }}
   namespace: {{ .Release.Namespace }}
@@ -9,10 +9,15 @@ metadata:
   {{- end }}
   {{- include "extensionlib.labels" (list .) | nindent 4 }}
 spec:
+  serviceName: steadybit-extension-loadtest
   replicas: {{ .Values.loadtest.replicaCount }}
   selector:
     matchLabels:
       {{- include "extensionlib.selectorLabels" . | nindent 6 }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy.type }}
+    {{- if eq .Values.updateStrategy.type "RollingUpdate" }}
+  {{- end }}
   template:
     metadata:
       labels:
@@ -110,6 +115,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.uid
+            - name: STEADYBIT_EXTENSION_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
           {{- with .Values.extraEnvFrom }}
           envFrom:
             {{- toYaml . | nindent 12 }}
