@@ -23,7 +23,7 @@ func createKubernetesContainerTargets(podTargets []discovery_kit_api.Target) []d
 
 	for _, pod := range podTargets {
 		for containerIndex := 1; containerIndex <= config.Config.ContainerPerPod; containerIndex++ {
-			containerIdStripped := fmt.Sprintf("%s-c-%d",pod.Id, containerIndex)
+			containerIdStripped := fmt.Sprintf("%s-c-%d", pod.Id, containerIndex)
 			containerId := fmt.Sprintf("containerd://%s", containerIdStripped)
 			target := discovery_kit_api.EnrichmentData{
 				Id:                 containerId,
@@ -51,7 +51,7 @@ func createKubernetesContainerTargets(podTargets []discovery_kit_api.Target) []d
 					"k8s.pod.label.tags.datadoghq.com/version": {"1.0.0"},
 					"k8s.pod.name":                             {pod.Id},
 					"k8s.replicaset":                           pod.Attributes["k8s.replicaset"],
-					"k8s.service.name":                         {fmt.Sprintf("%s-%s-service",config.Config.PodUID, pod.Attributes["k8s.deployment"][0])},
+					"k8s.service.name":                         {fmt.Sprintf("%s-%s-service", config.Config.PodUID, pod.Attributes["k8s.deployment"][0])},
 				},
 			}
 			result = append(result, target)

@@ -23,7 +23,7 @@ func createKubernetesDeploymentTargets(nodeCount int, suffix string) []discovery
 	for i := 1; i <= count; i++ {
 		namespace := "loadtest-namespace"
 		deploymentWithOutPodUid := fmt.Sprintf("d-%d-%s", i, suffix)
-		deployment := fmt.Sprintf("%s-%s", config.Config.PodUID,deploymentWithOutPodUid)
+		deployment := fmt.Sprintf("%s-%s", config.Config.PodUID, deploymentWithOutPodUid)
 		deploymentLabel := fmt.Sprintf("%s-loadtest-deployment-%d-%s", config.Config.PodUID, i, suffix)
 		id := fmt.Sprintf("%s/%s/%s/%s", config.Config.PodUID, config.Config.ClusterName, namespace, deploymentWithOutPodUid)
 
