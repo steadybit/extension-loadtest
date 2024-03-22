@@ -18,13 +18,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-#      - name: SonarCloud Quality Gate check
+      - name: SonarCloud Quality Gate check
 #        if: ${{ startsWith(github.ref, 'refs/tags/') && env.sonar_available == 'true' }}
-#        uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
-#        # Force to fail step after specific time.
-#        timeout-minutes: 5
-#        env:
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        uses: sonarsource/sonarqube-quality-gate-action@v1.1.0
+        # Force to fail step after specific time.
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   test-2:
     runs-on: ubuntu-latest
