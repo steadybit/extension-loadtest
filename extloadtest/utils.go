@@ -27,6 +27,38 @@ func scheduleEnrichmentDataAttributeUpdateIfNecessary(items []discovery_kit_api.
 	})
 }
 
+func scheduleContainerTargetChanges(containers *[]discovery_kit_api.Target, backup *[]discovery_kit_api.Target) {
+	if config.Config.ContainerTargetCreationsAndDeletions > 0 {
+		interval := 180
+		delay := time.Duration(interval) * time.Second
+		_, err := scheduler.ScheduleWithFixedDelay(func(ctx context.Context) {
+			//restore previously deleted containers
+			restoredCount := len(*backup)
+			for _, container := range *backup {
+				*containers = append(*containers, container)
+			}
+			*backup = []discovery_kit_api.Target{}
+
+			//delete random containers
+			deletedCount := rand.Intn(config.Config.ContainerTargetCreationsAndDeletions)
+			log.Debug().Int("count", deletedCount).Msgf("Deleted containers")
+			for i := 0; i < deletedCount; i++ {
+				index := rand.Intn(len(*containers))
+				*backup = append(*backup, (*containers)[index])
+				*containers = append((*containers)[:index], (*containers)[index+1:]...)
+			}
+			log.Info().Msgf("Deleted %d containers and (re-)added %d containers. Total count is now %d", deletedCount, restoredCount, len(*containers))
+		}, delay, chrono.WithTime(time.Now().Add(delay)))
+		if err != nil {
+			log.Fatal().Msgf("Failed to schedule container target changes: %s", err.Error())
+		}
+		log.Info().
+			Int("interval", interval).
+			Int("maxCount", config.Config.ContainerTargetCreationsAndDeletions).
+			Msg("scheduled container target creation/deletion")
+	}
+}
+
 func scheduleAttributeUpdateIfNecessary[T any](items []T, typeId string, attributeMapAccessor func(item T) map[string][]string) {
 	spec := config.Config.FindAttributeUpdate(typeId)
 	if spec == nil {

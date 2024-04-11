@@ -92,6 +92,10 @@ spec:
             - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
               value: {{ .Values.loadtest.attributeUpdates | toJson | quote }}
             {{ end }}
+            {{ if .Values.loadtest.containerTargetCreationsAndDeletions -}}
+            - name: STEADYBIT_EXTENSION_CONTAINER_TARGET_CREATIONS_AND_DELETIONS
+              value: "{{ .Values.loadtest.containerTargetCreationsAndDeletions }}"
+            {{ end }}
             {{ if .Values.discovery.attributes.excludes.container -}}
             - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_CONTAINER
               value: {{ join "," .Values.discovery.attributes.excludes.container | quote }}

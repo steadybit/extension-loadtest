@@ -21,6 +21,7 @@ type TargetData struct {
 	kubernetesContainers  []discovery_kit_api.EnrichmentData
 	kubernetesNodes       []discovery_kit_api.Target
 	containers            []discovery_kit_api.Target
+	containersBackup      []discovery_kit_api.Target
 }
 
 func NewTargetData() *TargetData {
@@ -138,6 +139,7 @@ func (t *TargetData) ScheduleUpdates() {
 	scheduleTargetAttributeUpdateIfNecessary(t.kubernetesPods, "com.steadybit.extension_kubernetes.kubernetes-pod")
 	scheduleTargetAttributeUpdateIfNecessary(t.containers, "com.steadybit.extension_container.container")
 	scheduleEnrichmentDataAttributeUpdateIfNecessary(t.kubernetesContainers, "com.steadybit.extension_kubernetes.kubernetes-container")
+	scheduleContainerTargetChanges(&t.containers, &t.containersBackup)
 }
 
 func (t *TargetData) RegisterRecreateActions() {
