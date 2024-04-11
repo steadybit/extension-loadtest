@@ -34,9 +34,7 @@ func scheduleContainerTargetChanges(containers *[]discovery_kit_api.Target, back
 		_, err := scheduler.ScheduleWithFixedDelay(func(ctx context.Context) {
 			//restore previously deleted containers
 			restoredCount := len(*backup)
-			for _, container := range *backup {
-				*containers = append(*containers, container)
-			}
+			*containers = append(*containers, *backup...)
 			*backup = []discovery_kit_api.Target{}
 
 			//delete random containers
