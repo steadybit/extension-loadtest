@@ -28,8 +28,8 @@ func scheduleEnrichmentDataAttributeUpdateIfNecessary(items []discovery_kit_api.
 }
 
 func scheduleContainerTargetChanges(containers *[]discovery_kit_api.Target, backup *[]discovery_kit_api.Target) {
-	if config.Config.ContainerTargetCreationsAndDeletions > 0 {
-		interval := 180
+	if config.Config.ContainerTargetCreationsAndDeletions.Count > 0 {
+		interval := config.Config.ContainerTargetCreationsAndDeletions.Interval
 		delay := time.Duration(interval) * time.Second
 		_, err := scheduler.ScheduleWithFixedDelay(func(ctx context.Context) {
 			//restore previously deleted containers
@@ -38,7 +38,7 @@ func scheduleContainerTargetChanges(containers *[]discovery_kit_api.Target, back
 			*backup = []discovery_kit_api.Target{}
 
 			//delete random containers
-			deletedCount := rand.Intn(config.Config.ContainerTargetCreationsAndDeletions)
+			deletedCount := rand.Intn(config.Config.ContainerTargetCreationsAndDeletions.Count)
 			log.Debug().Int("count", deletedCount).Msgf("Deleted containers")
 			for i := 0; i < deletedCount; i++ {
 				index := rand.Intn(len(*containers))
@@ -52,7 +52,7 @@ func scheduleContainerTargetChanges(containers *[]discovery_kit_api.Target, back
 		}
 		log.Info().
 			Int("interval", interval).
-			Int("maxCount", config.Config.ContainerTargetCreationsAndDeletions).
+			Int("maxCount", config.Config.ContainerTargetCreationsAndDeletions.Count).
 			Msg("scheduled container target creation/deletion")
 	}
 }

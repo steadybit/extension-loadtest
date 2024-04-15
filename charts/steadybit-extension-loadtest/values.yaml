@@ -36,7 +36,9 @@ loadtest:
       attributeName: "k8s.label.change-ts"
       rate: 0.20
       interval: 180
-  containerTargetCreationsAndDeletions: 100
+  containerTargetCreationsAndDeletions:
+    count: 10
+    interval: 180
 
 
 tls:
