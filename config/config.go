@@ -31,7 +31,7 @@ type Specification struct {
 	AttributeUpdates AttributeUpdateSpecifications `split_words:"true" required:"false" default:"[{\"type\": \"com.steadybit.extension_aws.ec2-instance\", \"attributeName\": \"aws-ec2.label.change-ts\", \"rate\": 0.20, \"interval\": 600},{\"type\": \"com.steadybit.extension_container.container\", \"attributeName\": \"container.label.change-ts\", \"rate\": 0.20, \"interval\": 180},{\"type\": \"com.steadybit.extension_kubernetes.kubernetes-container\", \"attributeName\": \"k8s.label.change-ts\", \"rate\": 0.20, \"interval\": 180},{\"type\": \"com.steadybit.extension_kubernetes.kubernetes-deployment\", \"attributeName\": \"k8s.label.change-ts\", \"rate\": 0.20, \"interval\": 180}]"`
 
 	//Simulate created and deleted com.steadybit.extension_container.container targets every 180 seconds with a randomized count between 0 and the given value.
-	ContainerTargetCreationsAndDeletions ContainerTargetCreationsAndDeletionsSpecification `json:"containerTargetCreationsAndDeletions" split_words:"true" required:"false" default:"{\"count\": 10, \"interval\": 180}"`
+	ContainerTargetCreationsAndDeletions ContainerTargetCreationsAndDeletionsSpecification `split_words:"true" required:"false" default:"{\"count\": 10, \"interval\": 60}"`
 
 	DiscoveryAttributesExcludesContainer            []string `json:"discoveryAttributesExcludesContainer" split_words:"true" required:"false"`
 	DiscoveryAttributesExcludesEc2                  []string `json:"discoveryAttributesExcludesEc2" split_words:"true" required:"false"`
@@ -61,13 +61,23 @@ func (s *AttributeUpdateSpecifications) Decode(value string) error {
 type AttributeUpdateSpecification struct {
 	Type          string  `json:"type" split_words:"true"`
 	AttributeName string  `json:"attributeName" split_words:"true"`
-	Rate          float64 `json:"rate" split_words:"true" default:"0.20"`
-	Interval      int     `json:"interval" split_words:"true" default:"180"`
+	Rate          float64 `json:"rate" split_words:"true"`
+	Interval      int     `json:"interval" split_words:"true"`
+}
+
+func (s *ContainerTargetCreationsAndDeletionsSpecification) Decode(value string) error {
+	var spec ContainerTargetCreationsAndDeletionsSpecification
+	err := json.Unmarshal([]byte(value), &spec)
+	if err != nil {
+		return fmt.Errorf("invalid json: %w", err)
+	}
+	*s = spec
+	return nil
 }
 
 type ContainerTargetCreationsAndDeletionsSpecification struct {
-	Count    int `json:"count" split_words:"true" required:"false" default:"10"`
-	Interval int `json:"interval" split_words:"true" default:"180"`
+	Count    int `json:"count" split_words:"true"`
+	Interval int `json:"interval" split_words:"true"`
 }
 
 var (
