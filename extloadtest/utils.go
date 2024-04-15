@@ -35,6 +35,11 @@ func scheduleContainerTargetChanges(containers *[]discovery_kit_api.Target, back
 			//restore previously deleted containers
 			restoredCount := len(*backup)
 			*containers = append(*containers, *backup...)
+			if restoredCount > 0 {
+				for _, t := range *backup {
+					log.Debug().Str("id", t.Id).Msg("Restored container")
+				}
+			}
 			*backup = []discovery_kit_api.Target{}
 
 			//delete random containers
@@ -43,6 +48,7 @@ func scheduleContainerTargetChanges(containers *[]discovery_kit_api.Target, back
 			for i := 0; i < deletedCount; i++ {
 				index := rand.Intn(len(*containers))
 				*backup = append(*backup, (*containers)[index])
+				log.Debug().Str("id", (*containers)[index].Id).Msg("Deleted container")
 				*containers = append((*containers)[:index], (*containers)[index+1:]...)
 			}
 			log.Info().Msgf("Deleted %d containers and (re-)added %d containers. Total count is now %d", deletedCount, restoredCount, len(*containers))
