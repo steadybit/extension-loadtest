@@ -1,8 +1,6 @@
 module github.com/steadybit/extension-loadtest
 
-go 1.21.0
-
-toolchain go1.21.7
+go 1.22
 
 require (
 	github.com/KimMachineGun/automemlimit v0.6.0
