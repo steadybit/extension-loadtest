@@ -31,7 +31,7 @@ helm upgrade steadybit-extension-loadtest \
     --wait \
     --timeout 5m0s \
     --create-namespace \
-    --namespace steadybit-extension \
+    --namespace steadybit-agent \
     steadybit-extension-loadtest/steadybit-extension-loadtest
 ```
 
