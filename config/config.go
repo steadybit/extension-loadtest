@@ -40,6 +40,9 @@ type Specification struct {
 	DiscoveryAttributesExcludesKubernetesDeployment []string `json:"discoveryAttributesExcludesKubernetesDeployment" split_words:"true" required:"false"`
 	DiscoveryAttributesExcludesKubernetesContainer  []string `json:"discoveryAttributesExcludesKubernetesContainer" split_words:"true" required:"false"`
 	DiscoveryAttributesExcludesKubernetesNode       []string `json:"discoveryAttributesExcludesKubernetesNode" split_words:"true" required:"false"`
+
+	// Simulate multiple extensions
+	ServicesEnabled bool `json:"servicesEnabled" split_words:"true" required:"false" default:"false"`
 }
 
 func IsPodZero() bool {

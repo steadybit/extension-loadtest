@@ -2,12 +2,14 @@ package extloadtest
 
 import (
 	"context"
+	"fmt"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_sdk"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
+	"net/http"
 )
 
 type TargetData struct {
@@ -98,8 +100,41 @@ func (l ltTargetDiscovery) Describe() discovery_kit_api.DiscoveryDescription {
 	return l.description()
 }
 
-func (l ltTargetDiscovery) DiscoverTargets(_ context.Context) ([]discovery_kit_api.Target, error) {
+func (l ltTargetDiscovery) DiscoverTargets(ctx context.Context) ([]discovery_kit_api.Target, error) {
+	if config.Config.ServicesEnabled {
+		value := ctx.Value("httpRequest")
+		if value != nil {
+			httpRequest := value.(*http.Request)
+			if httpRequest != nil {
+				newTargets := make([]discovery_kit_api.Target, len(*l.targets))
+				copy(newTargets, *l.targets)
+				for i := range newTargets {
+					(newTargets)[i].Id = fmt.Sprintf("%s#%s", httpRequest.Host, (newTargets)[i].Id)
+					(newTargets)[i].Label = fmt.Sprintf("%s#%s", httpRequest.Host, (newTargets)[i].Label)
+					prefixAttribute(&newTargets[i], "host.hostname", httpRequest.Host)
+					prefixAttribute(&newTargets[i], "aws-ec2.hostname.internal", httpRequest.Host)
+					prefixAttribute(&newTargets[i], "azure-scale-set-instance.hostname", httpRequest.Host)
+					prefixAttribute(&newTargets[i], "azure-vm.hostname", httpRequest.Host)
+					prefixAttribute(&newTargets[i], "gcp-vm.hostname", httpRequest.Host)
+					prefixAttribute(&newTargets[i], "k8s.container.id.stripped", httpRequest.Host)
+					prefixAttribute(&newTargets[i], "k8s.node.name", httpRequest.Host)
+					prefixAttribute(&newTargets[i], "container.host", httpRequest.Host)
+					prefixAttribute(&newTargets[i], "container.host/name", httpRequest.Host)
+					prefixAttribute(&newTargets[i], "container.id", httpRequest.Host)
+					prefixAttribute(&newTargets[i], "container.id.stripped", httpRequest.Host)
+					prefixAttribute(&newTargets[i], "container.id.stripped", httpRequest.Host)
+				}
+				return newTargets, nil
+			}
+		}
+	}
 	return *l.targets, nil
+}
+
+func prefixAttribute(target *discovery_kit_api.Target, attributeName string, prefix string) {
+	if target.Attributes != nil && target.Attributes[attributeName] != nil && len(target.Attributes[attributeName]) > 0 {
+		target.Attributes[attributeName] = []string{fmt.Sprintf("%s#%s", prefix, target.Attributes[attributeName][0])}
+	}
 }
 
 type ltEdDiscovery struct {

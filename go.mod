@@ -11,7 +11,7 @@ require (
 	github.com/steadybit/action-kit/go/action_kit_sdk v1.1.9
 	github.com/steadybit/discovery-kit/go/discovery_kit_api v1.5.2
 	github.com/steadybit/discovery-kit/go/discovery_kit_commons v0.1.0
-	github.com/steadybit/discovery-kit/go/discovery_kit_sdk v1.0.7
+	github.com/steadybit/discovery-kit/go/discovery_kit_sdk v1.0.8-0.20240701141113-3ab9504da602
 	github.com/steadybit/event-kit/go/event_kit_api v1.3.1
 	github.com/steadybit/extension-kit v1.8.15
 	github.com/stretchr/testify v1.9.0
