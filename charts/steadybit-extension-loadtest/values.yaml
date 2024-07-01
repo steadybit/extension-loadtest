@@ -22,6 +22,12 @@ loadtest:
   deploymentsPerNode: 5
   podsPerDeployment: 4
   containerPerPod: 2
+  disableAWSDiscovery: "false"
+  disableGCPDiscovery: "false"
+  disableAzureDiscovery: "false"
+  disableKubernetesDiscovery: "false"
+  disableHostDiscovery: "false"
+  disableContainerDiscovery: "false"
   attributeUpdates:
     - type: "com.steadybit.extension_aws.ec2-instance"
       attributeName: "aws-ec2.label.change-ts"

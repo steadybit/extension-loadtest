@@ -54,6 +54,18 @@ manifest should match snapshot:
                   value: '{"count":10,"interval":180}'
                 - name: STEADYBIT_EXTENSION_SERVICES_ENABLED
                   value: "false"
+                - name: STEADYBIT_EXTENSION_DISABLE_AWS_DISCOVERY
+                  value: "false"
+                - name: STEADYBIT_EXTENSION_DISABLE_GCP_DISCOVERY
+                  value: "false"
+                - name: STEADYBIT_EXTENSION_DISABLE_AZURE_DISCOVERY
+                  value: "false"
+                - name: STEADYBIT_EXTENSION_DISABLE_KUBERNETES_DISCOVERY
+                  value: "false"
+                - name: STEADYBIT_EXTENSION_DISABLE_HOST_DISCOVERY
+                  value: "false"
+                - name: STEADYBIT_EXTENSION_DISABLE_CONTAINER_DISCOVERY
+                  value: "false"
                 - name: STEADYBIT_EXTENSION_POD_UID
                   valueFrom:
                     fieldRef:

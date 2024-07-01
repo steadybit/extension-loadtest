@@ -114,6 +114,18 @@ spec:
             - name: STEADYBIT_EXTENSION_SERVICES_ENABLED
               value: {{ .Values.loadtest.servicesEnabled | quote }}
             {{ end }}
+            - name: STEADYBIT_EXTENSION_DISABLE_AWS_DISCOVERY
+              value: {{ .Values.loadtest.disableAWSDiscovery | quote }}
+            - name: STEADYBIT_EXTENSION_DISABLE_GCP_DISCOVERY
+              value: {{ .Values.loadtest.disableGCPDiscovery | quote }}
+            - name: STEADYBIT_EXTENSION_DISABLE_AZURE_DISCOVERY
+              value: {{ .Values.loadtest.disableAzureDiscovery | quote }}
+            - name: STEADYBIT_EXTENSION_DISABLE_KUBERNETES_DISCOVERY
+              value: {{ .Values.loadtest.disableKubernetesDiscovery | quote }}
+            - name: STEADYBIT_EXTENSION_DISABLE_HOST_DISCOVERY
+              value: {{ .Values.loadtest.disableHostDiscovery | quote }}
+            - name: STEADYBIT_EXTENSION_DISABLE_CONTAINER_DISCOVERY
+              value: {{ .Values.loadtest.disableContainerDiscovery | quote }}
             {{ if .Values.discovery.attributes.excludes.kubernetes.container -}}
             - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_KUBERNETES_CONTAINER
               value: {{ join "," .Values.discovery.attributes.excludes.kubernetes.container | quote }}
