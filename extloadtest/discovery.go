@@ -111,7 +111,7 @@ func (l ltTargetDiscovery) DiscoverTargets(ctx context.Context) ([]discovery_kit
 				for i := range *l.targets {
 					newTargets[i] = discovery_kit_api.Target{
 						Id:         fmt.Sprintf("%s#%s", httpRequest.Host, (*l.targets)[i].Id),
-						TargetType: (newTargets)[i].TargetType,
+						TargetType: (*l.targets)[i].TargetType,
 						Label:      fmt.Sprintf("%s#%s", httpRequest.Host, (*l.targets)[i].Label),
 						Attributes: make(map[string][]string),
 					}
