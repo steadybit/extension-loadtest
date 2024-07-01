@@ -107,10 +107,18 @@ func (l ltTargetDiscovery) DiscoverTargets(ctx context.Context) ([]discovery_kit
 			httpRequest := value.(*http.Request)
 			if httpRequest != nil {
 				newTargets := make([]discovery_kit_api.Target, len(*l.targets))
-				copy(newTargets, *l.targets)
-				for i := range newTargets {
-					(newTargets)[i].Id = fmt.Sprintf("%s#%s", httpRequest.Host, (newTargets)[i].Id)
-					(newTargets)[i].Label = fmt.Sprintf("%s#%s", httpRequest.Host, (newTargets)[i].Label)
+				//copy(newTargets, *l.targets)
+				for i := range *l.targets {
+					newTargets[i] = discovery_kit_api.Target{
+						Id:         fmt.Sprintf("%s#%s", httpRequest.Host, (*l.targets)[i].Id),
+						TargetType: (newTargets)[i].TargetType,
+						Label:      fmt.Sprintf("%s#%s", httpRequest.Host, (*l.targets)[i].Label),
+						Attributes: make(map[string][]string),
+					}
+					for k, v := range (*l.targets)[i].Attributes {
+						newTargets[i].Attributes[k] = make([]string, len(v))
+						copy(newTargets[i].Attributes[k], v)
+					}
 					prefixAttribute(&newTargets[i], "host.hostname", httpRequest.Host)
 					prefixAttribute(&newTargets[i], "aws-ec2.hostname.internal", httpRequest.Host)
 					prefixAttribute(&newTargets[i], "azure-scale-set-instance.hostname", httpRequest.Host)
@@ -177,16 +185,32 @@ func (t *TargetData) RegisterDiscoveries() {
 }
 
 func (t *TargetData) ScheduleUpdates() {
-	scheduleTargetAttributeUpdateIfNecessary(t.hosts, "com.steadybit.extension_host.host")
-	scheduleTargetAttributeUpdateIfNecessary(t.ec2Instances, "com.steadybit.extension_aws.ec2-instance")
-	scheduleTargetAttributeUpdateIfNecessary(t.gcpInstances, "com.steadybit.extension_gcp.vm")
-	scheduleTargetAttributeUpdateIfNecessary(t.azureInstances, "com.steadybit.extension_azure.scale_set.instance")
-	scheduleTargetAttributeUpdateIfNecessary(t.kubernetesClusters, "com.steadybit.extension_kubernetes.kubernetes-cluster")
-	scheduleTargetAttributeUpdateIfNecessary(t.kubernetesDeployments, "com.steadybit.extension_kubernetes.kubernetes-deployment")
-	scheduleTargetAttributeUpdateIfNecessary(t.kubernetesPods, "com.steadybit.extension_kubernetes.kubernetes-pod")
-	scheduleTargetAttributeUpdateIfNecessary(t.containers, "com.steadybit.extension_container.container")
-	scheduleEnrichmentDataAttributeUpdateIfNecessary(t.kubernetesContainers, "com.steadybit.extension_kubernetes.kubernetes-container")
-	scheduleContainerTargetChanges(&t.containers, &t.containersBackup)
+	if !config.Config.DisableHostDiscovery {
+		scheduleTargetAttributeUpdateIfNecessary(t.hosts, "com.steadybit.extension_host.host")
+	}
+	if !config.Config.DisableAWSDiscovery {
+		scheduleTargetAttributeUpdateIfNecessary(t.ec2Instances, "com.steadybit.extension_aws.ec2-instance")
+	}
+	if !config.Config.DisableGCPDiscovery {
+		scheduleTargetAttributeUpdateIfNecessary(t.gcpInstances, "com.steadybit.extension_gcp.vm")
+	}
+	if !config.Config.DisableAzureDiscovery {
+		scheduleTargetAttributeUpdateIfNecessary(t.azureInstances, "com.steadybit.extension_azure.scale_set.instance")
+	}
+	if !config.Config.DisableKubernetesDiscovery {
+		scheduleTargetAttributeUpdateIfNecessary(t.kubernetesClusters, "com.steadybit.extension_kubernetes.kubernetes-cluster")
+		scheduleTargetAttributeUpdateIfNecessary(t.kubernetesDeployments, "com.steadybit.extension_kubernetes.kubernetes-deployment")
+		scheduleTargetAttributeUpdateIfNecessary(t.kubernetesPods, "com.steadybit.extension_kubernetes.kubernetes-pod")
+	}
+	if !config.Config.DisableContainerDiscovery {
+		scheduleTargetAttributeUpdateIfNecessary(t.containers, "com.steadybit.extension_container.container")
+	}
+	if !config.Config.DisableKubernetesDiscovery {
+		scheduleEnrichmentDataAttributeUpdateIfNecessary(t.kubernetesContainers, "com.steadybit.extension_kubernetes.kubernetes-container")
+	}
+	if !config.Config.DisableContainerDiscovery {
+		scheduleContainerTargetChanges(&t.containers, &t.containersBackup)
+	}
 }
 
 func (t *TargetData) RegisterRecreateActions() {
