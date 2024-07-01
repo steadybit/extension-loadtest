@@ -52,6 +52,8 @@ manifest should match snapshot:
                   value: '[{"attributeName":"aws-ec2.label.change-ts","interval":600,"rate":0.2,"type":"com.steadybit.extension_aws.ec2-instance"},{"attributeName":"container.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_container.container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-container"},{"attributeName":"k8s.label.change-ts","interval":180,"rate":0.2,"type":"com.steadybit.extension_kubernetes.kubernetes-deployment"}]'
                 - name: STEADYBIT_EXTENSION_CONTAINER_TARGET_CREATIONS_AND_DELETIONS
                   value: '{"count":10,"interval":180}'
+                - name: STEADYBIT_EXTENSION_SERVICES_ENABLED
+                  value: "false"
                 - name: STEADYBIT_EXTENSION_POD_UID
                   valueFrom:
                     fieldRef:
@@ -61,7 +63,7 @@ manifest should match snapshot:
                     fieldRef:
                       fieldPath: metadata.name
               image: ghcr.io/steadybit/extension-loadtest:0.0.0
-              imagePullPolicy: IfNotPresent
+              imagePullPolicy: Always
               livenessProbe:
                 failureThreshold: 5
                 httpGet:

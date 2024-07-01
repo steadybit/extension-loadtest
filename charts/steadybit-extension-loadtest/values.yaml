@@ -8,10 +8,13 @@ image:
   # See https://github.com/steadybit/extension-loadtest/pkgs/container/extension-loadtest/versions for all tags.
   tag: null
   # image.pullPolicy -- Specifies when to pull the image container.
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 loadtest:
   replicaCount: 1
+  servicesEnabled: "false"
+  servicePortFrom: 9000
+  servicePortTo: 9002
   clusterName: "cluster-loadtest"
   ec2NodeCount: 400
   gcpNodeCount: 1

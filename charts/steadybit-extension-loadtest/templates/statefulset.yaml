@@ -32,7 +32,9 @@ spec:
         {{- end }}
       annotations:
         oneagent.dynatrace.com/injection: "false"
+        {{ if eq .Values.loadtest.servicesEnabled "false" }}
         {{- include "extensionlib.annotation" (list . 8082 (list "ACTION" "DISCOVERY" "EVENT") ) | nindent 8 }}
+        {{- end }}
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -107,6 +109,10 @@ spec:
             {{ if .Values.discovery.attributes.excludes.host -}}
             - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_HOST
               value: {{ join "," .Values.discovery.attributes.excludes.host | quote }}
+            {{ end }}
+            {{ if .Values.loadtest.servicesEnabled -}}
+            - name: STEADYBIT_EXTENSION_SERVICES_ENABLED
+              value: {{ .Values.loadtest.servicesEnabled | quote }}
             {{ end }}
             {{ if .Values.discovery.attributes.excludes.kubernetes.container -}}
             - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_KUBERNETES_CONTAINER

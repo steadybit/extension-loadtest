@@ -1,0 +1,23 @@
+{{- if eq .Values.loadtest.servicesEnabled "true"}}
+{{- range untilStep (.Values.loadtest.servicePortFrom | int) (.Values.loadtest.servicePortTo| int)  1 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: steadybit-extension-loadtest-{{ . }}
+    meta.helm.sh/release-namespace: steadybit-agent
+    steadybit.com/extension-auto-discovery: |
+      {"extensions":[{"port":{{ . }},"protocol":"http","types":["ACTION","DISCOVERY"]}]}
+  name: steadybit-extension-loadtest-{{ . }}
+  namespace: steadybit-agent
+spec:
+  ports:
+    - port: {{ . }}
+      protocol: TCP
+      targetPort: 8082
+  selector:
+    app.kubernetes.io/instance: steadybit-extension-loadtest
+    app.kubernetes.io/name: steadybit-extension-loadtest
+{{- end }}
+{{- end }}
