@@ -77,6 +77,8 @@ spec:
               value: "{{ .Values.loadtest.gcpNodeCount }}"
             - name: STEADYBIT_EXTENSION_AZURE_NODE_COUNT
               value: "{{ .Values.loadtest.azureNodeCount }}"
+            - name: STEADYBIT_EXTENSION_DISCOVERY_DELAY_IN_MS
+              value: "{{ .Values.loadtest.discoveryDelayInMs }}"
             {{ if .Values.loadtest.podsPerDeployment -}}
             - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
               value: "{{ .Values.loadtest.podsPerDeployment }}"

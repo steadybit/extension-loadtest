@@ -28,6 +28,7 @@ loadtest:
   disableKubernetesDiscovery: "false"
   disableHostDiscovery: "false"
   disableContainerDiscovery: "false"
+  discoveryDelayInMs: 0
   attributeUpdates:
     - type: "com.steadybit.extension_aws.ec2-instance"
       attributeName: "aws-ec2.label.change-ts"

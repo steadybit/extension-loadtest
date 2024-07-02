@@ -46,6 +46,8 @@ manifest should match snapshot:
                   value: "1"
                 - name: STEADYBIT_EXTENSION_AZURE_NODE_COUNT
                   value: "1"
+                - name: STEADYBIT_EXTENSION_DISCOVERY_DELAY_IN_MS
+                  value: "0"
                 - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
                   value: "4"
                 - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES

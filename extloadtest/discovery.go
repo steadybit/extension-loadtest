@@ -10,6 +10,7 @@ import (
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
 	"net/http"
+	"time"
 )
 
 type TargetData struct {
@@ -101,6 +102,9 @@ func (l ltTargetDiscovery) Describe() discovery_kit_api.DiscoveryDescription {
 }
 
 func (l ltTargetDiscovery) DiscoverTargets(ctx context.Context) ([]discovery_kit_api.Target, error) {
+	if config.Config.DiscoveryDelayInMs > 0 {
+		time.Sleep(time.Duration(config.Config.DiscoveryDelayInMs) * time.Millisecond)
+	}
 	if config.Config.ServicesEnabled {
 		value := ctx.Value("httpRequest")
 		if value != nil {
