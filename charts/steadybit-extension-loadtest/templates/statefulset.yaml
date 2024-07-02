@@ -71,18 +71,12 @@ spec:
             - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
               value: "{{ .Values.loadtest.deploymentsPerNode }}"
             {{ end }}
-            {{ if .Values.loadtest.ec2NodeCount -}}
             - name: STEADYBIT_EXTENSION_EC2_NODE_COUNT
               value: "{{ .Values.loadtest.ec2NodeCount }}"
-            {{ end }}
-            {{ if .Values.loadtest.gcpNodeCount -}}
             - name: STEADYBIT_EXTENSION_GCP_NODE_COUNT
               value: "{{ .Values.loadtest.gcpNodeCount }}"
-            {{ end }}
-            {{ if .Values.loadtest.azureNodeCount -}}
             - name: STEADYBIT_EXTENSION_AZURE_NODE_COUNT
               value: "{{ .Values.loadtest.azureNodeCount }}"
-            {{ end }}
             {{ if .Values.loadtest.podsPerDeployment -}}
             - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
               value: "{{ .Values.loadtest.podsPerDeployment }}"

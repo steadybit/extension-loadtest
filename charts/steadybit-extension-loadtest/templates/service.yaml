@@ -1,5 +1,5 @@
 {{- if eq .Values.loadtest.servicesEnabled "true"}}
-{{- range untilStep (.Values.loadtest.servicePortFrom | int) (.Values.loadtest.servicePortTo| int)  1 }}
+{{- range untilStep (.Values.loadtest.servicePortFrom | int) (add .Values.loadtest.servicePortTo 1 | int)  1 }}
 ---
 apiVersion: v1
 kind: Service

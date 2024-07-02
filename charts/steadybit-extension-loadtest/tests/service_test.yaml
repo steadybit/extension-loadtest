@@ -5,6 +5,8 @@ tests:
     set:
       loadtest:
         servicesEnabled: "true"
+        servicePortFrom: 9000
+        servicePortTo: 9002
     asserts:
       - matchSnapshot: {}
 
