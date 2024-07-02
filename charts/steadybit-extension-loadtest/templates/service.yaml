@@ -18,6 +18,6 @@ spec:
       targetPort: 8082
   selector:
     app.kubernetes.io/instance: steadybit-extension-loadtest
-    app.kubernetes.io/name: steadybit-extension-loadtest
+    app.kubernetes.io/name: {{ include "extensionlib.names.fullname" $ }}
 {{- end }}
 {{- end }}
