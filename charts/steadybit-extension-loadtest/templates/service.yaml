@@ -17,7 +17,6 @@ spec:
       protocol: TCP
       targetPort: 8082
   selector:
-    app.kubernetes.io/instance: steadybit-extension-loadtest
-    app.kubernetes.io/name: {{ include "extensionlib.names.fullname" $ }}
+      {{- include "extensionlib.selectorLabels" $ | nindent 4 }}
 {{- end }}
 {{- end }}
