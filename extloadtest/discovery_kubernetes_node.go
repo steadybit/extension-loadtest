@@ -1,7 +1,6 @@
 package extloadtest
 
 import (
-	"fmt"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_commons"
 	"github.com/steadybit/extension-kit/extutil"
@@ -49,7 +48,7 @@ func createKubernetesNodeTargets(containerTargets []discovery_kit_api.Enrichment
 
 	var result = make([]discovery_kit_api.Target, 0, len(data))
 	for hostName, nodeData := range data {
-		fmt.Println(hostName, nodeData)
+		//fmt.Println(hostName, nodeData)
 
 		target := discovery_kit_api.Target{
 			Id:         hostName,

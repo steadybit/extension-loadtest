@@ -3,6 +3,7 @@ package extloadtest
 import (
 	"context"
 	"fmt"
+	"github.com/rs/zerolog/log"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
@@ -78,6 +79,39 @@ func NewTargetData() *TargetData {
 		azureKubernetesNodes = createKubernetesNodeTargets(azureKubernetesContainers)
 		azureContainers = createContainerTargets(azureKubernetesContainers)
 	}
+	// count generated targets
+	log.Info().Msgf("Generated %d hosts", len(ec2Hosts)+len(gcpHosts)+len(azureHosts))
+	log.Info().Msgf("Generated %d ec2 instances", len(ec2Instances))
+	log.Info().Msgf("Generated %d gcp instances", len(gcpInstances))
+	log.Info().Msgf("Generated %d azure instances", len(azureInstances))
+	log.Info().Msgf("Generated %d kubernetes clusters", len(kubernetesClusters))
+	log.Info().Msgf("Generated %d kubernetes deployments", len(ec2KubernetesDeployments)+len(gcpKubernetesDeployments)+len(azureKubernetesDeployments))
+	log.Info().Msgf("Generated %d kubernetes pods", len(ec2KubernetesPods)+len(gcpKubernetesPods)+len(azureKubernetesPods))
+	log.Info().Msgf("Generated %d kubernetes containers", len(ec2KubernetesContainers)+len(gcpKubernetesContainers)+len(azureKubernetesContainers))
+	log.Info().Msgf("Generated %d kubernetes nodes", len(ec2KubernetesNodes)+len(gcpKubernetesNodes)+len(azureKubernetesNodes))
+	log.Info().Msgf("Generated %d containers", len(ec2Containers)+len(gcpContainers)+len(azureContainers))
+
+	var targetsAvailable = 0;
+	if !config.Config.DisableHostDiscovery {
+		targetsAvailable += len(ec2Hosts) + len(gcpHosts) + len(azureHosts)
+	}
+	if !config.Config.DisableAWSDiscovery {
+		targetsAvailable += len(ec2Instances)
+	}
+	if !config.Config.DisableGCPDiscovery {
+		targetsAvailable += len(gcpInstances)
+	}
+	if !config.Config.DisableAzureDiscovery {
+		targetsAvailable += len(azureInstances)
+	}
+	if !config.Config.DisableKubernetesDiscovery {
+		targetsAvailable += len(kubernetesClusters) + len(ec2KubernetesDeployments) + len(gcpKubernetesDeployments) + len(azureKubernetesDeployments) + len(ec2KubernetesPods) + len(gcpKubernetesPods) + len(azureKubernetesPods) + len(ec2KubernetesContainers) + len(gcpKubernetesContainers) + len(azureKubernetesContainers) + len(ec2KubernetesNodes) + len(gcpKubernetesNodes) + len(azureKubernetesNodes)
+	}
+	if !config.Config.DisableContainerDiscovery {
+		targetsAvailable += len(ec2Containers) + len(gcpContainers) + len(azureContainers)
+	}
+	log.Info().Msgf("Total targets available: %d", targetsAvailable)
+
 	return &TargetData{
 		hosts:                 append(append(ec2Hosts, gcpHosts...), azureHosts...),
 		ec2Instances:          ec2Instances,
