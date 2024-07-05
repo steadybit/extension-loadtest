@@ -52,6 +52,10 @@ type Specification struct {
 	DisableHostDiscovery       bool `json:"disableHostDiscovery" split_words:"true" required:"false" default:"false"`
 	DisableContainerDiscovery  bool `json:"disableContainerDiscovery" split_words:"true" required:"false" default:"false"`
 
+	// Simulate Enrichments
+	EnrichmentHostToContainerEnabled bool `json:"enrichmentHostToContainerEnabled" split_words:"true" required:"false" default:"false"`
+	EnrichmentContainerToHostEnabled bool `json:"enrichmentContainerToHostEnabled" split_words:"true" required:"false" default:"false"`
+
 	// discovery delay in ms
 	DiscoveryDelayInMs int `json:"discoveryDelayInMs" split_words:"true" required:"false" default:"0"`
 }

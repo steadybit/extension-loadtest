@@ -45,6 +45,8 @@ func main() {
 	targetData.RegisterDiscoveries()
 	targetData.RegisterRecreateActions()
 
+	discovery_kit_sdk.Register(extloadtest.NewEnrichmentRuleProvider())
+
 	action_kit_sdk.InstallSignalHandler()
 	action_kit_sdk.RegisterCoverageEndpoints()
 
