@@ -26,6 +26,9 @@ func (d *ltEnrichmentRuleProvider) DescribeEnrichmentRules() []discovery_kit_api
 	if config.Config.EnrichmentContainerToHostEnabled {
 		result = append(result, getContainerToHostEnrichmentRule())
 	}
+	if config.Config.EnrichmentEC2ToHostEnabled {
+		result = append(result, getEC2ToHostEnrichmentRule())
+	}
 	return result
 }
 
@@ -74,6 +77,53 @@ func getContainerToHostEnrichmentRule() discovery_kit_api.TargetEnrichmentRule {
 			{
 				Matcher: discovery_kit_api.Equals,
 				Name:    "container.id",
+			},
+		},
+	}
+}
+func getEC2ToHostEnrichmentRule() discovery_kit_api.TargetEnrichmentRule {
+	return discovery_kit_api.TargetEnrichmentRule{
+		Id:      "com.steadybit.extension_loadtest.ec2-to-host",
+		Version: extbuild.GetSemverVersionStringOrUnknown(),
+		Src: discovery_kit_api.SourceOrDestination{
+			Type: "com.steadybit.extension_aws.ec2-instance",
+			Selector: map[string]string{
+				"aws-ec2.hostname.internal": "${dest.host.hostname}",
+			},
+		},
+		Dest: discovery_kit_api.SourceOrDestination{
+			Type: "com.steadybit.extension_host.host",
+			Selector: map[string]string{
+				"host.hostname": "${src.aws-ec2.hostname.internal}",
+			},
+		},
+		Attributes: []discovery_kit_api.Attribute{
+			{
+				Matcher: discovery_kit_api.Equals,
+				Name:    "aws.account",
+			}, {
+				Matcher: discovery_kit_api.Equals,
+				Name:    "aws.region",
+			},
+			{
+				Matcher: discovery_kit_api.Equals,
+				Name:    "aws.zone",
+			},
+			{
+				Matcher: discovery_kit_api.Equals,
+				Name:    "aws-ec2.arn",
+			},
+			{
+				Matcher: discovery_kit_api.Equals,
+				Name:    "aws-ec2.instance.id",
+			},
+			{
+				Matcher: discovery_kit_api.Equals,
+				Name:    "aws-ec2.instance.name",
+			},
+			{
+				Matcher: discovery_kit_api.StartsWith,
+				Name:    "aws-ec2.label.",
 			},
 		},
 	}

@@ -55,6 +55,7 @@ type Specification struct {
 	// Simulate Enrichments
 	EnrichmentHostToContainerEnabled bool `json:"enrichmentHostToContainerEnabled" split_words:"true" required:"false" default:"false"`
 	EnrichmentContainerToHostEnabled bool `json:"enrichmentContainerToHostEnabled" split_words:"true" required:"false" default:"false"`
+	EnrichmentEC2ToHostEnabled bool `json:"enrichmentEC2ToHostEnabled" split_words:"true" required:"false" default:"false"`
 
 	// discovery delay in ms
 	DiscoveryDelayInMs int `json:"discoveryDelayInMs" split_words:"true" required:"false" default:"0"`
