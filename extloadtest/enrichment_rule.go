@@ -26,7 +26,7 @@ func (d *ltEnrichmentRuleProvider) DescribeEnrichmentRules() []discovery_kit_api
 	if config.Config.EnrichmentContainerToHostEnabled {
 		result = append(result, getContainerToHostEnrichmentRule())
 	}
-	if config.Config.EnrichmentEC2ToHostEnabled {
+	if config.Config.EnrichmentEc2ToHostEnabled {
 		result = append(result, getEC2ToHostEnrichmentRule())
 	}
 	return result
