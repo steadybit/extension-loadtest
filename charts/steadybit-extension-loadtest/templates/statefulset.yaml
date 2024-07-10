@@ -90,9 +90,9 @@ spec:
             - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
               value: {{ .Values.loadtest.attributeUpdates | toJson | quote }}
             {{ end }}
-            {{ if .Values.loadtest.containerTargetCreationsAndDeletions -}}
-            - name: STEADYBIT_EXTENSION_CONTAINER_TARGET_CREATIONS_AND_DELETIONS
-              value: {{ .Values.loadtest.containerTargetCreationsAndDeletions | toJson | quote }}
+            {{ if .Values.loadtest.targetReplacements -}}
+            - name: STEADYBIT_EXTENSION_TARGET_REPLACEMENTS
+              value: {{ .Values.loadtest.targetReplacements | toJson | quote }}
             {{ end }}
             {{ if .Values.discovery.attributes.excludes.container -}}
             - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_CONTAINER

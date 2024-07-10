@@ -30,42 +30,6 @@ func scheduleEnrichmentDataAttributeUpdateIfNecessary(items []discovery_kit_api.
 	})
 }
 
-func scheduleContainerTargetChanges(containers *[]discovery_kit_api.Target, backup *[]discovery_kit_api.Target) {
-	if config.Config.ContainerTargetCreationsAndDeletions.Count > 0 {
-		interval := config.Config.ContainerTargetCreationsAndDeletions.Interval
-		delay := time.Duration(interval) * time.Second
-		_, err := scheduler.ScheduleWithFixedDelay(func(ctx context.Context) {
-			//restore previously deleted containers
-			restoredCount := len(*backup)
-			*containers = append(*containers, *backup...)
-			if restoredCount > 0 {
-				for _, t := range *backup {
-					log.Debug().Str("id", t.Id).Msg("Restored container")
-				}
-			}
-			*backup = []discovery_kit_api.Target{}
-
-			//delete random containers
-			deletedCount := rand.Intn(config.Config.ContainerTargetCreationsAndDeletions.Count)
-			log.Debug().Int("count", deletedCount).Msgf("Deleted containers")
-			for i := 0; i < deletedCount; i++ {
-				index := rand.Intn(len(*containers))
-				*backup = append(*backup, (*containers)[index])
-				log.Debug().Str("id", (*containers)[index].Id).Msg("Deleted container")
-				*containers = append((*containers)[:index], (*containers)[index+1:]...)
-			}
-			log.Info().Msgf("Deleted %d containers and (re-)added %d containers. Total count is now %d", deletedCount, restoredCount, len(*containers))
-		}, delay, chrono.WithTime(time.Now().Add(delay)))
-		if err != nil {
-			log.Fatal().Msgf("Failed to schedule container target changes: %s", err.Error())
-		}
-		log.Info().
-			Int("interval", interval).
-			Int("maxCount", config.Config.ContainerTargetCreationsAndDeletions.Count).
-			Msg("scheduled container target creation/deletion")
-	}
-}
-
 func scheduleAttributeUpdateIfNecessary[T any](items []T, typeId string, attributeMapAccessor func(item T) map[string][]string) {
 	spec := config.Config.FindAttributeUpdate(typeId)
 	if spec == nil || spec.Rate <= 0.00000000001 {
@@ -88,6 +52,58 @@ func scheduleAttributeUpdateIfNecessary[T any](items []T, typeId string, attribu
 	if err != nil {
 		log.Fatal().Msgf("Failed to schedule attribute updates for '%s': %s", typeId, err.Error())
 	}
+}
+
+func scheduleTargetReplacementIfNecessary(targets, backup *[]discovery_kit_api.Target, typeId string) {
+	scheduleReplacementIfNecessary(targets, backup, typeId, func(t discovery_kit_api.Target) string {
+		return t.Id
+	})
+}
+
+func scheduleEnrichmentDataReplacementIfNecessary(targets, backup *[]discovery_kit_api.EnrichmentData, typeId string) {
+	scheduleReplacementIfNecessary(targets, backup, typeId, func(t discovery_kit_api.EnrichmentData) string {
+		return t.Id
+	})
+}
+
+func scheduleReplacementIfNecessary[T any](targets, backup *[]T, typeId string, id func(T) string) {
+	spec := config.Config.FindTargetReplacementsSpecification(typeId)
+	if spec == nil || spec.Count <= 0 {
+		return
+	}
+
+	interval := spec.Interval
+	delay := time.Duration(interval) * time.Second
+	_, err := scheduler.ScheduleWithFixedDelay(func(ctx context.Context) {
+		//restore previously deleted containers
+		restoredCount := len(*backup)
+		*targets = append(*targets, *backup...)
+		if restoredCount > 0 {
+			for _, t := range *backup {
+				log.Debug().Str("id", id(t)).Msg("Restored container")
+			}
+		}
+
+		*backup = []T{}
+		//delete random targets
+		deletedCount := rand.Intn(spec.Count)
+		log.Debug().Int("count", deletedCount).Msgf("Deleted targets")
+		for i := 0; i < deletedCount; i++ {
+			index := rand.Intn(len(*targets))
+			*backup = append(*backup, (*targets)[index])
+			log.Debug().Str("id", id((*targets)[index])).Msg("Deleted target")
+			*targets = append((*targets)[:index], (*targets)[index+1:]...)
+		}
+		log.Info().Msgf("Deleted %d targets and (re-)added %d targets. Total count is now %d", deletedCount, restoredCount, len(*targets))
+	}, delay, chrono.WithTime(time.Now().Add(delay)))
+
+	if err != nil {
+		log.Fatal().Msgf("Failed to schedule %s changes: %s", typeId, err.Error())
+	}
+	log.Info().
+		Int("interval", interval).
+		Int("maxCount", spec.Count).
+		Msgf("scheduled container %s creation/deletion", typeId)
 }
 
 func initAttributes[T any](items []T, spec *config.AttributeUpdateSpecification, getAttributeMap func(item T) map[string][]string) {

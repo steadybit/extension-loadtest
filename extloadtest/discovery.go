@@ -15,17 +15,26 @@ import (
 )
 
 type TargetData struct {
-	hosts                 []discovery_kit_api.Target
-	ec2Instances          []discovery_kit_api.Target
-	azureInstances        []discovery_kit_api.Target
-	gcpInstances          []discovery_kit_api.Target
-	kubernetesClusters    []discovery_kit_api.Target
-	kubernetesDeployments []discovery_kit_api.Target
-	kubernetesPods        []discovery_kit_api.Target
-	kubernetesContainers  []discovery_kit_api.EnrichmentData
-	kubernetesNodes       []discovery_kit_api.Target
-	containers            []discovery_kit_api.Target
-	containersBackup      []discovery_kit_api.Target
+	hosts                       []discovery_kit_api.Target
+	hostsBackup                 []discovery_kit_api.Target
+	ec2Instances                []discovery_kit_api.Target
+	ec2InstancesBackup          []discovery_kit_api.Target
+	azureInstances              []discovery_kit_api.Target
+	azureInstancesBackup        []discovery_kit_api.Target
+	gcpInstances                []discovery_kit_api.Target
+	gcpInstancesBackup          []discovery_kit_api.Target
+	kubernetesClusters          []discovery_kit_api.Target
+	kubernetesClustersBackup    []discovery_kit_api.Target
+	kubernetesDeployments       []discovery_kit_api.Target
+	kubernetesDeploymentsBackup []discovery_kit_api.Target
+	kubernetesPods              []discovery_kit_api.Target
+	kubernetesPodsBackup        []discovery_kit_api.Target
+	kubernetesContainers        []discovery_kit_api.EnrichmentData
+	kubernetesContainersBackup  []discovery_kit_api.EnrichmentData
+	kubernetesNodes             []discovery_kit_api.Target
+	kubernetesNodesBackup       []discovery_kit_api.Target
+	containers                  []discovery_kit_api.Target
+	containersBackup            []discovery_kit_api.Target
 }
 
 func NewTargetData() *TargetData {
@@ -91,7 +100,7 @@ func NewTargetData() *TargetData {
 	log.Info().Msgf("Generated %d kubernetes nodes", len(ec2KubernetesNodes)+len(gcpKubernetesNodes)+len(azureKubernetesNodes))
 	log.Info().Msgf("Generated %d containers", len(ec2Containers)+len(gcpContainers)+len(azureContainers))
 
-	var targetsAvailable = 0;
+	var targetsAvailable = 0
 	if !config.Config.DisableHostDiscovery {
 		targetsAvailable += len(ec2Hosts) + len(gcpHosts) + len(azureHosts)
 	}
@@ -225,29 +234,40 @@ func (t *TargetData) RegisterDiscoveries() {
 func (t *TargetData) ScheduleUpdates() {
 	if !config.Config.DisableHostDiscovery {
 		scheduleTargetAttributeUpdateIfNecessary(t.hosts, "com.steadybit.extension_host.host")
+		scheduleTargetReplacementIfNecessary(&t.hosts, &t.hostsBackup, "com.steadybit.extension_host.host")
 	}
 	if !config.Config.DisableAWSDiscovery {
 		scheduleTargetAttributeUpdateIfNecessary(t.ec2Instances, "com.steadybit.extension_aws.ec2-instance")
+		scheduleTargetReplacementIfNecessary(&t.ec2Instances, &t.ec2InstancesBackup, "com.steadybit.extension_aws.ec2-instance")
+
 	}
 	if !config.Config.DisableGCPDiscovery {
 		scheduleTargetAttributeUpdateIfNecessary(t.gcpInstances, "com.steadybit.extension_gcp.vm")
+		scheduleTargetReplacementIfNecessary(&t.gcpInstances, &t.gcpInstancesBackup, "com.steadybit.extension_gcp.vm")
+
 	}
 	if !config.Config.DisableAzureDiscovery {
 		scheduleTargetAttributeUpdateIfNecessary(t.azureInstances, "com.steadybit.extension_azure.scale_set.instance")
+		scheduleTargetReplacementIfNecessary(&t.azureInstances, &t.azureInstancesBackup, "com.steadybit.extension_azure.scale_set.instance")
 	}
+
 	if !config.Config.DisableKubernetesDiscovery {
 		scheduleTargetAttributeUpdateIfNecessary(t.kubernetesClusters, "com.steadybit.extension_kubernetes.kubernetes-cluster")
+		scheduleTargetReplacementIfNecessary(&t.kubernetesClusters, &t.kubernetesClustersBackup, "com.steadybit.extension_kubernetes.kubernetes-cluster")
+
 		scheduleTargetAttributeUpdateIfNecessary(t.kubernetesDeployments, "com.steadybit.extension_kubernetes.kubernetes-deployment")
+		scheduleTargetReplacementIfNecessary(&t.kubernetesDeployments, &t.kubernetesDeploymentsBackup, "com.steadybit.extension_kubernetes.kubernetes-deployment")
+
 		scheduleTargetAttributeUpdateIfNecessary(t.kubernetesPods, "com.steadybit.extension_kubernetes.kubernetes-pod")
+		scheduleTargetReplacementIfNecessary(&t.kubernetesPods, &t.kubernetesPodsBackup, "com.steadybit.extension_kubernetes.kubernetes-pod")
 	}
 	if !config.Config.DisableContainerDiscovery {
 		scheduleTargetAttributeUpdateIfNecessary(t.containers, "com.steadybit.extension_container.container")
+		scheduleTargetReplacementIfNecessary(&t.containers, &t.containersBackup, "com.steadybit.extension_container.container")
 	}
 	if !config.Config.DisableKubernetesDiscovery {
 		scheduleEnrichmentDataAttributeUpdateIfNecessary(t.kubernetesContainers, "com.steadybit.extension_kubernetes.kubernetes-container")
-	}
-	if !config.Config.DisableContainerDiscovery {
-		scheduleContainerTargetChanges(&t.containers, &t.containersBackup)
+		scheduleEnrichmentDataReplacementIfNecessary(&t.kubernetesContainers, &t.kubernetesContainersBackup, "com.steadybit.extension_kubernetes.kubernetes-container")
 	}
 }
 

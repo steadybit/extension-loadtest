@@ -32,23 +32,33 @@ loadtest:
   attributeUpdates:
     - type: "com.steadybit.extension_aws.ec2-instance"
       attributeName: "aws-ec2.label.change-ts"
-      rate: 0.20
+      rate: 0.05
       interval: 600
     - type: "com.steadybit.extension_container.container"
       attributeName: "container.label.change-ts"
-      rate: 0.20
+      rate: 0.05
       interval: 180
     - type: "com.steadybit.extension_kubernetes.kubernetes-container"
       attributeName: "k8s.label.change-ts"
-      rate: 0.20
+      rate: 0.05
       interval: 180
     - type: "com.steadybit.extension_kubernetes.kubernetes-deployment"
       attributeName: "k8s.label.change-ts"
-      rate: 0.20
+      rate: 0.05
       interval: 180
-  containerTargetCreationsAndDeletions:
-    count: 10
-    interval: 180
+  targetReplacements:
+    - type: "com.steadybit.extension_aws.ec2-instance"
+      count: 1
+      interval: 600
+    - type: "com.steadybit.extension_container.container"
+      count: 2
+      interval: 180
+    - type: "com.steadybit.extension_kubernetes.kubernetes-container"
+      count: 2
+      interval: 180
+    - type: "com.steadybit.extension_kubernetes.kubernetes-deployment"
+      count: 2
+      interval: 180
 
 
 tls:

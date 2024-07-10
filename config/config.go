@@ -28,10 +28,8 @@ type Specification struct {
 	PodsPerDeployment  int `json:"podsPerDeployment" split_words:"true" required:"false" default:"2"`
 	ContainerPerPod    int `json:"containerPerPod" split_words:"true" required:"false" default:"2"`
 
-	AttributeUpdates AttributeUpdateSpecifications `split_words:"true" required:"false" default:"[{\"type\": \"com.steadybit.extension_aws.ec2-instance\", \"attributeName\": \"aws-ec2.label.change-ts\", \"rate\": 0.20, \"interval\": 600},{\"type\": \"com.steadybit.extension_container.container\", \"attributeName\": \"container.label.change-ts\", \"rate\": 0.20, \"interval\": 180},{\"type\": \"com.steadybit.extension_kubernetes.kubernetes-container\", \"attributeName\": \"k8s.label.change-ts\", \"rate\": 0.20, \"interval\": 180},{\"type\": \"com.steadybit.extension_kubernetes.kubernetes-deployment\", \"attributeName\": \"k8s.label.change-ts\", \"rate\": 0.20, \"interval\": 180}]"`
-
-	//Simulate created and deleted com.steadybit.extension_container.container targets every 180 seconds with a randomized count between 0 and the given value.
-	ContainerTargetCreationsAndDeletions ContainerTargetCreationsAndDeletionsSpecification `split_words:"true" required:"false" default:"{\"count\": 10, \"interval\": 60}"`
+	AttributeUpdates   AttributeUpdateSpecifications    `split_words:"true" required:"false" default:"[]"`
+	TargetReplacements TargetReplacementsSpecifications `split_words:"true" required:"false" default:""`
 
 	DiscoveryAttributesExcludesContainer            []string `json:"discoveryAttributesExcludesContainer" split_words:"true" required:"false"`
 	DiscoveryAttributesExcludesEc2                  []string `json:"discoveryAttributesExcludesEc2" split_words:"true" required:"false"`
@@ -66,6 +64,7 @@ func IsPodZero() bool {
 }
 
 type AttributeUpdateSpecifications []AttributeUpdateSpecification
+type TargetReplacementsSpecifications []TargetReplacementsSpecification
 
 func (s *AttributeUpdateSpecifications) Decode(value string) error {
 	var specs []AttributeUpdateSpecification
@@ -84,8 +83,8 @@ type AttributeUpdateSpecification struct {
 	Interval      int     `json:"interval" split_words:"true"`
 }
 
-func (s *ContainerTargetCreationsAndDeletionsSpecification) Decode(value string) error {
-	var spec ContainerTargetCreationsAndDeletionsSpecification
+func (s *TargetReplacementsSpecification) Decode(value string) error {
+	var spec TargetReplacementsSpecification
 	err := json.Unmarshal([]byte(value), &spec)
 	if err != nil {
 		return fmt.Errorf("invalid json: %w", err)
@@ -94,9 +93,10 @@ func (s *ContainerTargetCreationsAndDeletionsSpecification) Decode(value string)
 	return nil
 }
 
-type ContainerTargetCreationsAndDeletionsSpecification struct {
-	Count    int `json:"count" split_words:"true"`
-	Interval int `json:"interval" split_words:"true"`
+type TargetReplacementsSpecification struct {
+	Type     string `json:"type" split_words:"true"`
+	Count    int    `json:"count" split_words:"true"`
+	Interval int    `json:"interval" split_words:"true"`
 }
 
 var (
@@ -114,9 +114,18 @@ func ValidateConfiguration() {
 }
 
 func (s *Specification) FindAttributeUpdate(t string) *AttributeUpdateSpecification {
-	for _, attributeUpdate := range s.AttributeUpdates {
-		if attributeUpdate.Type == t {
-			return &attributeUpdate
+	for _, update := range s.AttributeUpdates {
+		if update.Type == t {
+			return &update
+		}
+	}
+	return nil
+}
+
+func (s *Specification) FindTargetReplacementsSpecification(t string) *TargetReplacementsSpecification {
+	for _, replacement := range s.TargetReplacements {
+		if replacement.Type == t {
+			return &replacement
 		}
 	}
 	return nil
