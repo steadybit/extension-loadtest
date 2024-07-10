@@ -12,6 +12,10 @@ import (
 	"strings"
 )
 
+var (
+	Config Specification
+)
+
 // Specification is the configuration specification for the extension. Configuration values can be applied
 // through environment variables. Learn more through the documentation of the envconfig package.
 // https://github.com/kelseyhightower/envconfig
@@ -29,7 +33,7 @@ type Specification struct {
 	ContainerPerPod    int `json:"containerPerPod" split_words:"true" required:"false" default:"2"`
 
 	AttributeUpdates   AttributeUpdateSpecifications    `split_words:"true" required:"false" default:"[]"`
-	TargetReplacements TargetReplacementsSpecifications `split_words:"true" required:"false" default:""`
+	TargetReplacements TargetReplacementsSpecifications `split_words:"true" required:"false" default:"[]"`
 
 	DiscoveryAttributesExcludesContainer            []string `json:"discoveryAttributesExcludesContainer" split_words:"true" required:"false"`
 	DiscoveryAttributesExcludesEc2                  []string `json:"discoveryAttributesExcludesEc2" split_words:"true" required:"false"`
@@ -64,7 +68,13 @@ func IsPodZero() bool {
 }
 
 type AttributeUpdateSpecifications []AttributeUpdateSpecification
-type TargetReplacementsSpecifications []TargetReplacementsSpecification
+
+type AttributeUpdateSpecification struct {
+	Type          string  `json:"type" split_words:"true"`
+	AttributeName string  `json:"attributeName" split_words:"true"`
+	Rate          float64 `json:"rate" split_words:"true"`
+	Interval      int     `json:"interval" split_words:"true"`
+}
 
 func (s *AttributeUpdateSpecifications) Decode(value string) error {
 	var specs []AttributeUpdateSpecification
@@ -76,11 +86,32 @@ func (s *AttributeUpdateSpecifications) Decode(value string) error {
 	return nil
 }
 
-type AttributeUpdateSpecification struct {
-	Type          string  `json:"type" split_words:"true"`
-	AttributeName string  `json:"attributeName" split_words:"true"`
-	Rate          float64 `json:"rate" split_words:"true"`
-	Interval      int     `json:"interval" split_words:"true"`
+func (s *AttributeUpdateSpecification) Decode(value string) error {
+	var spec AttributeUpdateSpecification
+	err := json.Unmarshal([]byte(value), &spec)
+	if err != nil {
+		return fmt.Errorf("invalid json: %w", err)
+	}
+	*s = spec
+	return nil
+}
+
+type TargetReplacementsSpecifications []TargetReplacementsSpecification
+
+type TargetReplacementsSpecification struct {
+	Type     string `json:"type" split_words:"true"`
+	Count    int    `json:"count" split_words:"true"`
+	Interval int    `json:"interval" split_words:"true"`
+}
+
+func (s *TargetReplacementsSpecifications) Decode(value string) error {
+	var specs []TargetReplacementsSpecification
+	err := json.Unmarshal([]byte(value), &specs)
+	if err != nil {
+		return fmt.Errorf("invalid json: %w", err)
+	}
+	*s = specs
+	return nil
 }
 
 func (s *TargetReplacementsSpecification) Decode(value string) error {
@@ -92,16 +123,6 @@ func (s *TargetReplacementsSpecification) Decode(value string) error {
 	*s = spec
 	return nil
 }
-
-type TargetReplacementsSpecification struct {
-	Type     string `json:"type" split_words:"true"`
-	Count    int    `json:"count" split_words:"true"`
-	Interval int    `json:"interval" split_words:"true"`
-}
-
-var (
-	Config Specification
-)
 
 func ParseConfiguration() {
 	err := envconfig.Process("steadybit_extension", &Config)

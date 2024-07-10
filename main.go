@@ -44,6 +44,7 @@ func main() {
 	targetData.ScheduleUpdates()
 	targetData.RegisterDiscoveries()
 	targetData.RegisterRecreateActions()
+	targetData.RegisterConfigUpdateHandlers()
 
 	discovery_kit_sdk.Register(extloadtest.NewEnrichmentRuleProvider())
 

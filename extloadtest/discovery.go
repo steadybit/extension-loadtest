@@ -1,13 +1,19 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2024 Steadybit GmbH
+
 package extloadtest
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"github.com/procyon-projects/chrono"
 	"github.com/rs/zerolog/log"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_sdk"
+	"github.com/steadybit/extension-kit/exthttp"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
 	"net/http"
@@ -301,4 +307,36 @@ func (t *TargetData) RegisterRecreateActions() {
 			t.containers = createContainerTargets(t.kubernetesContainers)
 		},
 	))
+}
+
+func (t *TargetData) RegisterConfigUpdateHandlers() {
+	exthttp.RegisterHttpHandler("/config/targetReplacements", t.updateConfigHandler(&config.Config.TargetReplacements))
+	exthttp.RegisterHttpHandler("/config/attributeUpdates", t.updateConfigHandler(&config.Config.AttributeUpdates))
+}
+
+func (t *TargetData) updateConfigHandler(config interface{}) exthttp.Handler {
+	return func(w http.ResponseWriter, r *http.Request, body []byte) {
+		if r.Method == http.MethodPost {
+			clone := extutil.JsonMangle(config)
+			err := json.Unmarshal(body, clone)
+			if err != nil {
+				w.WriteHeader(400)
+				_, _ = w.Write([]byte(err.Error()))
+			}
+			config = clone
+			t.rescheduleUpdates()
+			exthttp.WriteBody(w, config)
+		} else if r.Method == http.MethodGet {
+			exthttp.WriteBody(w, config)
+		} else {
+			w.WriteHeader(405)
+		}
+	}
+}
+
+func (t *TargetData) rescheduleUpdates() {
+	log.Info().Msg("Stopping all scheduled updates")
+	scheduler.Shutdown()
+	scheduler = chrono.NewDefaultTaskScheduler()
+	t.ScheduleUpdates()
 }
