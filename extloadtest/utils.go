@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2024 Steadybit GmbH
+
 package extloadtest
 
 import (
@@ -65,7 +68,7 @@ func scheduleContainerTargetChanges(containers *[]discovery_kit_api.Target, back
 
 func scheduleAttributeUpdateIfNecessary[T any](items []T, typeId string, attributeMapAccessor func(item T) map[string][]string) {
 	spec := config.Config.FindAttributeUpdate(typeId)
-	if spec == nil {
+	if spec == nil || spec.Rate <= 0.00000000001 {
 		return
 	}
 	log.Info().
