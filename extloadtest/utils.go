@@ -80,21 +80,19 @@ func scheduleReplacementIfNecessary[T any](targets, backup *[]T, typeId string, 
 		*targets = append(*targets, *backup...)
 		if restoredCount > 0 {
 			for _, t := range *backup {
-				log.Debug().Str("id", id(t)).Msg("Restored container")
+				log.Debug().Str("id", id(t)).Msgf("Restored %s", typeId)
 			}
 		}
 
 		*backup = []T{}
-		//delete random targets
-		deletedCount := rand.Intn(spec.Count)
-		log.Debug().Int("count", deletedCount).Msgf("Deleted targets")
-		for i := 0; i < deletedCount; i++ {
+		log.Debug().Int("count", spec.Count).Msgf("Deleting %s targets", typeId)
+		for i := 0; i < spec.Count; i++ {
 			index := rand.Intn(len(*targets))
 			*backup = append(*backup, (*targets)[index])
 			log.Debug().Str("id", id((*targets)[index])).Msg("Deleted target")
 			*targets = append((*targets)[:index], (*targets)[index+1:]...)
 		}
-		log.Info().Msgf("Deleted %d targets and (re-)added %d targets. Total count is now %d", deletedCount, restoredCount, len(*targets))
+		log.Info().Msgf("Deleted %d %s targets and (re-)added %d targets. Total count is now %d", spec.Count, typeId, restoredCount, len(*targets))
 	}, delay, chrono.WithTime(time.Now().Add(delay)))
 
 	if err != nil {
