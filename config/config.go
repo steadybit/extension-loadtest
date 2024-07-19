@@ -25,12 +25,12 @@ type Specification struct {
 	PodName     string `json:"podName" split_words:"true" required:"false" default:"pod-0"`
 
 	//2 containers per pod * 4 pods per deployment * 5 deployments per node * 400 nodes = 16000 containers
-	Ec2NodeCount       int `json:"ec2NodeCount" split_words:"true" required:"false" default:"2"`
-	AzureNodeCount     int `json:"azureNodeCount" split_words:"true" required:"false" default:"2"`
-	GcpNodeCount       int `json:"gcpNodeCount" split_words:"true" required:"false" default:"2"`
-	DeploymentsPerNode int `json:"deploymentsPerNode" split_words:"true" required:"false" default:"5"`
-	PodsPerDeployment  int `json:"podsPerDeployment" split_words:"true" required:"false" default:"2"`
-	ContainerPerPod    int `json:"containerPerPod" split_words:"true" required:"false" default:"2"`
+	Ec2NodeCount       int `json:"ec2NodeCount" split_words:"true" required:"false" default:"100"`
+	AzureNodeCount     int `json:"azureNodeCount" split_words:"true" required:"false" default:"1"`
+	GcpNodeCount       int `json:"gcpNodeCount" split_words:"true" required:"false" default:"1"`
+	DeploymentsPerNode int `json:"deploymentsPerNode" split_words:"true" required:"false" default:"100"`
+	PodsPerDeployment  int `json:"podsPerDeployment" split_words:"true" required:"false" default:"1"`
+	ContainerPerPod    int `json:"containerPerPod" split_words:"true" required:"false" default:"1"`
 
 	AttributeUpdates   AttributeUpdateSpecifications    `split_words:"true" required:"false" default:"[]"`
 	TargetReplacements TargetReplacementsSpecifications `split_words:"true" required:"false" default:"[]"`
@@ -58,6 +58,9 @@ type Specification struct {
 	EnrichmentHostToContainerEnabled bool `json:"enrichmentHostToContainerEnabled" split_words:"true" required:"false" default:"false"`
 	EnrichmentContainerToHostEnabled bool `json:"enrichmentContainerToHostEnabled" split_words:"true" required:"false" default:"false"`
 	EnrichmentEc2ToHostEnabled       bool `json:"enrichmentEc2ToHostEnabled" split_words:"true" required:"false" default:"false"`
+
+	// Simulate an Event Listener
+	EventListenerEnabled bool `json:"eventListenerEnabled" split_words:"true" required:"false" default:"true"`
 
 	// discovery delay in ms
 	DiscoveryDelayInMs int `json:"discoveryDelayInMs" split_words:"true" required:"false" default:"0"`

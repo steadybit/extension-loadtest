@@ -134,6 +134,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: STEADYBIT_EXTENSION_EVENT_LISTENER_ENABLED
+              value: {{ .Values.loadtest.eventListenerEnabled | quote }}
           {{- with .Values.extraEnvFrom }}
           envFrom:
             {{- toYaml . | nindent 12 }}

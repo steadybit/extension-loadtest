@@ -36,7 +36,7 @@ func main() {
 	config.ParseConfiguration()
 	config.ValidateConfiguration()
 
-	exthttp.RegisterHttpHandler("/", exthttp.GetterAsHandler(getExtensionList))
+	exthttp.RegisterHttpHandler("/", exthttp.GetterAsHandler(func() ExtensionListResponse { return getExtensionList(config.Config.EventListenerEnabled) }))
 
 	extloadtest.RegisterEventListenerHandlers()
 
@@ -94,34 +94,38 @@ type ExtensionListResponse struct {
 	event_kit_api.EventListenerList `json:",inline"`
 }
 
-func getExtensionList() ExtensionListResponse {
+func getExtensionList(eventListenerEnabled bool) ExtensionListResponse {
+
+	eventListener := []event_kit_api.EventListener{}
+	if eventListenerEnabled {
+		eventListener = append(eventListener, event_kit_api.EventListener{
+			Method: "POST",
+			Path:   "/events/log",
+			ListenTo: []string{
+				"experiment.execution.created",
+				"experiment.execution.completed",
+				"experiment.execution.failed",
+				"experiment.execution.canceled",
+				"experiment.execution.errored",
+				"experiment.execution.step-started",
+				"experiment.execution.step-completed",
+				"experiment.execution.step-canceled",
+				"experiment.execution.step-errored",
+				"experiment.execution.step-failed",
+				"experiment.execution.target-started",
+				"experiment.execution.target-completed",
+				"experiment.execution.target-canceled",
+				"experiment.execution.target-errored",
+				"experiment.execution.target-failed",
+			},
+		})
+	}
+
 	return ExtensionListResponse{
 		ActionList:    action_kit_sdk.GetActionList(),
 		DiscoveryList: discovery_kit_sdk.GetDiscoveryList(),
 		EventListenerList: event_kit_api.EventListenerList{
-			EventListeners: []event_kit_api.EventListener{
-				{
-					Method: "POST",
-					Path:   "/events/log",
-					ListenTo: []string{
-						"experiment.execution.created",
-						"experiment.execution.completed",
-						"experiment.execution.failed",
-						"experiment.execution.canceled",
-						"experiment.execution.errored",
-						"experiment.execution.step-started",
-						"experiment.execution.step-completed",
-						"experiment.execution.step-canceled",
-						"experiment.execution.step-errored",
-						"experiment.execution.step-failed",
-						"experiment.execution.target-started",
-						"experiment.execution.target-completed",
-						"experiment.execution.target-canceled",
-						"experiment.execution.target-errored",
-						"experiment.execution.target-failed",
-					},
-				},
-			},
+			EventListeners: eventListener,
 		},
 	}
 }

@@ -76,6 +76,8 @@ manifest should match snapshot:
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.name
+                - name: STEADYBIT_EXTENSION_EVENT_LISTENER_ENABLED
+                  value: "true"
               image: ghcr.io/steadybit/extension-loadtest:0.0.0
               imagePullPolicy: Always
               livenessProbe:
@@ -196,6 +198,8 @@ manifest should use empty update values:
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.name
+                - name: STEADYBIT_EXTENSION_EVENT_LISTENER_ENABLED
+                  value: "true"
               image: ghcr.io/steadybit/extension-loadtest:0.0.0
               imagePullPolicy: Always
               livenessProbe:
