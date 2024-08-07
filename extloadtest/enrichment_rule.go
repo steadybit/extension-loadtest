@@ -1,6 +1,10 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2024 Steadybit GmbH
+
 package extloadtest
 
 import (
+	"github.com/rs/zerolog/log"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_sdk"
 	"github.com/steadybit/extension-kit/extbuild"
@@ -19,13 +23,16 @@ func NewEnrichmentRuleProvider() discovery_kit_sdk.EnrichmentRulesDescriber {
 }
 
 func (d *ltEnrichmentRuleProvider) DescribeEnrichmentRules() []discovery_kit_api.TargetEnrichmentRule {
+	log.Info().Msgf("Enrichment Host to Container enabled=%t", config.Config.EnrichmentHostToContainerEnabled)
 	result := make([]discovery_kit_api.TargetEnrichmentRule, 0)
 	if config.Config.EnrichmentHostToContainerEnabled {
 		result = append(result, getHostToContainerEnrichmentRule())
 	}
+	log.Info().Msgf("Enrichment Container to Host enabled=%t", config.Config.EnrichmentContainerToHostEnabled)
 	if config.Config.EnrichmentContainerToHostEnabled {
 		result = append(result, getContainerToHostEnrichmentRule())
 	}
+	log.Info().Msgf("Enrichment EC2 to Host enabled=%t", config.Config.EnrichmentEc2ToHostEnabled)
 	if config.Config.EnrichmentEc2ToHostEnabled {
 		result = append(result, getEC2ToHostEnrichmentRule())
 	}
