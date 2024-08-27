@@ -10,6 +10,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
+	"github.com/steadybit/advice-kit/go/advice_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_sdk"
 	"github.com/steadybit/event-kit/go/event_kit_api"
@@ -36,7 +37,12 @@ func main() {
 	config.ParseConfiguration()
 	config.ValidateConfiguration()
 
-	exthttp.RegisterHttpHandler("/", exthttp.GetterAsHandler(func() ExtensionListResponse { return getExtensionList(config.Config.EventListenerEnabled) }))
+	exthttp.RegisterHttpHandler("/", exthttp.GetterAsHandler(func() ExtensionListResponse {
+		return getExtensionList(config.Config.EventListenerEnabled)
+	}))
+
+	exthttp.RegisterHttpHandler("/advice/loadtest-advice", exthttp.GetterAsHandler(
+		extloadtest.GetAdviceDescriptionKubernetesDeploymentLoadtest))
 
 	extloadtest.RegisterEventListenerHandlers()
 
@@ -92,6 +98,7 @@ type ExtensionListResponse struct {
 	action_kit_api.ActionList       `json:",inline"`
 	discovery_kit_api.DiscoveryList `json:",inline"`
 	event_kit_api.EventListenerList `json:",inline"`
+	advice_kit_api.AdviceList       `json:",inline"`
 }
 
 func getExtensionList(eventListenerEnabled bool) ExtensionListResponse {
@@ -126,6 +133,12 @@ func getExtensionList(eventListenerEnabled bool) ExtensionListResponse {
 		DiscoveryList: discovery_kit_sdk.GetDiscoveryList(),
 		EventListenerList: event_kit_api.EventListenerList{
 			EventListeners: eventListener,
+		},
+		AdviceList: advice_kit_api.AdviceList{
+			Advice: []advice_kit_api.DescribingEndpointReference{{
+				Method: "GET",
+				Path:   "/advice/loadtest-advice",
+			}},
 		},
 	}
 }
