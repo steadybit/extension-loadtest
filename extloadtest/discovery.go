@@ -155,7 +155,8 @@ func (l ltTargetDiscovery) DiscoverTargets(ctx context.Context) ([]discovery_kit
 		time.Sleep(time.Duration(config.Config.DiscoveryDelayInMs) * time.Millisecond)
 	}
 	if config.Config.ServicesEnabled {
-		value := ctx.Value("httpRequest")
+		var key discovery_kit_sdk.HttpRequestContextKey = "httpRequest"
+		value := ctx.Value(key)
 		if value != nil {
 			httpRequest := value.(*http.Request)
 			if httpRequest != nil {
