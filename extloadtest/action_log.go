@@ -71,7 +71,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				l.selectionTemplate,
 			}),
 		}),
-		Category:    extutil.Ptr("internal"),
+		Technology:  extutil.Ptr("Debug"),
 		Kind:        action_kit_api.Attack,
 		TimeControl: action_kit_api.TimeControlExternal,
 		Parameters: []action_kit_api.ActionParameter{

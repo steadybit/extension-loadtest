@@ -62,7 +62,7 @@ func (r *recreateAction) Describe() action_kit_api.ActionDescription {
 				r.selectionTemplate,
 			}),
 		}),
-		Category:    extutil.Ptr("internal"),
+		Technology:  extutil.Ptr("Debug"),
 		Kind:        action_kit_api.Attack,
 		TimeControl: action_kit_api.TimeControlInstantaneous,
 		Parameters: []action_kit_api.ActionParameter{
