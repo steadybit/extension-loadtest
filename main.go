@@ -83,6 +83,7 @@ func main() {
 		Description: extutil.Ptr("Find container by kubernetes deployment."),
 		Query:       "k8s.cluster-name=\"\" and k8s.namespace=\"\" and k8s.deployment=\"\"",
 	}))
+	action_kit_sdk.RegisterAction(extloadtest.NewWidgetAction())
 
 	if config.IsPodZero() {
 		log.Info().Msg("I am pod zero")
