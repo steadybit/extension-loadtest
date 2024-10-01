@@ -40,7 +40,7 @@ func (l *widgetAction) NewEmptyState() WidgetActionState {
 
 func (l *widgetAction) Describe() action_kit_api.ActionDescription {
 	return action_kit_api.ActionDescription{
-		Id:          fmt.Sprintf("com.steadybit.extension_loadtest.show_multiple_widgets"),
+		Id:          "com.steadybit.extension_loadtest.show_multiple_widgets",
 		Label:       "Render Widgets",
 		Description: "Showcase for multiple widgets in the run view",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
