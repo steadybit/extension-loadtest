@@ -38,6 +38,7 @@ func (l *targetlessAction) Describe() action_kit_api.ActionDescription {
 		Description: "This action does nothing.",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		Technology:  extutil.Ptr("Debug"),
+		Category:    extutil.Ptr("Debug"), //Can be removed in Q1/24 - support for backward compatibility of old sidebar
 		Kind:        action_kit_api.Other,
 		TimeControl: action_kit_api.TimeControlInstantaneous,
 	}
