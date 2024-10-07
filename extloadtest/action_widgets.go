@@ -50,6 +50,16 @@ func (l *widgetAction) Describe() action_kit_api.ActionDescription {
 		Label:       "Render Widgets",
 		Description: "Showcase for multiple widgets in the run view",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
+		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{
+			TargetType: "com.steadybit.extension_host.host",
+			SelectionTemplates: extutil.Ptr([]action_kit_api.TargetSelectionTemplate{
+				{
+					Label:       "by host name",
+					Description: extutil.Ptr("Find by host name"),
+					Query:       "host.hostname=\"\"",
+				},
+			}),
+		}),
 		Technology:  extutil.Ptr("Debug"),
 		Category:    extutil.Ptr("Debug"), //Can be removed in Q1/24 - support for backward compatibility of old sidebar
 		Kind:        action_kit_api.Other,
