@@ -24,6 +24,12 @@ var (
 	_ action_kit_sdk.ActionWithStatus[WidgetActionState] = (*widgetAction)(nil)
 )
 
+const (
+	TYPE_LOG_EXAMPLE              = "EXAMPLE-LOGS"
+	TYPE_MARKDOWN_APPEND_EXAMPLE  = "EXAMPLE-MARKDOWN-APPEND"
+	TYPE_MARKDOWN_REPLACE_EXAMPLE = "EXAMPLE-MARKDOWN-REPLACE"
+)
+
 type WidgetActionState struct {
 }
 
@@ -109,7 +115,19 @@ func (l *widgetAction) Describe() action_kit_api.ActionDescription {
 			action_kit_api.LogWidget{
 				Type:    action_kit_api.ComSteadybitWidgetLog,
 				Title:   "Log Widget",
-				LogType: "EXAMPLE-LOGS",
+				LogType: TYPE_LOG_EXAMPLE,
+			},
+			action_kit_api.MarkdownWidget{
+				Type:        action_kit_api.ComSteadybitWidgetMarkdown,
+				Title:       "Example Markdown Widget with appending content",
+				MessageType: TYPE_MARKDOWN_APPEND_EXAMPLE,
+				Append:      true,
+			},
+			action_kit_api.MarkdownWidget{
+				Type:        action_kit_api.ComSteadybitWidgetMarkdown,
+				Title:       "Example Markdown Widget with replacing content",
+				MessageType: TYPE_MARKDOWN_REPLACE_EXAMPLE,
+				Append:      false,
 			},
 		}),
 	}
@@ -120,13 +138,30 @@ func (l *widgetAction) Prepare(_ context.Context, state *WidgetActionState, requ
 }
 
 func (l *widgetAction) Start(_ context.Context, state *WidgetActionState) (*action_kit_api.StartResult, error) {
-	return nil, nil
+	return &action_kit_api.StartResult{
+		Messages: &[]action_kit_api.Message{
+			{
+				Message: "# This will be a header",
+				Type:    extutil.Ptr(TYPE_MARKDOWN_APPEND_EXAMPLE),
+			},
+			{
+				Message: "## And a nice sub-header",
+				Type:    extutil.Ptr(TYPE_MARKDOWN_APPEND_EXAMPLE),
+			},
+			{
+				Message: "# Hello - I just started",
+				Type:    extutil.Ptr(TYPE_MARKDOWN_REPLACE_EXAMPLE),
+			},
+		},
+	}, nil
 }
 
 func (l *widgetAction) Status(_ context.Context, state *WidgetActionState) (*action_kit_api.StatusResult, error) {
 	randomState1 := []string{"danger", "warn", "info", "success"}[rand.IntN(4)]
 	randomState2 := []string{"danger", "warn", "info", "success"}[rand.IntN(4)]
 	randomState3 := []string{"danger", "warn", "info", "success"}[rand.IntN(4)]
+	randomEmoji := []string{"✅", "🔴", "🙂"}[rand.IntN(3)]
+	now := time.Now()
 
 	metrics := []action_kit_api.Metric{
 		{
@@ -138,7 +173,7 @@ func (l *widgetAction) Status(_ context.Context, state *WidgetActionState) (*act
 				"metric.tooltip": fmt.Sprintf("State: %s", randomState1),
 				"metric.url":     fmt.Sprintf("https://www.google.com/search?q=%s", randomState1),
 			},
-			Timestamp: time.Now(),
+			Timestamp: now,
 			Value:     0,
 		},
 		{
@@ -150,7 +185,7 @@ func (l *widgetAction) Status(_ context.Context, state *WidgetActionState) (*act
 				"metric.tooltip": fmt.Sprintf("State: %s", randomState2),
 				"metric.url":     fmt.Sprintf("https://www.google.com/search?q=%s", randomState2),
 			},
-			Timestamp: time.Now(),
+			Timestamp: now,
 			Value:     0,
 		},
 		{
@@ -162,7 +197,7 @@ func (l *widgetAction) Status(_ context.Context, state *WidgetActionState) (*act
 				"metric.tooltip": fmt.Sprintf("State: %s", randomState3),
 				"metric.url":     fmt.Sprintf("https://www.google.com/search?q=%s", randomState3),
 			},
-			Timestamp: time.Now(),
+			Timestamp: now,
 			Value:     0,
 		},
 	}
@@ -171,13 +206,27 @@ func (l *widgetAction) Status(_ context.Context, state *WidgetActionState) (*act
 	messages := []action_kit_api.Message{
 		{
 			Message:         "This is an example log message",
-			Type:            extutil.Ptr("EXAMPLE-LOGS"),
+			Type:            extutil.Ptr(TYPE_LOG_EXAMPLE),
 			Level:           extutil.Ptr(randomLevel),
-			Timestamp:       extutil.Ptr(time.Now()),
+			Timestamp:       extutil.Ptr(now),
 			TimestampSource: extutil.Ptr(action_kit_api.TimestampSourceExternal),
 			Fields: extutil.Ptr(action_kit_api.MessageFields{
 				"tooltip-example": strconv.Itoa(rand.IntN(20)),
 			}),
+		},
+		{
+			Message: "- Status " + now.Format("01-02-2006 15:04:05.000000"),
+			Type:    extutil.Ptr(TYPE_MARKDOWN_APPEND_EXAMPLE),
+		},
+		{
+			Message:   "- Status " + now.Format("01-02-2006 15:04:05.000000"),
+			Type:      extutil.Ptr(TYPE_MARKDOWN_REPLACE_EXAMPLE),
+			Timestamp: extutil.Ptr(now),
+		},
+		{
+			Message:   "- Condition " + randomEmoji,
+			Type:      extutil.Ptr(TYPE_MARKDOWN_REPLACE_EXAMPLE),
+			Timestamp: extutil.Ptr(now),
 		},
 	}
 
