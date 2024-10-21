@@ -1,6 +1,9 @@
 /extension
 /coverage.out
 /e2e/e2e-coverage-docker.out
+/gpg.key
+/dist
+go.docker.mod
 /licenses
 /snyk.sarif
 
