@@ -14,7 +14,7 @@ require (
 	github.com/steadybit/discovery-kit/go/discovery_kit_commons v0.2.0
 	github.com/steadybit/discovery-kit/go/discovery_kit_sdk v1.2.1
 	github.com/steadybit/event-kit/go/event_kit_api v1.4.1
-	github.com/steadybit/extension-kit v1.8.19
+	github.com/steadybit/extension-kit v1.8.21
 	github.com/stretchr/testify v1.9.0
 	go.uber.org/automaxprocs v1.6.0
 )
@@ -26,7 +26,7 @@ require (
 	github.com/coreos/go-systemd/v22 v22.5.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
-	github.com/elastic/go-sysinfo v1.14.2 // indirect
+	github.com/elastic/go-sysinfo v1.15.0 // indirect
 	github.com/elastic/go-windows v1.0.2 // indirect
 	github.com/getkin/kin-openapi v0.128.0 // indirect
 	github.com/go-openapi/jsonpointer v0.21.0 // indirect
