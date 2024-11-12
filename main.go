@@ -19,6 +19,7 @@ import (
 	"github.com/steadybit/extension-kit/exthttp"
 	"github.com/steadybit/extension-kit/extlogging"
 	"github.com/steadybit/extension-kit/extruntime"
+	"github.com/steadybit/extension-kit/extsignals"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
 	"github.com/steadybit/extension-loadtest/extloadtest"
