@@ -54,7 +54,7 @@ func main() {
 
 	discovery_kit_sdk.Register(extloadtest.NewEnrichmentRuleProvider())
 
-	action_kit_sdk.InstallSignalHandler()
+	extsignals.ActivateSignalHandlers()
 	action_kit_sdk.RegisterCoverageEndpoints()
 
 	action_kit_sdk.RegisterAction(extloadtest.NewTargetlessAction())
