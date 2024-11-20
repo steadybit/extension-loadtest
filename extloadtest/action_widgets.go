@@ -71,7 +71,6 @@ func (l *widgetAction) Describe() action_kit_api.ActionDescription {
 				Type:         action_kit_api.Duration,
 				DefaultValue: extutil.Ptr("10s"),
 				Required:     extutil.Ptr(true),
-				Order:        extutil.Ptr(0),
 			},
 		},
 		Status: extutil.Ptr(action_kit_api.MutatingEndpointReferenceWithCallInterval{
@@ -143,11 +142,11 @@ func (l *widgetAction) Describe() action_kit_api.ActionDescription {
 	}
 }
 
-func (l *widgetAction) Prepare(_ context.Context, state *WidgetActionState, request action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {
+func (l *widgetAction) Prepare(_ context.Context, _ *WidgetActionState, _ action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {
 	return nil, nil
 }
 
-func (l *widgetAction) Start(_ context.Context, state *WidgetActionState) (*action_kit_api.StartResult, error) {
+func (l *widgetAction) Start(_ context.Context, _ *WidgetActionState) (*action_kit_api.StartResult, error) {
 	return &action_kit_api.StartResult{
 		Messages: &[]action_kit_api.Message{
 			{
@@ -166,7 +165,7 @@ func (l *widgetAction) Start(_ context.Context, state *WidgetActionState) (*acti
 	}, nil
 }
 
-func (l *widgetAction) Status(_ context.Context, state *WidgetActionState) (*action_kit_api.StatusResult, error) {
+func (l *widgetAction) Status(_ context.Context, _ *WidgetActionState) (*action_kit_api.StatusResult, error) {
 	randomState1 := []string{"danger", "warn", "info", "success"}[rand.IntN(4)]
 	randomState2 := []string{"danger", "warn", "info", "success"}[rand.IntN(4)]
 	randomState3 := []string{"danger", "warn", "info", "success"}[rand.IntN(4)]
