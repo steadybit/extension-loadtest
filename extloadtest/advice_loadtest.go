@@ -1,14 +1,20 @@
 package extloadtest
 
 import (
+	"embed"
+	"github.com/rs/zerolog/log"
 	"github.com/steadybit/advice-kit/go/advice_kit_api"
 	"github.com/steadybit/extension-kit/extbuild"
+	"github.com/steadybit/extension-kit/extutil"
 )
 
 const instruction = "Instruction \n Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 const motivation = "Motivation \n Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 const summary = "Summary \n Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 const implementedSummary = "Implemented \n Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+
+//go:embed *
+var adviceContent embed.FS
 
 func GetAdviceDescriptionKubernetesDeploymentLoadtest() advice_kit_api.AdviceDefinition {
 	return advice_kit_api.AdviceDefinition{
@@ -27,6 +33,63 @@ func GetAdviceDescriptionKubernetesDeploymentLoadtest() advice_kit_api.AdviceDef
 					Summary:     summary,
 				},
 			},
+			ValidationNeeded: advice_kit_api.AdviceDefinitionStatusValidationNeeded{
+				Description: advice_kit_api.AdviceDefinitionStatusValidationNeededDescription{
+					Summary: "Validation summary - with a value from the target: ${target.attr('k8s.deployment')}, ${target.attr('k8s.pod.name')}, ${target.attr('k8s.namespace')}",
+				},
+				Validation: &[]advice_kit_api.Validation{
+					{
+						Id:               "com.steadybit.extension-loadtest.advice.loadtest.validation.1",
+						Name:             "Experiment Validation",
+						Description:      extutil.Ptr("This validation creates an *experiment*. Old and boring."),
+						ShortDescription: "Uhhh. Take a look at the full description!",
+						Type:             advice_kit_api.EXPERIMENT,
+						Experiment:       extutil.Ptr(advice_kit_api.Experiment(loadFile("advice_loadtest_validation_experiment.json"))),
+					}, {
+						Id:                 "com.steadybit.extension-loadtest.advice.loadtest.validation.2",
+						Name:               "Experiment Template Validation",
+						Description:        extutil.Ptr("This validation creates an *experiment* based on a **template**. Awesome stuff!"),
+						ShortDescription:   "This is an even shorter description.",
+						Type:               advice_kit_api.EXPERIMENT,
+						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate(loadFile("advice_loadtest_validation_experiment_template.json"))),
+					}, {
+						Id:                 "com.steadybit.extension-loadtest.advice.loadtest.validation.3",
+						Name:               "Experiment Template Validation - No Variables",
+						Description:        extutil.Ptr("This validation creates an *experiment* based on a **template** without any template variables."),
+						ShortDescription:   "Without template variables. ${target.attr('agent.hostname')}",
+						Type:               advice_kit_api.EXPERIMENT,
+						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate(loadFile("advice_loadtest_validation_experiment_template_empty.json"))),
+					}, {
+						Id:                 "com.steadybit.extension-loadtest.advice.loadtest.validation.4",
+						Name:               "Experiment Template Validation - Invalid",
+						Description:        extutil.Ptr("This advice contains an invalid experiment template and invalid advice template syntax in the short description field."),
+						ShortDescription:   "Broken advice template syntax ${target.attr('agent.hostname'),invalid}",
+						Type:               advice_kit_api.EXPERIMENT,
+						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate("{\"foo\":\"bar\"}")),
+					}, {
+						Id:                 "com.steadybit.extension-loadtest.advice.loadtest.validation.5",
+						Name:               "Experiment Template Validation - Unknown Action",
+						Description:        extutil.Ptr("This advice contains an unknown action."),
+						ShortDescription:   "Unknown action",
+						Type:               advice_kit_api.EXPERIMENT,
+						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate(loadFile("advice_loadtest_validation_experiment_template_unknown_action.json"))),
+					}, {
+						Id:                 "com.steadybit.extension-loadtest.advice.loadtest.validation.6",
+						Name:               "Experiment Template Validation - Restricted Action",
+						Description:        extutil.Ptr("This advice contains a restricted action."),
+						ShortDescription:   "Restricted action",
+						Type:               advice_kit_api.EXPERIMENT,
+						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate(loadFile("advice_loadtest_validation_experiment_template_restricted_action.json"))),
+					}, {
+						Id:                 "com.steadybit.extension-loadtest.advice.loadtest.validation.7",
+						Name:               "Experiment Template Validation - Template with Advice Placeholder",
+						Description:        extutil.Ptr("This advice contains a template with a placeholder."),
+						ShortDescription:   "Template with advice placeholder",
+						Type:               advice_kit_api.EXPERIMENT,
+						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate(loadFile("advice_loadtest_validation_experiment_template_placeholder.json"))),
+					},
+				},
+			},
 			Implemented: advice_kit_api.AdviceDefinitionStatusImplemented{
 				Description: advice_kit_api.AdviceDefinitionStatusImplementedDescription{
 					Summary: implementedSummary,
@@ -34,4 +97,13 @@ func GetAdviceDescriptionKubernetesDeploymentLoadtest() advice_kit_api.AdviceDef
 			},
 		},
 	}
+}
+
+func loadFile(filename string) string {
+	content, err := adviceContent.ReadFile(filename)
+	if err != nil {
+		log.Error().Err(err).Msgf("Failed to read file: %s", filename)
+		return ""
+	}
+	return string(content)
 }

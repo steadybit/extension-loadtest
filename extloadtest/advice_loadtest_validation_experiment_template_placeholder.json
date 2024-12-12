@@ -1,0 +1,56 @@
+{
+	"templateTitle": "Advice experiment template with placeholder",
+	"templateDescription": "Advice experiment template with placeholder",
+	"placeholders": [
+		{
+			"key": "agenthost",
+			"name": "Which agent should print the message?",
+			"description": "Also a longer descriptions seems to be appropriate here..."
+		}
+	],
+	"tags": ["advice", "validation"],
+	"experimentName": "Placeholder -> ${target.attr('k8s.pod.name')}",
+	"lanes": [
+		{
+			"steps": [
+				{
+					"type": "wait",
+					"ignoreFailure": false,
+					"parameters": {
+						"duration": "1s"
+					}
+				},
+				{
+					"type": "action",
+					"ignoreFailure": false,
+					"parameters": {
+						"duration": "10s",
+						"latencyDuration": "3s",
+						"errorEndpoint": "none",
+						"targetFilter": "*",
+						"message": "Hello from %s",
+						"latencyEndpoint": "none"
+					},
+					"actionType": "com.steadybit.extension_loadtest.log.kubernetes-deployment",
+					"radius": {
+						"targetType": "com.steadybit.extension_host.host",
+						"predicate": {
+							"operator": "AND",
+							"predicates": [
+								{
+									"key": "agent.hostname",
+									"operator": "EQUALS",
+									"values": [
+										"[[agenthost]]"
+									]
+								}
+							]
+						},
+						"query": null,
+						"maximum": 1
+					}
+				}
+			]
+		}
+	]
+}

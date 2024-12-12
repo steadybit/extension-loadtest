@@ -1,0 +1,26 @@
+{
+	"templateTitle": "Advice experiment template with restricted action",
+	"templateDescription": "Advice experiment template with restricted action",
+	"placeholders": [
+		{
+			"key": "dummy",
+			"name": "Dummy",
+			"description": "Not actually used."
+		}
+	],
+	"tags": ["advice", "validation"],
+	"experimentName": "Advice experiment template with restricted action",
+	"lanes": [
+		{
+			"steps": [
+				{
+					"type": "action",
+					"ignoreFailure": false,
+					"parameters": {},
+					"actionType": "com.steadybit.extension_loadtest.targetless",
+					"radius": {}
+				}
+			]
+		}
+	]
+}

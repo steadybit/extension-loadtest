@@ -1,0 +1,20 @@
+{
+	"templateTitle": "Advice experiment template without template variables",
+	"templateDescription": "But why?",
+	"placeholders": [],
+	"tags": ["advice", "validation"],
+	"experimentName": "Advice Experiment Template without Template Variables",
+	"lanes": [
+		{
+			"steps": [
+				{
+					"type": "wait",
+					"ignoreFailure": false,
+					"parameters": {
+						"duration": "1s"
+					}
+				}
+			]
+		}
+	]
+}

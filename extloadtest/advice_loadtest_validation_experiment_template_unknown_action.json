@@ -1,0 +1,27 @@
+{
+	"templateTitle": "Advice experiment template with unknown action",
+	"templateDescription": "Advice experiment template with unknown action",
+	"placeholders": [
+		{
+			"key": "dummy",
+			"name": "Dummy",
+			"description": "Not actually used."
+		}
+	],
+	"tags": ["advice", "validation"],
+	"experimentName": "Advice experiment template with unknown action",
+	"lanes": [
+		{
+			"steps": [
+				{
+					"type": "action",
+					"actionType": "com.steadybit.extension_loadtest.action.unknown",
+					"ignoreFailure": false,
+					"parameters": {
+						"duration": "1s"
+					}
+				}
+			]
+		}
+	]
+}
