@@ -54,7 +54,7 @@ func (l *widgetAction) Describe() action_kit_api.ActionDescription {
 			TargetType: "com.steadybit.extension_host.host",
 			SelectionTemplates: extutil.Ptr([]action_kit_api.TargetSelectionTemplate{
 				{
-					Label:       "by host name",
+					Label:       "host name",
 					Description: extutil.Ptr("Find by host name"),
 					Query:       "host.hostname=\"\"",
 				},
