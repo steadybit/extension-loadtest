@@ -14,7 +14,7 @@ require (
 	github.com/steadybit/discovery-kit/go/discovery_kit_commons v0.2.0
 	github.com/steadybit/discovery-kit/go/discovery_kit_sdk v1.2.1
 	github.com/steadybit/event-kit/go/event_kit_api v1.5.0
-	github.com/steadybit/extension-kit v1.8.22
+	github.com/steadybit/extension-kit v1.8.23
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/automaxprocs v1.6.0
 )
@@ -42,7 +42,7 @@ require (
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/rs/xid v1.6.0 // indirect
 	github.com/zmwangx/debounce v1.0.0 // indirect
-	golang.org/x/sys v0.27.0 // indirect
+	golang.org/x/sys v0.29.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	howett.net/plist v1.0.1 // indirect
 )
