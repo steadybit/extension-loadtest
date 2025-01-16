@@ -22,6 +22,8 @@ manifest should match snapshot:
             oneagent.dynatrace.com/injection: "false"
             steadybit.com/extension-auto-discovery: |
               {"extensions":[{"port":8082,"protocol":"http","types":["ACTION","DISCOVERY","EVENT"]}]}
+            steadybit.com/extension-auto-registration: |
+              {"extensions":[{"port":8082,"protocol":"http"}]}
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
             app.kubernetes.io/name: steadybit-extension-loadtest
@@ -144,6 +146,8 @@ manifest should use empty update values:
             oneagent.dynatrace.com/injection: "false"
             steadybit.com/extension-auto-discovery: |
               {"extensions":[{"port":8082,"protocol":"http","types":["ACTION","DISCOVERY","EVENT"]}]}
+            steadybit.com/extension-auto-registration: |
+              {"extensions":[{"port":8082,"protocol":"http"}]}
           labels:
             app.kubernetes.io/instance: RELEASE-NAME
             app.kubernetes.io/name: steadybit-extension-loadtest
