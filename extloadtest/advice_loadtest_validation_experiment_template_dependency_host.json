@@ -1,0 +1,47 @@
+{
+	"templateTitle": "Advice experiment template dependency ${each.value}",
+	"templateDescription": "ja ja, *you* **know** for ${each.value}.",
+	"tags": ["advice", "validation"],
+	"experimentName": "Advice Experiment Template for ${each.value}",
+	"placeholders": [
+		{
+			"key": "duration",
+			"name": "How long to stress?",
+			"description": "Also a longer descriptions seems to be appropriate here..."
+		}
+	],
+	"lanes": [
+		{
+			"steps": [
+				{
+					"type": "action",
+					"ignoreFailure": false,
+					"parameters": {
+						"cpuLoad": 100,
+						"workers": 0,
+						"duration": "[[duration]]"
+					},
+					"actionType": "com.steadybit.extension_host.stress-cpu",
+					"radius": {
+						"targetType": "com.steadybit.extension_host.host",
+						"predicate": {
+							"operator": "AND",
+							"predicates": [
+								{
+									"key": "host.hostname",
+									"operator": "EQUALS",
+									"values": [
+										"${each.value}"
+									]
+								}
+							]
+						},
+						"query": null,
+						"percentage": 100
+					}
+				}
+			]
+		}
+	],
+	"experimentVariables": {}
+}

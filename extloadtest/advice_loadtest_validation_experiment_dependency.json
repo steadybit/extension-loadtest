@@ -1,0 +1,56 @@
+{
+	"name": "Advice Experiment",
+	"team": "ADM",
+	"environment": "Global",
+	"tags": [],
+	"lanes": [
+		{
+			"steps": [
+				{
+					"type": "action",
+					"ignoreFailure": false,
+					"parameters": {
+						"ip": [],
+						"port": [],
+						"duration": "5s",
+						"hostname": [],
+						"failOnHostNetwork": true
+					},
+					"actionType": "com.steadybit.extension_container.network_blackhole",
+					"radius": {
+						"targetType": "com.steadybit.extension_container.container",
+						"predicate": {
+							"operator": "AND",
+							"predicates": [
+								{
+									"key": "k8s.cluster-name",
+									"operator": "EQUALS",
+									"values": [
+										"${target.attr('k8s.cluster-name')}"
+									]
+								},
+								{
+									"key": "k8s.namespace",
+									"operator": "EQUALS",
+									"values": [
+										"${target.attr('k8s.namespace')}"
+									]
+								},
+								{
+									"key": "k8s.deployment",
+									"operator": "EQUALS",
+									"values": [
+										"${each.value}"
+									]
+								}
+							]
+						},
+						"query": null,
+						"percentage": 100
+					}
+				}
+			]
+		}
+	],
+	"experimentVariables": {}
+}

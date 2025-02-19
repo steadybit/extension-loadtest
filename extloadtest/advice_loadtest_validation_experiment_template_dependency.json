@@ -1,0 +1,63 @@
+{
+	"templateTitle": "Advice experiment template dependency ${each.value}",
+	"templateDescription": "ja ja, *you* **know** for ${each.value}.",
+	"tags": ["advice", "validation"],
+	"experimentName": "Advice Experiment Template for ${each.value}",
+	"placeholders": [
+		{
+			"key": "duration",
+			"name": "How long to stress?",
+			"description": "Also a longer descriptions seems to be appropriate here..."
+		}
+	],
+	"lanes": [
+		{
+			"steps": [
+				{
+					"type": "action",
+					"ignoreFailure": false,
+					"parameters": {
+						"ip": [],
+						"port": [],
+						"duration": "[[duration]]",
+						"hostname": [],
+						"failOnHostNetwork": true
+					},
+					"actionType": "com.steadybit.extension_container.network_blackhole",
+					"radius": {
+						"targetType": "com.steadybit.extension_container.container",
+						"predicate": {
+							"operator": "AND",
+							"predicates": [
+								{
+									"key": "k8s.cluster-name",
+									"operator": "EQUALS",
+									"values": [
+										"${target.attr('k8s.cluster-name')}"
+									]
+								},
+								{
+									"key": "k8s.namespace",
+									"operator": "EQUALS",
+									"values": [
+										"${target.attr('k8s.namespace')}"
+									]
+								},
+								{
+									"key": "k8s.deployment",
+									"operator": "EQUALS",
+									"values": [
+										"${each.value}"
+									]
+								}
+							]
+						},
+						"query": null,
+						"percentage": 1
+					}
+				}
+			]
+		}
+	],
+	"experimentVariables": {}
+}

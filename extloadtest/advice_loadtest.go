@@ -44,21 +44,21 @@ func GetAdviceDescriptionKubernetesDeploymentLoadtest() advice_kit_api.AdviceDef
 						Description:      extutil.Ptr("This validation creates an *experiment*. Old and boring."),
 						ShortDescription: "With experiment",
 						Type:             advice_kit_api.EXPERIMENT,
-						Experiment:       extutil.Ptr(advice_kit_api.Experiment(loadFile("advice_loadtest_validation_experiment.json"))),
+						Experiment:       extutil.Ptr(advice_kit_api.Experiment(LoadFile("advice_loadtest_validation_experiment.json"))),
 					}, {
 						Id:                 "com.steadybit.extension-loadtest.advice.loadtest.validation.2",
 						Name:               "Experiment Template Validation",
 						Description:        extutil.Ptr("This validation creates an *experiment* based on a **template**."),
 						ShortDescription:   "With template",
 						Type:               advice_kit_api.EXPERIMENT,
-						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate(loadFile("advice_loadtest_validation_experiment_template.json"))),
+						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate(LoadFile("advice_loadtest_validation_experiment_template.json"))),
 					}, {
 						Id:                 "com.steadybit.extension-loadtest.advice.loadtest.validation.3",
 						Name:               "Experiment Template Validation - No Variables",
 						Description:        extutil.Ptr("This validation creates an *experiment* based on a **template** without any template variables."),
 						ShortDescription:   "Template without template variables",
 						Type:               advice_kit_api.EXPERIMENT,
-						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate(loadFile("advice_loadtest_validation_experiment_template_empty.json"))),
+						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate(LoadFile("advice_loadtest_validation_experiment_template_empty.json"))),
 					}, {
 						Id:                 "com.steadybit.extension-loadtest.advice.loadtest.validation.4",
 						Name:               "Experiment Template Validation - Invalid",
@@ -72,21 +72,21 @@ func GetAdviceDescriptionKubernetesDeploymentLoadtest() advice_kit_api.AdviceDef
 						Description:        extutil.Ptr("This advice contains an unknown action."),
 						ShortDescription:   "Unknown action",
 						Type:               advice_kit_api.EXPERIMENT,
-						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate(loadFile("advice_loadtest_validation_experiment_template_unknown_action.json"))),
+						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate(LoadFile("advice_loadtest_validation_experiment_template_unknown_action.json"))),
 					}, {
 						Id:                 "com.steadybit.extension-loadtest.advice.loadtest.validation.6",
 						Name:               "Experiment Template Validation - Restricted Action",
 						Description:        extutil.Ptr("This advice contains a restricted action."),
 						ShortDescription:   "Restricted action",
 						Type:               advice_kit_api.EXPERIMENT,
-						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate(loadFile("advice_loadtest_validation_experiment_template_restricted_action.json"))),
+						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate(LoadFile("advice_loadtest_validation_experiment_template_restricted_action.json"))),
 					}, {
 						Id:                 "com.steadybit.extension-loadtest.advice.loadtest.validation.7",
 						Name:               "Experiment Template Validation - Template with Advice Placeholder",
 						Description:        extutil.Ptr("This advice contains a template with a placeholder."),
 						ShortDescription:   "Template with advice placeholder",
 						Type:               advice_kit_api.EXPERIMENT,
-						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate(loadFile("advice_loadtest_validation_experiment_template_placeholder.json"))),
+						ExperimentTemplate: extutil.Ptr(advice_kit_api.ExperimentTemplate(LoadFile("advice_loadtest_validation_experiment_template_placeholder.json"))),
 					},
 				},
 			},
@@ -99,7 +99,7 @@ func GetAdviceDescriptionKubernetesDeploymentLoadtest() advice_kit_api.AdviceDef
 	}
 }
 
-func loadFile(filename string) string {
+func LoadFile(filename string) string {
 	content, err := adviceContent.ReadFile(filename)
 	if err != nil {
 		log.Error().Err(err).Msgf("Failed to read file: %s", filename)
