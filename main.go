@@ -24,7 +24,6 @@ import (
 	"github.com/steadybit/extension-loadtest/config"
 	"github.com/steadybit/extension-loadtest/extloadtest"
 	_ "go.uber.org/automaxprocs" // Importing automaxprocs automatically adjusts GOMAXPROCS.
-	_ "net/http/pprof"           //allow pprof
 )
 
 func main() {
@@ -144,10 +143,10 @@ func getExtensionList(eventListenerEnabled bool) ExtensionListResponse {
 			Advice: []advice_kit_api.DescribingEndpointReference{{
 				Method: "GET",
 				Path:   "/advice/loadtest-advice",
-			},{
+			}, {
 				Method: "GET",
 				Path:   "/advice/loadtest-dependencies",
-			},{
+			}, {
 				Method: "GET",
 				Path:   "/advice/checkout-dependency",
 			}},
