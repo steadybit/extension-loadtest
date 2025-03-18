@@ -22,8 +22,6 @@ require (
 	go.uber.org/automaxprocs v1.6.0
 )
 
-replace github.com/steadybit/preflight-kit/go/preflight_kit_sdk v0.0.0-20250312172407-f6fe9a43f7a7 => ../preflight-kit/go/preflight_kit_sdk
-
 require (
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
