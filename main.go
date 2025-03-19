@@ -23,6 +23,8 @@ import (
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
 	"github.com/steadybit/extension-loadtest/extloadtest"
+	"github.com/steadybit/preflight-kit/go/preflight_kit_api"
+	"github.com/steadybit/preflight-kit/go/preflight_kit_sdk"
 	_ "go.uber.org/automaxprocs" // Importing automaxprocs automatically adjusts GOMAXPROCS.
 )
 
@@ -89,6 +91,8 @@ func main() {
 	}))
 	action_kit_sdk.RegisterAction(extloadtest.NewWidgetAction())
 
+	preflight_kit_sdk.RegisterPreflight(extloadtest.NewExamplePreflight())
+
 	if config.IsPodZero() {
 		log.Info().Msg("I am pod zero")
 	}
@@ -104,6 +108,7 @@ type ExtensionListResponse struct {
 	discovery_kit_api.DiscoveryList `json:",inline"`
 	event_kit_api.EventListenerList `json:",inline"`
 	advice_kit_api.AdviceList       `json:",inline"`
+	preflight_kit_api.PreflightList `json:",inline"`
 }
 
 func getExtensionList(eventListenerEnabled bool) ExtensionListResponse {
@@ -135,6 +140,7 @@ func getExtensionList(eventListenerEnabled bool) ExtensionListResponse {
 
 	return ExtensionListResponse{
 		ActionList:    action_kit_sdk.GetActionList(),
+		PreflightList: preflight_kit_sdk.GetPreflightList(),
 		DiscoveryList: discovery_kit_sdk.GetDiscoveryList(),
 		EventListenerList: event_kit_api.EventListenerList{
 			EventListeners: eventListener,
