@@ -23,12 +23,12 @@ func NewExamplePreflight() *ExamplePreflight {
 
 func (preflight *ExamplePreflight) Describe() preflight_kit_api.PreflightDescription {
 	return preflight_kit_api.PreflightDescription{
-		Id:          "com.steadybit.extension_loadtest.preflight.example",
-		Version:     "v0.0.1",
-		Label:       "ExamplePreflightId",
-		Description: "This is an Example Preflight",
+		Id:                      "com.steadybit.extension_loadtest.preflight.example",
+		Version:                 "v0.0.1",
+		Label:                   "ExamplePreflightId",
+		Description:             "This is an Example Preflight",
 		TargetAttributeIncludes: []string{"host.hostname", "k8s.deployment"},
-		Start:       preflight_kit_api.MutatingEndpointReference{},
+		Start:                   preflight_kit_api.MutatingEndpointReference{},
 		Status: preflight_kit_api.MutatingEndpointReferenceWithCallInterval{
 			CallInterval: extutil.Ptr("1s"),
 		},
@@ -58,7 +58,7 @@ func (preflight *ExamplePreflight) Status(_ context.Context, request preflight_k
 			Completed: true,
 			Error:     &preflight_kit_api.PreflightKitError{Title: "Preflight says: NO!", Detail: extutil.Ptr("because no"), Status: extutil.Ptr(preflight_kit_api.Failed)},
 		}, nil
-	}else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "error") {
+	} else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "error") {
 		return &preflight_kit_api.StatusResult{
 			Completed: true,
 			Error:     &preflight_kit_api.PreflightKitError{Title: "Preflight says: Oh NO. Error!", Detail: extutil.Ptr("because no"), Status: extutil.Ptr(preflight_kit_api.Errored)},
@@ -66,6 +66,11 @@ func (preflight *ExamplePreflight) Status(_ context.Context, request preflight_k
 	} else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "success") {
 		return &preflight_kit_api.StatusResult{
 			Completed: true,
+			Error:     nil,
+		}, nil
+	} else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "timeout") {
+		return &preflight_kit_api.StatusResult{
+			Completed: false,
 			Error:     nil,
 		}, nil
 	}
