@@ -41,7 +41,7 @@ func (preflight *GithubActionPreflight) Start(_ context.Context, request preflig
 	runningPreflights.Store(request.PreflightActionExecutionId, request.ExperimentExecution)
 	if request.ExperimentExecution.Name != nil && strings.Contains(strings.ToLower(*request.ExperimentExecution.Name), "technicalerror") {
 		return nil, extutil.Ptr(extension_kit.ToError("This is a test error", errors.New("with some details")))
-	} else if request.ExperimentExecution.Name != nil && strings.Contains(strings.ToLower(*request.ExperimentExecution.Name), "starterror") {
+	} else if request.ExperimentExecution.Name != nil && strings.Contains(strings.ToLower(*request.ExperimentExecution.Name), "startfailure") {
 		return &preflight_kit_api.StartResult{Error: extutil.Ptr(preflight_kit_api.PreflightKitError{
 			Title:  "Some start error",
 			Status: extutil.Ptr(preflight_kit_api.Failed),
