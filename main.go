@@ -91,7 +91,8 @@ func main() {
 	}))
 	action_kit_sdk.RegisterAction(extloadtest.NewWidgetAction())
 
-	preflight_kit_sdk.RegisterPreflight(extloadtest.NewExamplePreflight())
+	preflight_kit_sdk.RegisterPreflight(extloadtest.NewGitHubActionPreflight())
+	preflight_kit_sdk.RegisterPreflight(extloadtest.NewSimplePreflight())
 
 	if config.IsPodZero() {
 		log.Info().Msg("I am pod zero")
