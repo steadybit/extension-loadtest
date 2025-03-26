@@ -11,6 +11,11 @@ metadata:
       {"extensions":[{"port":{{ . }},"protocol":"http","types":["ACTION","DISCOVERY","EVENT","ADVICE"]}]}
   name: steadybit-extension-loadtest-{{ . }}
   namespace: steadybit-agent
+  labels:
+  {{- range $key, $value := .Values.extraLabels }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
+  {{- include "extensionlib.labels" (list .) | nindent 4 }}
 spec:
   ports:
     - port: {{ . }}
