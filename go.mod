@@ -11,7 +11,7 @@ require (
 	github.com/steadybit/action-kit/go/action_kit_api/v2 v2.9.7
 	github.com/steadybit/action-kit/go/action_kit_sdk v1.1.15
 	github.com/steadybit/advice-kit/go/advice_kit_api v1.1.1
-	github.com/steadybit/discovery-kit/go/discovery_kit_api v1.6.0
+	github.com/steadybit/discovery-kit/go/discovery_kit_api v1.7.0
 	github.com/steadybit/discovery-kit/go/discovery_kit_commons v0.2.0
 	github.com/steadybit/discovery-kit/go/discovery_kit_sdk v1.2.3
 	github.com/steadybit/event-kit/go/event_kit_api v1.5.0
@@ -27,9 +27,9 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/elastic/go-sysinfo v1.15.1 // indirect
 	github.com/elastic/go-windows v1.0.2 // indirect
-	github.com/getkin/kin-openapi v0.131.0 // indirect
-	github.com/go-openapi/jsonpointer v0.21.0 // indirect
-	github.com/go-openapi/swag v0.23.0 // indirect
+	github.com/getkin/kin-openapi v0.132.0 // indirect
+	github.com/go-openapi/jsonpointer v0.21.1 // indirect
+	github.com/go-openapi/swag v0.23.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.9.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
