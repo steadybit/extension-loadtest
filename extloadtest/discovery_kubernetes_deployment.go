@@ -62,7 +62,7 @@ func createKubernetesDeploymentTargets(nodeCount int, suffix string) []discovery
 				"k8s.label.tags.datadoghq.com/version":            {"1.0.0"},
 				"k8s.namespace":                                   {namespace},
 				"k8s.pod.name":                                    pods,
-				"k8s.dependencies": 															 {"deps1", "deps2"},
+				"k8s.dependencies":                                {"deps1", "deps2"},
 			},
 		}
 		result = append(result, target)
