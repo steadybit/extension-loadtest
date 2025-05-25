@@ -119,13 +119,13 @@ func scheduleExtensionRestartIfNecessary[T any](targets, backup *[]T, typeId str
 	interval := spec.Interval
 	delay := time.Duration(interval) * time.Second
 	_, err := scheduler.ScheduleWithFixedDelay(func(ctx context.Context) {
-		*backup = append(*targets)
+		*backup = append(*backup, *targets...)
 		*targets = []T{}
 		log.Info().Msgf("All %d %s targets are gone now (simulating a stopped extension)", len(*backup), typeId)
 
 		restoreDelay := time.Duration(spec.Duration) * time.Second
 		_, restoreErr := scheduler.Schedule(func(ctx context.Context) {
-			*targets = append(*backup)
+			*targets = append(*targets, *backup...)
 			*backup = []T{}
 			log.Info().Msgf("Restored %d %s targets after extension restart simulation", len(*targets), typeId)
 		}, chrono.WithTime(time.Now().Add(restoreDelay)))
