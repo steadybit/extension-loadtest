@@ -25,12 +25,12 @@ type Specification struct {
 	PodName     string `json:"podName" split_words:"true" required:"false" default:"pod-0"`
 
 	//2 containers per pod * 4 pods per deployment * 5 deployments per node * 400 nodes = 16000 containers
-	Ec2NodeCount       int `json:"ec2NodeCount" split_words:"true" required:"false" default:"100"`
+	Ec2NodeCount       int `json:"ec2NodeCount" split_words:"true" required:"false" default:"690"`
 	AzureNodeCount     int `json:"azureNodeCount" split_words:"true" required:"false" default:"1"`
 	GcpNodeCount       int `json:"gcpNodeCount" split_words:"true" required:"false" default:"1"`
-	DeploymentsPerNode int `json:"deploymentsPerNode" split_words:"true" required:"false" default:"100"`
-	PodsPerDeployment  int `json:"podsPerDeployment" split_words:"true" required:"false" default:"1"`
-	ContainerPerPod    int `json:"containerPerPod" split_words:"true" required:"false" default:"1"`
+	DeploymentsPerNode int `json:"deploymentsPerNode" split_words:"true" required:"false" default:"1"`
+	PodsPerDeployment  int `json:"podsPerDeployment" split_words:"true" required:"false" default:"13"`
+	ContainerPerPod    int `json:"containerPerPod" split_words:"true" required:"false" default:"2"`
 
 	AttributeUpdates   AttributeUpdateSpecifications    `split_words:"true" required:"false" default:"[]"`
 	TargetReplacements TargetReplacementsSpecifications `split_words:"true" required:"false" default:"[]"`
@@ -48,10 +48,10 @@ type Specification struct {
 
 	// Disable Discoveries
 	DisableAWSDiscovery        bool `json:"disableAWSDiscovery" split_words:"true" required:"false" default:"false"`
-	DisableGCPDiscovery        bool `json:"disableGCPDiscovery" split_words:"true" required:"false" default:"false"`
-	DisableAzureDiscovery      bool `json:"disableAzureDiscovery" split_words:"true" required:"false" default:"false"`
+	DisableGCPDiscovery        bool `json:"disableGCPDiscovery" split_words:"true" required:"false" default:"true"`
+	DisableAzureDiscovery      bool `json:"disableAzureDiscovery" split_words:"true" required:"false" default:"true"`
 	DisableKubernetesDiscovery bool `json:"disableKubernetesDiscovery" split_words:"true" required:"false" default:"false"`
-	DisableHostDiscovery       bool `json:"disableHostDiscovery" split_words:"true" required:"false" default:"false"`
+	DisableHostDiscovery       bool `json:"disableHostDiscovery" split_words:"true" required:"false" default:"true"`
 	DisableContainerDiscovery  bool `json:"disableContainerDiscovery" split_words:"true" required:"false" default:"false"`
 
 	// Simulate Enrichments
