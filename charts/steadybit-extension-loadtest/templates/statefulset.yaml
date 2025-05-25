@@ -86,10 +86,18 @@ spec:
             {{- with .Values.extraEnv }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
+            {{ if .Values.loadtest.attributeUpdates -}}
             - name: STEADYBIT_EXTENSION_ATTRIBUTE_UPDATES
               value: {{ .Values.loadtest.attributeUpdates | toJson | quote }}
+            {{- end }}
+            {{ if .Values.loadtest.targetReplacements -}}
             - name: STEADYBIT_EXTENSION_TARGET_REPLACEMENTS
               value: {{ .Values.loadtest.targetReplacements | toJson | quote }}
+            {{- end }}
+            {{ if .Values.loadtest.simulateExtensionRestarts -}}
+            - name: STEADYBIT_EXTENSION_SIMULATE_EXTENSION_RESTARTS
+              value: {{ .Values.loadtest.simulateExtensionRestarts | toJson | quote }}
+            {{- end }}
             {{ if .Values.discovery.attributes.excludes.container -}}
             - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_CONTAINER
               value: {{ join "," .Values.discovery.attributes.excludes.container | quote }}

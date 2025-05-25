@@ -60,6 +60,10 @@ loadtest:
     - type: "com.steadybit.extension_kubernetes.kubernetes-deployment"
       count: 2
       interval: 180
+#  simulateExtensionRestarts:
+#    - type: "com.steadybit.extension_aws.ec2-instance"
+#      duration: 30
+#      interval: 600
 
 
 tls:

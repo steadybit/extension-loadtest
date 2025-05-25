@@ -12,5 +12,20 @@ tests:
       loadtest:
         attributeUpdates: []
         targetReplacements: []
+        simulateExtensionRestarts: []
+    asserts:
+      - matchSnapshot: { }
+  - it: manifest should render simulateExtensionRestarts
+    set:
+      loadtest:
+        attributeUpdates: []
+        targetReplacements: []
+        simulateExtensionRestarts:
+          - type: "com.steadybit.extension_aws.ec2-instance"
+            duration: 30
+            interval: 600
+          - type: "com.steadybit.extension_container.container"
+            duration: 30
+            interval: 600
     asserts:
       - matchSnapshot: { }

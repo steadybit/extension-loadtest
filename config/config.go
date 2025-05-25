@@ -32,8 +32,9 @@ type Specification struct {
 	PodsPerDeployment  int `json:"podsPerDeployment" split_words:"true" required:"false" default:"1"`
 	ContainerPerPod    int `json:"containerPerPod" split_words:"true" required:"false" default:"1"`
 
-	AttributeUpdates   AttributeUpdateSpecifications    `split_words:"true" required:"false" default:"[]"`
-	TargetReplacements TargetReplacementsSpecifications `split_words:"true" required:"false" default:"[]"`
+	AttributeUpdates          AttributeUpdateSpecifications          `split_words:"true" required:"false" default:"[]"`
+	TargetReplacements        TargetReplacementsSpecifications       `split_words:"true" required:"false" default:"[]"`
+	SimulateExtensionRestarts SimulateExtensionRestartSpecifications `split_words:"true" required:"false" default:"[]"`
 
 	DiscoveryAttributesExcludesContainer            []string `json:"discoveryAttributesExcludesContainer" split_words:"true" required:"false"`
 	DiscoveryAttributesExcludesEc2                  []string `json:"discoveryAttributesExcludesEc2" split_words:"true" required:"false"`
@@ -127,6 +128,34 @@ func (s *TargetReplacementsSpecification) Decode(value string) error {
 	return nil
 }
 
+type SimulateExtensionRestartSpecifications []SimulateExtensionRestartSpecification
+
+type SimulateExtensionRestartSpecification struct {
+	Type     string `json:"type" split_words:"true"`     // Type of the container to simulate a restart for
+	Duration int    `json:"duration" split_words:"true"` // Duration how long should the targets be unavailable
+	Interval int    `json:"interval" split_words:"true"` // Interval in seconds how often the restart should be simulated
+}
+
+func (s *SimulateExtensionRestartSpecifications) Decode(value string) error {
+	var specs []SimulateExtensionRestartSpecification
+	err := json.Unmarshal([]byte(value), &specs)
+	if err != nil {
+		return fmt.Errorf("invalid json: %w", err)
+	}
+	*s = specs
+	return nil
+}
+
+func (s *SimulateExtensionRestartSpecification) Decode(value string) error {
+	var spec SimulateExtensionRestartSpecification
+	err := json.Unmarshal([]byte(value), &spec)
+	if err != nil {
+		return fmt.Errorf("invalid json: %w", err)
+	}
+	*s = spec
+	return nil
+}
+
 func ParseConfiguration() {
 	err := envconfig.Process("steadybit_extension", &Config)
 	if err != nil {
@@ -135,6 +164,9 @@ func ParseConfiguration() {
 }
 
 func ValidateConfiguration() {
+	if len(Config.TargetReplacements) != 0 && len(Config.SimulateExtensionRestarts) != 0 {
+		log.Fatal().Msg("You can only use either target replacements or simulate extension restarts, not both at the same time.")
+	}
 }
 
 func (s *Specification) FindAttributeUpdate(t string) *AttributeUpdateSpecification {
@@ -150,6 +182,15 @@ func (s *Specification) FindTargetReplacementsSpecification(t string) *TargetRep
 	for _, replacement := range s.TargetReplacements {
 		if replacement.Type == t {
 			return &replacement
+		}
+	}
+	return nil
+}
+
+func (s *Specification) FindSimulateExtensionRestartSpecification(t string) *SimulateExtensionRestartSpecification {
+	for _, restart := range s.SimulateExtensionRestarts {
+		if restart.Type == t {
+			return &restart
 		}
 	}
 	return nil

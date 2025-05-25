@@ -101,7 +101,46 @@ func scheduleReplacementIfNecessary[T any](targets, backup *[]T, typeId string, 
 	log.Info().
 		Int("interval", interval).
 		Int("maxCount", spec.Count).
-		Msgf("scheduled container %s creation/deletion", typeId)
+		Msgf("scheduled %s creation/deletion", typeId)
+}
+
+func scheduleTargetExtensionRestartIfNecessary(targets, backup *[]discovery_kit_api.Target, typeId string) {
+	scheduleExtensionRestartIfNecessary(targets, backup, typeId, func(t discovery_kit_api.Target) string {
+		return t.Id
+	})
+}
+
+func scheduleExtensionRestartIfNecessary[T any](targets, backup *[]T, typeId string, id func(T) string) {
+	spec := config.Config.FindSimulateExtensionRestartSpecification(typeId)
+	if spec == nil || spec.Interval <= 0 || spec.Duration <= 0 {
+		return
+	}
+
+	interval := spec.Interval
+	delay := time.Duration(interval) * time.Second
+	_, err := scheduler.ScheduleWithFixedDelay(func(ctx context.Context) {
+		*backup = append(*targets)
+		*targets = []T{}
+		log.Info().Msgf("All %d %s targets are gone now (simulating a stopped extension)", len(*backup), typeId)
+
+		restoreDelay := time.Duration(spec.Duration) * time.Second
+		_, restoreErr := scheduler.Schedule(func(ctx context.Context) {
+			*targets = append(*backup)
+			*backup = []T{}
+			log.Info().Msgf("Restored %d %s targets after extension restart simulation", len(*targets), typeId)
+		}, chrono.WithTime(time.Now().Add(restoreDelay)))
+		if restoreErr != nil {
+			log.Error().Msgf("Failed to schedule restore of %s targets: %s", typeId, restoreErr.Error())
+		}
+	}, delay, chrono.WithTime(time.Now().Add(delay)))
+
+	if err != nil {
+		log.Fatal().Msgf("Failed to schedule %s extension restart simulation: %s", typeId, err.Error())
+	}
+	log.Info().
+		Int("interval", interval).
+		Int("duration", spec.Duration).
+		Msgf("scheduled  %s extension restart simulation", typeId)
 }
 
 func initAttributes[T any](items []T, spec *config.AttributeUpdateSpecification, getAttributeMap func(item T) map[string][]string) {

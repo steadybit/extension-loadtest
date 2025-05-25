@@ -242,35 +242,43 @@ func (t *TargetData) ScheduleUpdates() {
 	if !config.Config.DisableHostDiscovery {
 		scheduleTargetAttributeUpdateIfNecessary(t.hosts, "com.steadybit.extension_host.host")
 		scheduleTargetReplacementIfNecessary(&t.hosts, &t.hostsBackup, "com.steadybit.extension_host.host")
+		scheduleTargetExtensionRestartIfNecessary(&t.hosts, &t.hostsBackup, "com.steadybit.extension_host.host")
 	}
 	if !config.Config.DisableAWSDiscovery {
 		scheduleTargetAttributeUpdateIfNecessary(t.ec2Instances, "com.steadybit.extension_aws.ec2-instance")
 		scheduleTargetReplacementIfNecessary(&t.ec2Instances, &t.ec2InstancesBackup, "com.steadybit.extension_aws.ec2-instance")
+		scheduleTargetExtensionRestartIfNecessary(&t.ec2Instances, &t.ec2InstancesBackup, "com.steadybit.extension_aws.ec2-instance")
 
 	}
 	if !config.Config.DisableGCPDiscovery {
 		scheduleTargetAttributeUpdateIfNecessary(t.gcpInstances, "com.steadybit.extension_gcp.vm")
 		scheduleTargetReplacementIfNecessary(&t.gcpInstances, &t.gcpInstancesBackup, "com.steadybit.extension_gcp.vm")
+		scheduleTargetExtensionRestartIfNecessary(&t.gcpInstances, &t.gcpInstancesBackup, "com.steadybit.extension_gcp.vm")
 
 	}
 	if !config.Config.DisableAzureDiscovery {
 		scheduleTargetAttributeUpdateIfNecessary(t.azureInstances, "com.steadybit.extension_azure.scale_set.instance")
 		scheduleTargetReplacementIfNecessary(&t.azureInstances, &t.azureInstancesBackup, "com.steadybit.extension_azure.scale_set.instance")
+		scheduleTargetExtensionRestartIfNecessary(&t.azureInstances, &t.azureInstancesBackup, "com.steadybit.extension_azure.scale_set.instance")
 	}
 
 	if !config.Config.DisableKubernetesDiscovery {
 		scheduleTargetAttributeUpdateIfNecessary(t.kubernetesClusters, "com.steadybit.extension_kubernetes.kubernetes-cluster")
 		scheduleTargetReplacementIfNecessary(&t.kubernetesClusters, &t.kubernetesClustersBackup, "com.steadybit.extension_kubernetes.kubernetes-cluster")
+		scheduleTargetExtensionRestartIfNecessary(&t.kubernetesClusters, &t.kubernetesClustersBackup, "com.steadybit.extension_kubernetes.kubernetes-cluster")
 
 		scheduleTargetAttributeUpdateIfNecessary(t.kubernetesDeployments, "com.steadybit.extension_kubernetes.kubernetes-deployment")
 		scheduleTargetReplacementIfNecessary(&t.kubernetesDeployments, &t.kubernetesDeploymentsBackup, "com.steadybit.extension_kubernetes.kubernetes-deployment")
+		scheduleTargetExtensionRestartIfNecessary(&t.kubernetesDeployments, &t.kubernetesDeploymentsBackup, "com.steadybit.extension_kubernetes.kubernetes-deployment")
 
 		scheduleTargetAttributeUpdateIfNecessary(t.kubernetesPods, "com.steadybit.extension_kubernetes.kubernetes-pod")
 		scheduleTargetReplacementIfNecessary(&t.kubernetesPods, &t.kubernetesPodsBackup, "com.steadybit.extension_kubernetes.kubernetes-pod")
+		scheduleTargetExtensionRestartIfNecessary(&t.kubernetesPods, &t.kubernetesPodsBackup, "com.steadybit.extension_kubernetes.kubernetes-pod")
 	}
 	if !config.Config.DisableContainerDiscovery {
 		scheduleTargetAttributeUpdateIfNecessary(t.containers, "com.steadybit.extension_container.container")
 		scheduleTargetReplacementIfNecessary(&t.containers, &t.containersBackup, "com.steadybit.extension_container.container")
+		scheduleTargetExtensionRestartIfNecessary(&t.containers, &t.containersBackup, "com.steadybit.extension_container.container")
 	}
 	if !config.Config.DisableKubernetesDiscovery {
 		scheduleEnrichmentDataAttributeUpdateIfNecessary(t.kubernetesContainers, "com.steadybit.extension_kubernetes.kubernetes-container")
