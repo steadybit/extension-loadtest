@@ -15,6 +15,26 @@ tests:
         simulateExtensionRestarts: []
     asserts:
       - matchSnapshot: { }
+  - it: manifest should render targetReplacements
+    set:
+      loadtest:
+        attributeUpdates: []
+        targetReplacements:
+          - type: "com.steadybit.extension_aws.ec2-instance"
+            count: 1
+            interval: 600
+          - type: "com.steadybit.extension_container.container"
+            count: 2
+            interval: 180
+          - type: "com.steadybit.extension_kubernetes.kubernetes-container"
+            count: 2
+            interval: 180
+          - type: "com.steadybit.extension_kubernetes.kubernetes-deployment"
+            count: 2
+            interval: 180
+        simulateExtensionRestarts: []
+    asserts:
+      - matchSnapshot: { }
   - it: manifest should render simulateExtensionRestarts
     set:
       loadtest:
