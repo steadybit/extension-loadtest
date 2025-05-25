@@ -164,8 +164,12 @@ func ParseConfiguration() {
 }
 
 func ValidateConfiguration() {
-	if len(Config.TargetReplacements) != 0 && len(Config.SimulateExtensionRestarts) != 0 {
-		log.Fatal().Msg("You can only use either target replacements or simulate extension restarts, not both at the same time.")
+	for _, tr := range Config.TargetReplacements {
+		for _, sr := range Config.SimulateExtensionRestarts {
+			if tr.Type == sr.Type {
+				log.Fatal().Msgf("You can only use either target replacements or simulate extension restarts for type '%s', not both at the same time.", tr.Type)
+			}
+		}
 	}
 }
 
