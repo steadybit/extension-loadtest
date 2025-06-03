@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/google/uuid"
 	extension_kit "github.com/steadybit/extension-kit"
+	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/preflight-kit/go/preflight_kit_api"
 	"strings"
@@ -24,7 +25,7 @@ func NewGitHubActionPreflight() *GithubActionPreflight {
 func (preflight *GithubActionPreflight) Describe() preflight_kit_api.PreflightDescription {
 	return preflight_kit_api.PreflightDescription{
 		Id:                      "com.steadybit.extension_loadtest.preflight.github-action",
-		Version:                 "v0.0.1",
+		Version:                 extbuild.GetSemverVersionStringOrUnknown(),
 		Label:                   "Github Action Preflight",
 		Description:             "This is a Preflight for the nightly Github Action which fails depending on the experiment name.",
 		TargetAttributeIncludes: []string{"host.hostname", "k8s.deployment"},
