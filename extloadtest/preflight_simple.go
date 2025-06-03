@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/google/uuid"
 	extension_kit "github.com/steadybit/extension-kit"
+	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/preflight-kit/go/preflight_kit_api"
 	"sync"
@@ -23,7 +24,7 @@ func NewSimplePreflight() *SimplePreflight {
 func (preflight *SimplePreflight) Describe() preflight_kit_api.PreflightDescription {
 	return preflight_kit_api.PreflightDescription{
 		Id:                      "com.steadybit.extension_loadtest.preflight.simple",
-		Version:                 "v0.0.1",
+		Version:                 extbuild.GetSemverVersionStringOrUnknown(),
 		Label:                   "Simple Preflight",
 		Description:             "This is a Preflight that always succeed.",
 		TargetAttributeIncludes: []string{"host.hostname", "k8s.deployment"},
