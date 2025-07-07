@@ -93,6 +93,13 @@ func (preflight *GithubActionPreflight) Status(_ context.Context, request prefli
 		if execution.Started != nil && time.Since(*execution.Started).Seconds() > 10 {
 			return nil, extension_kit.ToError("Simulated error for inflight checks after 10 seconds.", nil)
 		}
+	} else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "inflightfailed") {
+		if execution.Started != nil && time.Since(*execution.Started).Seconds() > 10 {
+			return &preflight_kit_api.StatusResult{
+				Completed: true,
+				Error:     &preflight_kit_api.PreflightKitError{Title: "Inflight says: NO!", Detail: extutil.Ptr("because no"), Status: extutil.Ptr(preflight_kit_api.Failed)},
+			}, nil
+		}
 	}
 	return &preflight_kit_api.StatusResult{Completed: true}, nil
 }
