@@ -65,12 +65,12 @@ func (preflight *GithubActionPreflight) Status(_ context.Context, request prefli
 	var execution = loadedExecution.(preflight_kit_api.ExperimentExecutionAO)
 	if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "technicalerror") {
 		return nil, extutil.Ptr(extension_kit.ToError("This is a test error", errors.New("with some details")))
-	} else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "failed") {
+	} else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "failed") && !strings.Contains(strings.ToLower(*execution.Name), "inflightfailed") {
 		return &preflight_kit_api.StatusResult{
 			Completed: true,
 			Error:     &preflight_kit_api.PreflightKitError{Title: "Preflight says: NO!", Detail: extutil.Ptr("because no"), Status: extutil.Ptr(preflight_kit_api.Failed)},
 		}, nil
-	} else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "error") {
+	} else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "error") && !strings.Contains(strings.ToLower(*execution.Name), "inflighterror") {
 		return &preflight_kit_api.StatusResult{
 			Completed: true,
 			Error:     &preflight_kit_api.PreflightKitError{Title: "Preflight says: Oh NO. Error!", Detail: extutil.Ptr("because no"), Status: extutil.Ptr(preflight_kit_api.Errored)},
