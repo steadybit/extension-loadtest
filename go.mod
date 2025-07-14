@@ -3,7 +3,7 @@ module github.com/steadybit/extension-loadtest
 go 1.24
 
 require (
-	github.com/KimMachineGun/automemlimit v0.7.3
+	github.com/KimMachineGun/automemlimit v0.7.4
 	github.com/google/uuid v1.6.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/procyon-projects/chrono v1.1.2
