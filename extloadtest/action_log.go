@@ -40,11 +40,12 @@ type LogActionState struct {
 }
 
 type LogActionConfig struct {
-	Message         string
-	ErrorEndpoint   string
-	LatencyEndpoint string
-	LatencyDuration int64
-	TargetFilter    string
+	Message          string
+	ErrorEndpoint    string
+	LatencyEndpoint  string
+	LatencyDuration  int64
+	TargetFilter     string
+	BooleanParameter bool
 }
 
 func NewLogAction(targetId string, selectionTemplate action_kit_api.TargetSelectionTemplate) action_kit_sdk.Action[LogActionState] {
@@ -166,6 +167,14 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Type:         action_kit_api.ActionParameterTypeString,
 				Advanced:     extutil.Ptr(true),
 			},
+			{
+				Name:         "booleanParameter",
+				Label:        "Just a dummy boolean parameter",
+				Description:  extutil.Ptr("This is not used."),
+				DefaultValue: extutil.Ptr("false"),
+				Type:         action_kit_api.ActionParameterTypeBoolean,
+				Advanced:     extutil.Ptr(true),
+			},
 		},
 		Status: extutil.Ptr(action_kit_api.MutatingEndpointReferenceWithCallInterval{
 			CallInterval: extutil.Ptr("1s"),
@@ -187,6 +196,7 @@ func (l *logAction) Prepare(_ context.Context, state *LogActionState, request ac
 	state.TargetName = request.Target.Name
 
 	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **prepare**")
+	log.Info().Bool("booleanParameter", config.BooleanParameter).Msg("Value of booleanParameter in log action **prepare**")
 
 	if state.ErrorEndpoint == "prepare" && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
 		return nil, extension_kit.ToError("Simulated error thrown in prepare endpoint", nil)
