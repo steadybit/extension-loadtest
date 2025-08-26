@@ -195,6 +195,20 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Description: extutil.Ptr("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeStringArray,
 				Advanced:    extutil.Ptr(true),
+				Options: extutil.Ptr([]action_kit_api.ParameterOption{
+					action_kit_api.ExplicitParameterOption{
+						Label: "value1",
+						Value: "value1",
+					},
+					action_kit_api.ExplicitParameterOption{
+						Label: "value2",
+						Value: "value2",
+					},
+					action_kit_api.ExplicitParameterOption{
+						Label: "value3",
+						Value: "value3",
+					},
+				}),
 			},
 			{
 				Name:        "fileParameter",
