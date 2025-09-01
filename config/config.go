@@ -25,10 +25,10 @@ type Specification struct {
 	PodName     string `json:"podName" split_words:"true" required:"false" default:"pod-0"`
 
 	//2 containers per pod * 4 pods per deployment * 5 deployments per node * 400 nodes = 16000 containers
-	Ec2NodeCount       int `json:"ec2NodeCount" split_words:"true" required:"false" default:"100"`
+	Ec2NodeCount       int `json:"ec2NodeCount" split_words:"true" required:"false" default:"10"`
 	AzureNodeCount     int `json:"azureNodeCount" split_words:"true" required:"false" default:"1"`
 	GcpNodeCount       int `json:"gcpNodeCount" split_words:"true" required:"false" default:"1"`
-	DeploymentsPerNode int `json:"deploymentsPerNode" split_words:"true" required:"false" default:"100"`
+	DeploymentsPerNode int `json:"deploymentsPerNode" split_words:"true" required:"false" default:"10"`
 	PodsPerDeployment  int `json:"podsPerDeployment" split_words:"true" required:"false" default:"1"`
 	ContainerPerPod    int `json:"containerPerPod" split_words:"true" required:"false" default:"1"`
 
