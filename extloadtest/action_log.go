@@ -211,6 +211,13 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				}),
 			},
 			{
+				Name:        "stringArrayWithoutOptionsParameter",
+				Label:       "Just a dummy string array without options parameter",
+				Description: extutil.Ptr("This is not used."),
+				Type:        action_kit_api.ActionParameterTypeStringArray,
+				Advanced:    extutil.Ptr(true),
+			},
+			{
 				Name:        "fileParameter",
 				Label:       "Just a dummy file parameter",
 				Description: extutil.Ptr("This is not used."),
