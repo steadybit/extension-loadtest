@@ -14,13 +14,14 @@ import (
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extconversion"
 	"github.com/steadybit/extension-kit/extutil"
-	"strings"
 	"time"
 )
 
 type logAction struct {
 	targetId          string
 	selectionTemplate action_kit_api.TargetSelectionTemplate
+	actionId          string
+	actionLabel       string
 }
 
 // Make sure action implements all required interfaces
@@ -48,10 +49,16 @@ type LogActionConfig struct {
 	BooleanParameter bool
 }
 
-func NewLogAction(targetId string, selectionTemplate action_kit_api.TargetSelectionTemplate) action_kit_sdk.Action[LogActionState] {
+func NewLogAction(actionId string, targetId string, selectionTemplate action_kit_api.TargetSelectionTemplate) action_kit_sdk.Action[LogActionState] {
+	return NewLogActionWithLabel(actionId, targetId, selectionTemplate, "Log message")
+}
+
+func NewLogActionWithLabel(actionId string, targetId string, selectionTemplate action_kit_api.TargetSelectionTemplate, actionLabel string) action_kit_sdk.Action[LogActionState] {
 	return &logAction{
+		actionId:          actionId,
 		targetId:          targetId,
 		selectionTemplate: selectionTemplate,
+		actionLabel:       actionLabel,
 	}
 }
 
@@ -60,10 +67,9 @@ func (l *logAction) NewEmptyState() LogActionState {
 }
 
 func (l *logAction) Describe() action_kit_api.ActionDescription {
-	targetTypeShort := l.targetId[strings.LastIndex(l.targetId, ".")+1:]
 	return action_kit_api.ActionDescription{
-		Id:          fmt.Sprintf("com.steadybit.extension_loadtest.log.%s", targetTypeShort),
-		Label:       "Log message",
+		Id:          l.actionId,
+		Label:       l.actionLabel,
 		Description: "Logs a message for the given duration to the agent log",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{

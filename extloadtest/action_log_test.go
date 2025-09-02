@@ -26,7 +26,7 @@ func TestPrepare(t *testing.T) {
 		},
 		ExecutionContext: extutil.Ptr(action_kit_api.ExecutionContext{}),
 	})
-	action := NewLogAction("com.example.target", action_kit_api.TargetSelectionTemplate{})
+	action := NewLogAction("com.steadybit.extension_loadtest.log.target", "com.example.target", action_kit_api.TargetSelectionTemplate{})
 	state := action.NewEmptyState()
 
 	// When

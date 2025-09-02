@@ -40,30 +40,39 @@ func createKubernetesDeploymentTargets(nodeCount int, suffix string) []discovery
 			}
 		}
 
+		attributes := map[string][]string{
+			"k8s.cluster-name":                                {config.Config.ClusterName},
+			"k8s.container.id":                                containers,
+			"k8s.container.id.stripped":                       containersStripped,
+			"k8s.deployment":                                  {deployment},
+			"k8s.deployment.label.domain":                     {"shop-products"},
+			"k8s.deployment.label.run":                        {"loadtest"},
+			"k8s.deployment.label.service-tier":               {"2"},
+			"k8s.deployment.label.tags.datadoghq.com/service": {"shop-products"},
+			"k8s.deployment.label.tags.datadoghq.com/version": {"1.0.0"},
+			"k8s.distribution":                                {"kubernetes"},
+			"k8s.label.domain":                                {"shop-products"},
+			"k8s.label.run":                                   {"loadtest"},
+			"k8s.label.service-tier":                          {"2"},
+			"k8s.label.tags.datadoghq.com/service":            {"shop-products"},
+			"k8s.label.tags.datadoghq.com/version":            {"1.0.0"},
+			"k8s.namespace":                                   {namespace},
+			"k8s.pod.name":                                    pods,
+			"k8s.dependencies":                                {"deps1", "deps2"},
+		}
+
+		if i%2 == 0 {
+			attributes["k8s.label.every2nd"] = []string{"true"}
+		}
+		if i%3 == 0 {
+			attributes["k8s.label.every3rd"] = []string{"true"}
+		}
+
 		target := discovery_kit_api.Target{
 			Id:         id,
 			TargetType: "com.steadybit.extension_kubernetes.kubernetes-deployment",
 			Label:      deploymentLabel,
-			Attributes: map[string][]string{
-				"k8s.cluster-name":                                {config.Config.ClusterName},
-				"k8s.container.id":                                containers,
-				"k8s.container.id.stripped":                       containersStripped,
-				"k8s.deployment":                                  {deployment},
-				"k8s.deployment.label.domain":                     {"shop-products"},
-				"k8s.deployment.label.run":                        {"loadtest"},
-				"k8s.deployment.label.service-tier":               {"2"},
-				"k8s.deployment.label.tags.datadoghq.com/service": {"shop-products"},
-				"k8s.deployment.label.tags.datadoghq.com/version": {"1.0.0"},
-				"k8s.distribution":                                {"kubernetes"},
-				"k8s.label.domain":                                {"shop-products"},
-				"k8s.label.run":                                   {"loadtest"},
-				"k8s.label.service-tier":                          {"2"},
-				"k8s.label.tags.datadoghq.com/service":            {"shop-products"},
-				"k8s.label.tags.datadoghq.com/version":            {"1.0.0"},
-				"k8s.namespace":                                   {namespace},
-				"k8s.pod.name":                                    pods,
-				"k8s.dependencies":                                {"deps1", "deps2"},
-			},
+			Attributes: attributes,
 		}
 		result = append(result, target)
 	}
