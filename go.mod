@@ -18,7 +18,7 @@ require (
 	github.com/steadybit/extension-kit v1.10.0
 	github.com/steadybit/preflight-kit/go/preflight_kit_api v1.1.1
 	github.com/steadybit/preflight-kit/go/preflight_kit_sdk v1.0.1
-	github.com/stretchr/testify v1.11.0
+	github.com/stretchr/testify v1.11.1
 	go.uber.org/automaxprocs v1.6.0
 )
 
