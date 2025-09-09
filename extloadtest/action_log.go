@@ -19,7 +19,7 @@ import (
 
 type logAction struct {
 	targetId          string
-	selectionTemplate action_kit_api.TargetSelectionTemplate
+	selectionTemplate *action_kit_api.TargetSelectionTemplate
 	actionId          string
 	actionLabel       string
 }
@@ -50,10 +50,10 @@ type LogActionConfig struct {
 }
 
 func NewLogAction(actionId string, targetId string, selectionTemplate action_kit_api.TargetSelectionTemplate) action_kit_sdk.Action[LogActionState] {
-	return NewLogActionWithLabel(actionId, targetId, selectionTemplate, "Log message")
+	return NewLogActionWithLabel(actionId, targetId, &selectionTemplate, "Log message")
 }
 
-func NewLogActionWithLabel(actionId string, targetId string, selectionTemplate action_kit_api.TargetSelectionTemplate, actionLabel string) action_kit_sdk.Action[LogActionState] {
+func NewLogActionWithLabel(actionId string, targetId string, selectionTemplate *action_kit_api.TargetSelectionTemplate, actionLabel string) action_kit_sdk.Action[LogActionState] {
 	return &logAction{
 		actionId:          actionId,
 		targetId:          targetId,
@@ -67,16 +67,19 @@ func (l *logAction) NewEmptyState() LogActionState {
 }
 
 func (l *logAction) Describe() action_kit_api.ActionDescription {
+	selectionTemplates := []action_kit_api.TargetSelectionTemplate{}
+	if l.selectionTemplate != nil {
+		selectionTemplates = []action_kit_api.TargetSelectionTemplate{*l.selectionTemplate}
+	}
+
 	return action_kit_api.ActionDescription{
 		Id:          l.actionId,
 		Label:       l.actionLabel,
 		Description: "Logs a message for the given duration to the agent log",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{
-			TargetType: l.targetId,
-			SelectionTemplates: extutil.Ptr([]action_kit_api.TargetSelectionTemplate{
-				l.selectionTemplate,
-			}),
+			TargetType:         l.targetId,
+			SelectionTemplates: extutil.Ptr(selectionTemplates),
 		}),
 		Technology:  extutil.Ptr("Debug"),
 		Kind:        action_kit_api.Attack,

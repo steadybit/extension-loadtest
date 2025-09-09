@@ -84,12 +84,13 @@ func main() {
 		Description: extutil.Ptr("Find deployment by cluster, namespace and deployment"),
 		Query:       "k8s.cluster-name=\"\" AND k8s.namespace=\"\" AND k8s.deployment=\"\"",
 	}))
-	action_kit_sdk.RegisterAction(extloadtest.NewLogActionWithLabel("com.steadybit.extension_loadtest.log.kubernetes-deployment-limited", "com.steadybit.extension_kubernetes.kubernetes-deployment(k8s.label.every3rd=true;k8s.label.every2nd)", action_kit_api.TargetSelectionTemplate{
-		Label:       "default",
-		Description: extutil.Ptr("Find deployment by cluster, namespace and deployment"),
-		Query:       "k8s.cluster-name=\"\" AND k8s.namespace=\"\" AND k8s.deployment=\"\"",
-	}, "Log message limited"))
+	action_kit_sdk.RegisterAction(extloadtest.NewLogActionWithLabel("com.steadybit.extension_loadtest.log.kubernetes-deployment-limited", "com.steadybit.extension_kubernetes.kubernetes-deployment(k8s.label.every3rd=true;k8s.label.every2nd)", nil, "Log message limited"))
 	action_kit_sdk.RegisterAction(extloadtest.NewDoNothingAction("com.steadybit.extension_container.container", action_kit_api.TargetSelectionTemplate{
+		Label:       "by kubernetes deployment",
+		Description: extutil.Ptr("Find container by kubernetes deployment."),
+		Query:       "k8s.cluster-name=\"\" and k8s.namespace=\"\" and k8s.deployment=\"\"",
+	}))
+	action_kit_sdk.RegisterAction(extloadtest.NewDoNothingAction("com.steadybit.extension_kubernetes.kubernetes-deployment", action_kit_api.TargetSelectionTemplate{
 		Label:       "by kubernetes deployment",
 		Description: extutil.Ptr("Find container by kubernetes deployment."),
 		Query:       "k8s.cluster-name=\"\" and k8s.namespace=\"\" and k8s.deployment=\"\"",

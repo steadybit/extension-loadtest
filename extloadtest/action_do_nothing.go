@@ -59,6 +59,26 @@ func (l *doNothingAction) Describe() action_kit_api.ActionDescription {
 		Technology:  extutil.Ptr("Debug"),
 		Kind:        action_kit_api.Attack,
 		TimeControl: action_kit_api.TimeControlInstantaneous,
+		Parameters: []action_kit_api.ActionParameter{
+			{
+				Name:        "foo",
+				Label:       "Example Parameter 1",
+				Description: extutil.Ptr("Example parameter"),
+				Type:        action_kit_api.ActionParameterTypeString,
+			},
+			{
+				Name:        "message",
+				Label:       "Example target selection",
+				Description: extutil.Ptr("Dummy target selection."),
+				Type:        action_kit_api.ActionParameterTypeTargetSelection,
+			},
+			{
+				Name:        "bar",
+				Label:       "Example Parameter 2",
+				Description: extutil.Ptr("Example parameter"),
+				Type:        action_kit_api.ActionParameterTypeString,
+			},
+		},
 	}
 }
 
