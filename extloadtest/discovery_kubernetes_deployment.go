@@ -6,6 +6,7 @@ import (
 	"github.com/steadybit/discovery-kit/go/discovery_kit_commons"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
+	"math/rand"
 )
 
 func getDiscoveryKubernetesDeployment() discovery_kit_api.DiscoveryDescription {
@@ -48,6 +49,8 @@ func createKubernetesDeploymentTargets(nodeCount int, suffix string) []discovery
 			"k8s.deployment.label.domain":                     {"shop-products"},
 			"k8s.deployment.label.run":                        {"loadtest"},
 			"k8s.deployment.label.service-tier":               {"2"},
+			"k8s.deployment.label.random-number":              {fmt.Sprintf("random-%d", 1+rand.Intn(5))},
+			"k8s.deployment.label.random-char":                {fmt.Sprintf("random-%s", []string{"a", "b", "c", "d", "e"}[rand.Intn(5)])},
 			"k8s.deployment.label.tags.datadoghq.com/service": {"shop-products"},
 			"k8s.deployment.label.tags.datadoghq.com/version": {"1.0.0"},
 			"k8s.distribution":                                {"kubernetes"},
