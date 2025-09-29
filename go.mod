@@ -10,7 +10,7 @@ require (
 	github.com/rs/zerolog v1.34.0
 	github.com/steadybit/action-kit/go/action_kit_api/v2 v2.10.0
 	github.com/steadybit/action-kit/go/action_kit_sdk v1.2.0
-	github.com/steadybit/advice-kit/go/advice_kit_api v1.2.0
+	github.com/steadybit/advice-kit/go/advice_kit_api v1.2.1
 	github.com/steadybit/discovery-kit/go/discovery_kit_api v1.7.0
 	github.com/steadybit/discovery-kit/go/discovery_kit_commons v0.3.0
 	github.com/steadybit/discovery-kit/go/discovery_kit_sdk v1.3.0
@@ -27,7 +27,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/elastic/go-sysinfo v1.15.3 // indirect
 	github.com/elastic/go-windows v1.0.2 // indirect
-	github.com/getkin/kin-openapi v0.132.0 // indirect
+	github.com/getkin/kin-openapi v0.133.0 // indirect
 	github.com/go-openapi/jsonpointer v0.21.1 // indirect
 	github.com/go-openapi/swag v0.23.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
@@ -44,6 +44,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/procfs v0.16.1 // indirect
 	github.com/rs/xid v1.6.0 // indirect
+	github.com/woodsbury/decimal128 v1.3.0 // indirect
 	github.com/zmwangx/debounce v1.0.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
