@@ -7,6 +7,8 @@ package extloadtest
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/rs/zerolog/log"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
@@ -14,7 +16,6 @@ import (
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extconversion"
 	"github.com/steadybit/extension-kit/extutil"
-	"time"
 )
 
 type logAction struct {
@@ -38,6 +39,7 @@ type LogActionState struct {
 	LatencyDuration  time.Duration
 	TargetFilter     string
 	TargetName       string
+	Step             string
 }
 
 type LogActionConfig struct {
@@ -301,6 +303,7 @@ func (l *logAction) Prepare(_ context.Context, state *LogActionState, request ac
 	state.LatencyDuration = time.Duration(config.LatencyDuration * int64(time.Millisecond))
 	state.TargetFilter = config.TargetFilter
 	state.TargetName = request.Target.Name
+	state.Step = "prepare"
 
 	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **prepare**")
 	log.Info().Bool("booleanParameter", config.BooleanParameter).Msg("Value of booleanParameter in log action **prepare**")
@@ -317,13 +320,14 @@ func (l *logAction) Prepare(_ context.Context, state *LogActionState, request ac
 		Messages: extutil.Ptr([]action_kit_api.Message{
 			{
 				Level:   extutil.Ptr(action_kit_api.Info),
-				Message: fmt.Sprintf("Prepared logging '%s'", state.FormattedMessage),
+				Message: fmt.Sprintf("Called `prepare` for logging '%+v'", state),
 			},
 		})}, nil
 }
 
 func (l *logAction) Start(_ context.Context, state *LogActionState) (*action_kit_api.StartResult, error) {
 	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **start**")
+	state.Step = "start"
 
 	if state.ErrorEndpoint == "start" && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
 		return nil, extension_kit.ToError("Simulated error thrown in start endpoint", nil)
@@ -337,7 +341,7 @@ func (l *logAction) Start(_ context.Context, state *LogActionState) (*action_kit
 		Messages: extutil.Ptr([]action_kit_api.Message{
 			{
 				Level:   extutil.Ptr(action_kit_api.Info),
-				Message: fmt.Sprintf("Started logging '%s'", state.FormattedMessage),
+				Message: fmt.Sprintf("Called `start` for logging '%+v'", state),
 			},
 		})}, nil
 }
@@ -345,6 +349,7 @@ func (l *logAction) Start(_ context.Context, state *LogActionState) (*action_kit
 func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_kit_api.StatusResult, error) {
 	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **status**")
 
+	state.Step = "status"
 	if state.ErrorEndpoint == "status" && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
 		return nil, extension_kit.ToError("Simulated error thrown in status endpoint", nil)
 	}
@@ -360,13 +365,14 @@ func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_ki
 		Messages: extutil.Ptr([]action_kit_api.Message{
 			{
 				Level:   extutil.Ptr(action_kit_api.Info),
-				Message: fmt.Sprintf("Status for logging '%s'", state.FormattedMessage),
+				Message: fmt.Sprintf("Called `status` for logging '%+v'", state),
 			},
 		})}, nil
 }
 
 func (l *logAction) Stop(_ context.Context, state *LogActionState) (*action_kit_api.StopResult, error) {
-	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **stop**")
+	previousStep := state.Step
+	log.Info().Str("message", state.FormattedMessage).Str("previousStep", previousStep).Msg("Logging in log action **stop**")
 
 	if state.ErrorEndpoint == "stop" && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
 		return nil, extension_kit.ToError("Simulated error thrown in stop endpoint", nil)
@@ -381,7 +387,7 @@ func (l *logAction) Stop(_ context.Context, state *LogActionState) (*action_kit_
 		Messages: extutil.Ptr([]action_kit_api.Message{
 			{
 				Level:   extutil.Ptr(action_kit_api.Info),
-				Message: fmt.Sprintf("Stopped logging '%s'", state.FormattedMessage),
+				Message: fmt.Sprintf("Called `stop` for logging '%+v' - previous step: '%s'", state, previousStep),
 			},
 		})}, nil
 }
