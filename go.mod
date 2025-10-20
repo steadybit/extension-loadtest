@@ -6,7 +6,6 @@ toolchain go1.24.3
 
 require (
 	github.com/KimMachineGun/automemlimit v0.7.4
-	github.com/google/uuid v1.6.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/procyon-projects/chrono v1.1.2
 	github.com/rs/zerolog v1.34.0
@@ -18,8 +17,8 @@ require (
 	github.com/steadybit/discovery-kit/go/discovery_kit_sdk v1.3.1
 	github.com/steadybit/event-kit/go/event_kit_api v1.6.0
 	github.com/steadybit/extension-kit v1.10.0
-	github.com/steadybit/preflight-kit/go/preflight_kit_api v1.2.0
-	github.com/steadybit/preflight-kit/go/preflight_kit_sdk v1.0.1
+	github.com/steadybit/preflight-kit/go/preflight_kit_api v1.3.0
+	github.com/steadybit/preflight-kit/go/preflight_kit_sdk/v2 v2.0.1
 	github.com/stretchr/testify v1.11.1
 	go.uber.org/automaxprocs v1.6.0
 )
@@ -32,6 +31,7 @@ require (
 	github.com/getkin/kin-openapi v0.133.0 // indirect
 	github.com/go-openapi/jsonpointer v0.22.1 // indirect
 	github.com/go-openapi/swag/jsonname v0.25.1 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.9.1 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
@@ -47,7 +47,7 @@ require (
 	github.com/rs/xid v1.6.0 // indirect
 	github.com/woodsbury/decimal128 v1.4.0 // indirect
 	github.com/zmwangx/debounce v1.0.0 // indirect
-	golang.org/x/sys v0.36.0 // indirect
+	golang.org/x/sys v0.37.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	howett.net/plist v1.0.1 // indirect
 )

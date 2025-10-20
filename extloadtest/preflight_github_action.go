@@ -3,31 +3,39 @@ package extloadtest
 import (
 	"context"
 	"errors"
-	"github.com/google/uuid"
+	"strings"
+	"time"
+
+	"github.com/rs/zerolog/log"
 	extension_kit "github.com/steadybit/extension-kit"
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/preflight-kit/go/preflight_kit_api"
-	"github.com/steadybit/preflight-kit/go/preflight_kit_sdk"
-	"strings"
-	"sync"
-	"time"
+	"github.com/steadybit/preflight-kit/go/preflight_kit_sdk/v2"
 )
 
 type GithubActionPreflight struct {
 }
 
-var runningPreflights = sync.Map{}
-var statusCount = sync.Map{}
+type GithubActionPreflightState struct {
+	StatusCount   int
+	ExecutionName *string
+	Started       *time.Time
+}
 
-func NewGitHubActionPreflight() *GithubActionPreflight {
+func NewGitHubActionPreflight() preflight_kit_sdk.Preflight[GithubActionPreflightState] {
 	return &GithubActionPreflight{}
 }
 
 // Make sure action implements all required interfaces
 var (
-	_ preflight_kit_sdk.Preflight = (*GithubActionPreflight)(nil)
+	_ preflight_kit_sdk.Preflight[GithubActionPreflightState]           = (*GithubActionPreflight)(nil)
+	_ preflight_kit_sdk.PreflightWithCancel[GithubActionPreflightState] = (*GithubActionPreflight)(nil)
 )
+
+func (preflight *GithubActionPreflight) NewEmptyState() GithubActionPreflightState {
+	return GithubActionPreflightState{}
+}
 
 func (preflight *GithubActionPreflight) Describe() preflight_kit_api.PreflightDescription {
 	return preflight_kit_api.PreflightDescription{
@@ -45,8 +53,9 @@ func (preflight *GithubActionPreflight) Describe() preflight_kit_api.PreflightDe
 	}
 }
 
-func (preflight *GithubActionPreflight) Start(_ context.Context, request preflight_kit_api.StartPreflightRequestBody) (*preflight_kit_api.StartResult, error) {
-	runningPreflights.Store(request.PreflightActionExecutionId, request.ExperimentExecution)
+func (preflight *GithubActionPreflight) Start(_ context.Context, state *GithubActionPreflightState, request preflight_kit_api.StartPreflightRequestBody) (*preflight_kit_api.StartResult, error) {
+	state.ExecutionName = request.ExperimentExecution.Name
+	state.Started = request.ExperimentExecution.Started
 	if request.ExperimentExecution.Name != nil && strings.Contains(strings.ToLower(*request.ExperimentExecution.Name), "startfailure") {
 		return &preflight_kit_api.StartResult{Error: extutil.Ptr(preflight_kit_api.PreflightKitError{
 			Title:  "Some start error",
@@ -56,45 +65,40 @@ func (preflight *GithubActionPreflight) Start(_ context.Context, request preflig
 	return &preflight_kit_api.StartResult{}, nil
 }
 
-func (preflight *GithubActionPreflight) Status(_ context.Context, request preflight_kit_api.StatusPreflightRequestBody) (*preflight_kit_api.StatusResult, error) {
-	count := incrementStatusCounter(request.PreflightActionExecutionId)
-	loadedExecution, ok := runningPreflights.Load(request.PreflightActionExecutionId)
-	if !ok {
-		return nil, extutil.Ptr(extension_kit.ToError("Could not find preflight", errors.New("preflight not found")))
-	}
-	var execution = loadedExecution.(preflight_kit_api.ExperimentExecutionAO)
-	if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "technicalerror") {
+func (preflight *GithubActionPreflight) Status(_ context.Context, state *GithubActionPreflightState) (*preflight_kit_api.StatusResult, error) {
+	state.StatusCount++
+	if state.ExecutionName != nil && strings.Contains(strings.ToLower(*state.ExecutionName), "technicalerror") {
 		return nil, extutil.Ptr(extension_kit.ToError("This is a test error", errors.New("with some details")))
-	} else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "failed") && !strings.Contains(strings.ToLower(*execution.Name), "inflightfailed") {
+	} else if state.ExecutionName != nil && strings.Contains(strings.ToLower(*state.ExecutionName), "failed") && !strings.Contains(strings.ToLower(*state.ExecutionName), "inflightfailed") {
 		return &preflight_kit_api.StatusResult{
 			Completed: true,
 			Error:     &preflight_kit_api.PreflightKitError{Title: "Preflight says: NO!", Detail: extutil.Ptr("because no"), Status: extutil.Ptr(preflight_kit_api.Failed)},
 		}, nil
-	} else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "error") && !strings.Contains(strings.ToLower(*execution.Name), "inflighterror") {
+	} else if state.ExecutionName != nil && strings.Contains(strings.ToLower(*state.ExecutionName), "error") && !strings.Contains(strings.ToLower(*state.ExecutionName), "inflighterror") {
 		return &preflight_kit_api.StatusResult{
 			Completed: true,
 			Error:     &preflight_kit_api.PreflightKitError{Title: "Preflight says: Oh NO. Error!", Detail: extutil.Ptr("because no"), Status: extutil.Ptr(preflight_kit_api.Errored)},
 		}, nil
-	} else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "success") {
+	} else if state.ExecutionName != nil && strings.Contains(strings.ToLower(*state.ExecutionName), "success") {
 		return &preflight_kit_api.StatusResult{
 			Completed: true,
 			Error:     nil,
 		}, nil
-	} else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "timeout") {
+	} else if state.ExecutionName != nil && strings.Contains(strings.ToLower(*state.ExecutionName), "timeout") {
 		return &preflight_kit_api.StatusResult{
 			Completed: false,
 			Error:     nil,
 		}, nil
-	} else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "slow") {
-		if count < 10 {
+	} else if state.ExecutionName != nil && strings.Contains(strings.ToLower(*state.ExecutionName), "slow") {
+		if state.StatusCount < 10 {
 			return &preflight_kit_api.StatusResult{Completed: false, Error: nil}, nil
 		}
-	} else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "inflighterror") {
-		if execution.Started != nil && time.Since(*execution.Started).Seconds() > 10 {
+	} else if state.ExecutionName != nil && strings.Contains(strings.ToLower(*state.ExecutionName), "inflighterror") {
+		if state.Started != nil && time.Since(*state.Started).Seconds() > 10 {
 			return nil, extension_kit.ToError("Simulated error for inflight checks after 10 seconds.", nil)
 		}
-	} else if execution.Name != nil && strings.Contains(strings.ToLower(*execution.Name), "inflightfailed") {
-		if execution.Started != nil && time.Since(*execution.Started).Seconds() > 10 {
+	} else if state.ExecutionName != nil && strings.Contains(strings.ToLower(*state.ExecutionName), "inflightfailed") {
+		if state.Started != nil && time.Since(*state.Started).Seconds() > 10 {
 			return &preflight_kit_api.StatusResult{
 				Completed: true,
 				Error:     &preflight_kit_api.PreflightKitError{Title: "Inflight says: NO!", Detail: extutil.Ptr("because no"), Status: extutil.Ptr(preflight_kit_api.Failed)},
@@ -104,15 +108,7 @@ func (preflight *GithubActionPreflight) Status(_ context.Context, request prefli
 	return &preflight_kit_api.StatusResult{Completed: true}, nil
 }
 
-func incrementStatusCounter(preflightActionExecutionId uuid.UUID) int {
-	increment, _ := statusCount.LoadOrStore(preflightActionExecutionId, 0)
-	count := increment.(int) + 1
-	statusCount.Store(preflightActionExecutionId, count)
-	return count
-}
-
-func (preflight *GithubActionPreflight) Cancel(_ context.Context, request preflight_kit_api.CancelPreflightRequestBody) (*preflight_kit_api.CancelResult, error) {
-	runningPreflights.Delete(request.PreflightActionExecutionId)
-	statusCount.Delete(request.PreflightActionExecutionId)
+func (preflight *GithubActionPreflight) Cancel(_ context.Context, state *GithubActionPreflightState) (*preflight_kit_api.CancelResult, error) {
+	log.Info().Msgf("Github Action Preflight ended after %d status calls.", state.StatusCount)
 	return &preflight_kit_api.CancelResult{}, nil
 }

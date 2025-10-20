@@ -24,7 +24,7 @@ import (
 	"github.com/steadybit/extension-loadtest/config"
 	"github.com/steadybit/extension-loadtest/extloadtest"
 	"github.com/steadybit/preflight-kit/go/preflight_kit_api"
-	"github.com/steadybit/preflight-kit/go/preflight_kit_sdk"
+	"github.com/steadybit/preflight-kit/go/preflight_kit_sdk/v2"
 	_ "go.uber.org/automaxprocs" // Importing automaxprocs automatically adjusts GOMAXPROCS.
 )
 

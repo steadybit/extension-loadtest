@@ -2,23 +2,31 @@ package extloadtest
 
 import (
 	"context"
+
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/preflight-kit/go/preflight_kit_api"
-	"github.com/steadybit/preflight-kit/go/preflight_kit_sdk"
+	"github.com/steadybit/preflight-kit/go/preflight_kit_sdk/v2"
 )
 
 type SimplePreflight struct {
 }
+type SimplePreflightState struct {
+}
 
-func NewSimplePreflight() *SimplePreflight {
+func NewSimplePreflight() preflight_kit_sdk.Preflight[SimplePreflightState] {
 	return &SimplePreflight{}
 }
 
 // Make sure action implements all required interfaces
 var (
-	_ preflight_kit_sdk.Preflight = (*SimplePreflight)(nil)
+	_ preflight_kit_sdk.Preflight[SimplePreflightState]           = (*SimplePreflight)(nil)
+	_ preflight_kit_sdk.PreflightWithCancel[SimplePreflightState] = (*SimplePreflight)(nil)
 )
+
+func (preflight *SimplePreflight) NewEmptyState() SimplePreflightState {
+	return SimplePreflightState{}
+}
 
 func (preflight *SimplePreflight) Describe() preflight_kit_api.PreflightDescription {
 	return preflight_kit_api.PreflightDescription{
@@ -36,14 +44,14 @@ func (preflight *SimplePreflight) Describe() preflight_kit_api.PreflightDescript
 	}
 }
 
-func (preflight *SimplePreflight) Start(_ context.Context, request preflight_kit_api.StartPreflightRequestBody) (*preflight_kit_api.StartResult, error) {
+func (preflight *SimplePreflight) Start(_ context.Context, _ *SimplePreflightState, _ preflight_kit_api.StartPreflightRequestBody) (*preflight_kit_api.StartResult, error) {
 	return &preflight_kit_api.StartResult{}, nil
 }
 
-func (preflight *SimplePreflight) Status(_ context.Context, request preflight_kit_api.StatusPreflightRequestBody) (*preflight_kit_api.StatusResult, error) {
+func (preflight *SimplePreflight) Status(_ context.Context, _ *SimplePreflightState) (*preflight_kit_api.StatusResult, error) {
 	return &preflight_kit_api.StatusResult{Completed: true}, nil
 }
 
-func (preflight *SimplePreflight) Cancel(_ context.Context, request preflight_kit_api.CancelPreflightRequestBody) (*preflight_kit_api.CancelResult, error) {
+func (preflight *SimplePreflight) Cancel(_ context.Context, _ *SimplePreflightState) (*preflight_kit_api.CancelResult, error) {
 	return &preflight_kit_api.CancelResult{}, nil
 }
