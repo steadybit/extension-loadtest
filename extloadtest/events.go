@@ -6,11 +6,12 @@ package extloadtest
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/rs/zerolog/log"
 	"github.com/steadybit/event-kit/go/event_kit_api"
 	extension_kit "github.com/steadybit/extension-kit"
 	"github.com/steadybit/extension-kit/exthttp"
-	"net/http"
 )
 
 func RegisterEventListenerHandlers() {
@@ -27,6 +28,9 @@ func handle() func(w http.ResponseWriter, r *http.Request, body []byte) {
 		}
 
 		log.Info().Str("event", event.EventName).Str("size", byteCountBinary(len(body))).Msg("Received event.")
+		if event.ExperimentExecution != nil && event.ExperimentExecution.Properties != nil && len(*event.ExperimentExecution.Properties) > 0 {
+			log.Info().Msgf("Properties: %+v", *event.ExperimentExecution.Properties)
+		}
 		exthttp.WriteBody(w, "{}")
 	}
 }

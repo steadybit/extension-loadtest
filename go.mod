@@ -15,7 +15,7 @@ require (
 	github.com/steadybit/discovery-kit/go/discovery_kit_api v1.7.0
 	github.com/steadybit/discovery-kit/go/discovery_kit_commons v0.3.0
 	github.com/steadybit/discovery-kit/go/discovery_kit_sdk v1.3.1
-	github.com/steadybit/event-kit/go/event_kit_api v1.6.0
+	github.com/steadybit/event-kit/go/event_kit_api v1.6.1
 	github.com/steadybit/extension-kit v1.10.0
 	github.com/steadybit/preflight-kit/go/preflight_kit_api v1.3.0
 	github.com/steadybit/preflight-kit/go/preflight_kit_sdk/v2 v2.0.1
