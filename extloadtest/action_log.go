@@ -127,6 +127,10 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 						Value: "status",
 					},
 					action_kit_api.ExplicitParameterOption{
+						Label: "statusPropertyUpdate",
+						Value: "status (invalid property update)",
+					},
+					action_kit_api.ExplicitParameterOption{
 						Label: "stop",
 						Value: "stop",
 					},
@@ -322,7 +326,22 @@ func (l *logAction) Prepare(_ context.Context, state *LogActionState, request ac
 				Level:   extutil.Ptr(action_kit_api.Info),
 				Message: fmt.Sprintf("Called `prepare` for logging '%+v'", state),
 			},
-		})}, nil
+		}),
+		Commands: extutil.Ptr(
+			[]action_kit_api.ExecutionCommand{
+				action_kit_api.ExecutionCommandSetPropertyValue{
+					Type:        action_kit_api.SetPropertyValue,
+					PropertyKey: "extensionLoadtestShowcaseDelete",
+					Value:       4711,
+				},
+				action_kit_api.ExecutionCommandAddValueToListProperty{
+					Type:        action_kit_api.AddValueToListProperty,
+					PropertyKey: "extensionLoadtestShowcaseList",
+					Value:       "Prepared",
+				},
+			},
+		),
+	}, nil
 }
 
 func (l *logAction) Start(_ context.Context, state *LogActionState) (*action_kit_api.StartResult, error) {
@@ -343,7 +362,17 @@ func (l *logAction) Start(_ context.Context, state *LogActionState) (*action_kit
 				Level:   extutil.Ptr(action_kit_api.Info),
 				Message: fmt.Sprintf("Called `start` for logging '%+v'", state),
 			},
-		})}, nil
+		}),
+		Commands: extutil.Ptr(
+			[]action_kit_api.ExecutionCommand{
+				action_kit_api.ExecutionCommandAddValueToListProperty{
+					Type:        action_kit_api.AddValueToListProperty,
+					PropertyKey: "extensionLoadtestShowcaseList",
+					Value:       "Start",
+				},
+			},
+		),
+	}, nil
 }
 
 func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_kit_api.StatusResult, error) {
@@ -358,6 +387,21 @@ func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_ki
 		time.Sleep(state.LatencyDuration)
 	}
 
+	commands := []action_kit_api.ExecutionCommand{
+		action_kit_api.ExecutionCommandAddValueToListProperty{
+			Type:        action_kit_api.AddValueToListProperty,
+			PropertyKey: "extensionLoadtestShowcaseList",
+			Value:       "Status " + time.Now().Format("15:04:05.000"),
+		},
+	}
+	if (state.ErrorEndpoint == "statusPropertyUpdate") && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
+		commands = append(commands, action_kit_api.ExecutionCommandSetPropertyValue{
+			Type:        action_kit_api.SetPropertyValue,
+			PropertyKey: "extensionLoadtestShowcaseNotEditable",
+			Value:       "This will fail",
+		})
+	}
+
 	return &action_kit_api.StatusResult{
 		//indicate that the action is still running
 		Completed: false,
@@ -367,7 +411,11 @@ func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_ki
 				Level:   extutil.Ptr(action_kit_api.Info),
 				Message: fmt.Sprintf("Called `status` for logging '%+v'", state),
 			},
-		})}, nil
+		}),
+		Commands: extutil.Ptr(
+			commands,
+		),
+	}, nil
 }
 
 func (l *logAction) Stop(_ context.Context, state *LogActionState) (*action_kit_api.StopResult, error) {
@@ -389,5 +437,24 @@ func (l *logAction) Stop(_ context.Context, state *LogActionState) (*action_kit_
 				Level:   extutil.Ptr(action_kit_api.Info),
 				Message: fmt.Sprintf("Called `stop` for logging '%+v' - previous step: '%s'", state, previousStep),
 			},
-		})}, nil
+		}),
+		Commands: extutil.Ptr(
+			[]action_kit_api.ExecutionCommand{
+				action_kit_api.ExecutionCommandAddValueToListProperty{
+					Type:        action_kit_api.AddValueToListProperty,
+					PropertyKey: "extensionLoadtestShowcaseList",
+					Value:       "Stop",
+				},
+				action_kit_api.ExecutionCommandDeletePropertyValue{
+					Type:        action_kit_api.DeletePropertyValue,
+					PropertyKey: "extensionLoadtestShowcaseDelete",
+				},
+				action_kit_api.ExecutionCommandSetPropertyValue{
+					Type:        action_kit_api.SetPropertyValue,
+					PropertyKey: "extensionLoadtestShowcaseMarkdown",
+					Value:       "# Whoop whoop\n## This property was not assigned before\n\n- Now it should be editable.",
+				},
+			},
+		),
+	}, nil
 }
