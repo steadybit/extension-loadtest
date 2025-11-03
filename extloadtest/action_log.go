@@ -327,14 +327,14 @@ func (l *logAction) Prepare(_ context.Context, state *LogActionState, request ac
 				Message: fmt.Sprintf("Called `prepare` for logging '%+v'", state),
 			},
 		}),
-		Commands: extutil.Ptr(
-			[]action_kit_api.ExecutionCommand{
-				action_kit_api.ExecutionCommandSetPropertyValue{
+		Modifications: extutil.Ptr(
+			[]action_kit_api.ExecutionModification{
+				action_kit_api.ExecutionModificationSetPropertyValue{
 					Type:        action_kit_api.SetPropertyValue,
 					PropertyKey: "extensionLoadtestShowcaseDelete",
 					Value:       4711,
 				},
-				action_kit_api.ExecutionCommandAddValueToListProperty{
+				action_kit_api.ExecutionModificationAddValueToListProperty{
 					Type:        action_kit_api.AddValueToListProperty,
 					PropertyKey: "extensionLoadtestShowcaseList",
 					Value:       "Prepared",
@@ -363,9 +363,9 @@ func (l *logAction) Start(_ context.Context, state *LogActionState) (*action_kit
 				Message: fmt.Sprintf("Called `start` for logging '%+v'", state),
 			},
 		}),
-		Commands: extutil.Ptr(
-			[]action_kit_api.ExecutionCommand{
-				action_kit_api.ExecutionCommandAddValueToListProperty{
+		Modifications: extutil.Ptr(
+			[]action_kit_api.ExecutionModification{
+				action_kit_api.ExecutionModificationAddValueToListProperty{
 					Type:        action_kit_api.AddValueToListProperty,
 					PropertyKey: "extensionLoadtestShowcaseList",
 					Value:       "Start",
@@ -387,15 +387,15 @@ func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_ki
 		time.Sleep(state.LatencyDuration)
 	}
 
-	commands := []action_kit_api.ExecutionCommand{
-		action_kit_api.ExecutionCommandAddValueToListProperty{
+	modifications := []action_kit_api.ExecutionModification{
+		action_kit_api.ExecutionModificationAddValueToListProperty{
 			Type:        action_kit_api.AddValueToListProperty,
 			PropertyKey: "extensionLoadtestShowcaseList",
 			Value:       "Status " + time.Now().Format("15:04:05.000"),
 		},
 	}
 	if (state.ErrorEndpoint == "statusPropertyUpdate") && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
-		commands = append(commands, action_kit_api.ExecutionCommandSetPropertyValue{
+		modifications = append(modifications, action_kit_api.ExecutionModificationSetPropertyValue{
 			Type:        action_kit_api.SetPropertyValue,
 			PropertyKey: "extensionLoadtestShowcaseNotEditable",
 			Value:       "This will fail",
@@ -412,8 +412,8 @@ func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_ki
 				Message: fmt.Sprintf("Called `status` for logging '%+v'", state),
 			},
 		}),
-		Commands: extutil.Ptr(
-			commands,
+		Modifications: extutil.Ptr(
+			modifications,
 		),
 	}, nil
 }
@@ -438,18 +438,19 @@ func (l *logAction) Stop(_ context.Context, state *LogActionState) (*action_kit_
 				Message: fmt.Sprintf("Called `stop` for logging '%+v' - previous step: '%s'", state, previousStep),
 			},
 		}),
-		Commands: extutil.Ptr(
-			[]action_kit_api.ExecutionCommand{
-				action_kit_api.ExecutionCommandAddValueToListProperty{
+		Modifications: extutil.Ptr(
+			[]action_kit_api.ExecutionModification{
+				action_kit_api.ExecutionModificationAddValueToListProperty{
 					Type:        action_kit_api.AddValueToListProperty,
 					PropertyKey: "extensionLoadtestShowcaseList",
 					Value:       "Stop",
 				},
-				action_kit_api.ExecutionCommandDeletePropertyValue{
-					Type:        action_kit_api.DeletePropertyValue,
+				action_kit_api.ExecutionModificationSetPropertyValue{
+					Type:        action_kit_api.SetPropertyValue,
 					PropertyKey: "extensionLoadtestShowcaseDelete",
+					Value:       nil,
 				},
-				action_kit_api.ExecutionCommandSetPropertyValue{
+				action_kit_api.ExecutionModificationSetPropertyValue{
 					Type:        action_kit_api.SetPropertyValue,
 					PropertyKey: "extensionLoadtestShowcaseMarkdown",
 					Value:       "# Whoop whoop\n## This property was not assigned before\n\n- Now it should be editable.",
