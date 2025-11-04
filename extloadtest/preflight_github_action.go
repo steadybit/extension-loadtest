@@ -62,7 +62,17 @@ func (preflight *GithubActionPreflight) Start(_ context.Context, state *GithubAc
 			Status: extutil.Ptr(preflight_kit_api.Failed),
 		})}, nil
 	}
-	return &preflight_kit_api.StartResult{}, nil
+	return &preflight_kit_api.StartResult{
+		Modifications: extutil.Ptr(
+			[]preflight_kit_api.ExecutionModification{
+				preflight_kit_api.ExecutionModificationAddValueToListProperty{
+					Type:        preflight_kit_api.AddValueToListProperty,
+					PropertyKey: "extensionLoadtestShowcaseList",
+					Value:       "Preflight-Prepared",
+				},
+			},
+		),
+	}, nil
 }
 
 func (preflight *GithubActionPreflight) Status(_ context.Context, state *GithubActionPreflightState) (*preflight_kit_api.StatusResult, error) {
@@ -105,10 +115,31 @@ func (preflight *GithubActionPreflight) Status(_ context.Context, state *GithubA
 			}, nil
 		}
 	}
-	return &preflight_kit_api.StatusResult{Completed: true}, nil
+	return &preflight_kit_api.StatusResult{
+		Completed: true,
+		Modifications: extutil.Ptr(
+			[]preflight_kit_api.ExecutionModification{
+				preflight_kit_api.ExecutionModificationAddValueToListProperty{
+					Type:        preflight_kit_api.AddValueToListProperty,
+					PropertyKey: "extensionLoadtestShowcaseList",
+					Value:       "Preflight-Status " + time.Now().Format("15:04:05.000"),
+				},
+			},
+		),
+	}, nil
 }
 
 func (preflight *GithubActionPreflight) Cancel(_ context.Context, state *GithubActionPreflightState) (*preflight_kit_api.CancelResult, error) {
 	log.Info().Msgf("Github Action Preflight ended after %d status calls.", state.StatusCount)
-	return &preflight_kit_api.CancelResult{}, nil
+	return &preflight_kit_api.CancelResult{
+		Modifications: extutil.Ptr(
+			[]preflight_kit_api.ExecutionModification{
+				preflight_kit_api.ExecutionModificationAddValueToListProperty{
+					Type:        preflight_kit_api.AddValueToListProperty,
+					PropertyKey: "extensionLoadtestShowcaseList",
+					Value:       "Preflight-Stop",
+				},
+			},
+		),
+	}, nil
 }

@@ -127,8 +127,8 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 						Value: "status",
 					},
 					action_kit_api.ExplicitParameterOption{
-						Label: "statusPropertyUpdate",
-						Value: "status (invalid property update)",
+						Label: "status (invalid property update)",
+						Value: "statusPropertyUpdate",
 					},
 					action_kit_api.ExplicitParameterOption{
 						Label: "stop",
