@@ -312,6 +312,8 @@ func (l *logAction) Prepare(_ context.Context, state *LogActionState, request ac
 	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **prepare**")
 	log.Info().Bool("booleanParameter", config.BooleanParameter).Msg("Value of booleanParameter in log action **prepare**")
 
+	log.Info().Msgf("Received current State of execution properties: %+v", request.Properties)
+
 	if state.ErrorEndpoint == "prepare" && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
 		return nil, extension_kit.ToError("Simulated error thrown in prepare endpoint", nil)
 	}
