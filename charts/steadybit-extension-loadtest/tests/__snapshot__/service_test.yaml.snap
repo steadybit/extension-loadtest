@@ -6,8 +6,8 @@ manifest should match snapshot:
       annotations:
         meta.helm.sh/release-name: steadybit-extension-loadtest-9000
         meta.helm.sh/release-namespace: steadybit-agent
-        steadybit.com/extension-auto-discovery: |
-          {"extensions":[{"port":9000,"protocol":"http","types":["ACTION","DISCOVERY","EVENT","ADVICE"]}]}
+        steadybit.com/extension-auto-registration: |
+          {"extensions":[{"port":9000,"protocol":"http"}]}
       labels: null
       name: steadybit-extension-loadtest-9000
       namespace: steadybit-agent
@@ -26,8 +26,8 @@ manifest should match snapshot:
       annotations:
         meta.helm.sh/release-name: steadybit-extension-loadtest-9001
         meta.helm.sh/release-namespace: steadybit-agent
-        steadybit.com/extension-auto-discovery: |
-          {"extensions":[{"port":9001,"protocol":"http","types":["ACTION","DISCOVERY","EVENT","ADVICE"]}]}
+        steadybit.com/extension-auto-registration: |
+          {"extensions":[{"port":9001,"protocol":"http"}]}
       labels: null
       name: steadybit-extension-loadtest-9001
       namespace: steadybit-agent
@@ -46,8 +46,8 @@ manifest should match snapshot:
       annotations:
         meta.helm.sh/release-name: steadybit-extension-loadtest-9002
         meta.helm.sh/release-namespace: steadybit-agent
-        steadybit.com/extension-auto-discovery: |
-          {"extensions":[{"port":9002,"protocol":"http","types":["ACTION","DISCOVERY","EVENT","ADVICE"]}]}
+        steadybit.com/extension-auto-registration: |
+          {"extensions":[{"port":9002,"protocol":"http"}]}
       labels: null
       name: steadybit-extension-loadtest-9002
       namespace: steadybit-agent
