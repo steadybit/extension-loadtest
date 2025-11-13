@@ -7,8 +7,8 @@ metadata:
   annotations:
     meta.helm.sh/release-name: steadybit-extension-loadtest-{{ . }}
     meta.helm.sh/release-namespace: steadybit-agent
-    steadybit.com/extension-auto-discovery: |
-      {"extensions":[{"port":{{ . }},"protocol":"http","types":["ACTION","DISCOVERY","EVENT","ADVICE"]}]}
+    steadybit.com/extension-auto-registration: |
+      {"extensions":[{"port":{{ . }},"protocol":"http"}]}
   name: steadybit-extension-loadtest-{{ . }}
   namespace: steadybit-agent
   labels:
