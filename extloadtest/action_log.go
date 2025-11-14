@@ -7,6 +7,7 @@ package extloadtest
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"time"
 
 	"github.com/rs/zerolog/log"
@@ -40,6 +41,7 @@ type LogActionState struct {
 	TargetFilter     string
 	TargetName       string
 	Step             string
+	StatusCount      int
 }
 
 type LogActionConfig struct {
@@ -308,6 +310,7 @@ func (l *logAction) Prepare(_ context.Context, state *LogActionState, request ac
 	state.TargetFilter = config.TargetFilter
 	state.TargetName = request.Target.Name
 	state.Step = "prepare"
+	state.StatusCount = 0
 
 	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **prepare**")
 	log.Info().Bool("booleanParameter", config.BooleanParameter).Msg("Value of booleanParameter in log action **prepare**")
@@ -381,6 +384,7 @@ func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_ki
 	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **status**")
 
 	state.Step = "status"
+	state.StatusCount++
 	if state.ErrorEndpoint == "status" && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
 		return nil, extension_kit.ToError("Simulated error thrown in status endpoint", nil)
 	}
@@ -404,6 +408,14 @@ func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_ki
 		})
 	}
 
+	var summary *action_kit_api.Summary
+	if state.StatusCount == 1 && rand.Intn(2) == 0 {
+		summary = &action_kit_api.Summary{
+			Level: action_kit_api.SummaryLevelInfo,
+			Text:  "Uuuuuh, lucky you are! On the first status call, you got a summary!",
+		}
+	}
+
 	return &action_kit_api.StatusResult{
 		//indicate that the action is still running
 		Completed: false,
@@ -417,6 +429,7 @@ func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_ki
 		Modifications: extutil.Ptr(
 			modifications,
 		),
+		Summary: summary,
 	}, nil
 }
 
