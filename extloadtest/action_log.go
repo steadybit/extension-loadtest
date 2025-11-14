@@ -16,6 +16,7 @@ import (
 	extension_kit "github.com/steadybit/extension-kit"
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extconversion"
+	"github.com/steadybit/extension-kit/extfile"
 	"github.com/steadybit/extension-kit/extutil"
 )
 
@@ -40,6 +41,7 @@ type LogActionState struct {
 	LatencyDuration  time.Duration
 	TargetFilter     string
 	TargetName       string
+	AddArtifact      bool
 	Step             string
 	StatusCount      int
 }
@@ -50,6 +52,7 @@ type LogActionConfig struct {
 	LatencyEndpoint  string
 	LatencyDuration  int64
 	TargetFilter     string
+	AddArtifact      bool
 	BooleanParameter bool
 }
 
@@ -185,6 +188,13 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Advanced:     extutil.Ptr(true),
 			},
 			{
+				Name:         "addArtifact",
+				Label:        "Add a dummy artifact to all results",
+				DefaultValue: extutil.Ptr("false"),
+				Type:         action_kit_api.ActionParameterTypeBoolean,
+				Advanced:     extutil.Ptr(true),
+			},
+			{
 				Name:         "booleanParameter",
 				Label:        "Just a dummy boolean parameter",
 				Description:  extutil.Ptr("This is not used."),
@@ -308,6 +318,7 @@ func (l *logAction) Prepare(_ context.Context, state *LogActionState, request ac
 	state.LatencyEndpoint = config.LatencyEndpoint
 	state.LatencyDuration = time.Duration(config.LatencyDuration * int64(time.Millisecond))
 	state.TargetFilter = config.TargetFilter
+	state.AddArtifact = config.AddArtifact
 	state.TargetName = request.Target.Name
 	state.Step = "prepare"
 	state.StatusCount = 0
@@ -447,6 +458,18 @@ func (l *logAction) Stop(_ context.Context, state *LogActionState) (*action_kit_
 	if state.LatencyEndpoint == "stop" && (state.TargetFilter == "*" || state.TargetFilter == state.TargetName) {
 		log.Info().Int64("latency", state.LatencyDuration.Milliseconds()).Msg("Adding latency in log action **stop**")
 		time.Sleep(state.LatencyDuration)
+	}
+
+	artifacts := make([]action_kit_api.Artifact, 0)
+	if state.AddArtifact {
+		content, err := extfile.File2Base64("/revision.txt")
+		if err != nil {
+			return nil, extension_kit.ToError("Failed to encode dummy-artifact.txt.", err)
+		}
+		artifacts = append(artifacts, action_kit_api.Artifact{
+			Label: "dummy-artifact.txt",
+			Data:  content,
+		})
 	}
 
 	return &action_kit_api.StopResult{
