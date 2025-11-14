@@ -2,6 +2,7 @@ package extloadtest
 
 import (
 	"context"
+	"time"
 
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extutil"
@@ -12,6 +13,7 @@ import (
 type SimplePreflight struct {
 }
 type SimplePreflightState struct {
+	counter int
 }
 
 func NewSimplePreflight() preflight_kit_sdk.Preflight[SimplePreflightState] {
@@ -44,14 +46,18 @@ func (preflight *SimplePreflight) Describe() preflight_kit_api.PreflightDescript
 	}
 }
 
-func (preflight *SimplePreflight) Start(_ context.Context, _ *SimplePreflightState, _ preflight_kit_api.StartPreflightRequestBody) (*preflight_kit_api.StartResult, error) {
+func (preflight *SimplePreflight) Start(_ context.Context, state *SimplePreflightState, _ preflight_kit_api.StartPreflightRequestBody) (*preflight_kit_api.StartResult, error) {
+	state.counter = 1
 	return &preflight_kit_api.StartResult{}, nil
 }
 
-func (preflight *SimplePreflight) Status(_ context.Context, _ *SimplePreflightState) (*preflight_kit_api.StatusResult, error) {
+func (preflight *SimplePreflight) Status(_ context.Context, state *SimplePreflightState) (*preflight_kit_api.StatusResult, error) {
+	state.counter = state.counter + 1
+	time.Sleep(3 * time.Second)
 	return &preflight_kit_api.StatusResult{Completed: true}, nil
 }
 
-func (preflight *SimplePreflight) Cancel(_ context.Context, _ *SimplePreflightState) (*preflight_kit_api.CancelResult, error) {
+func (preflight *SimplePreflight) Cancel(_ context.Context, state *SimplePreflightState) (*preflight_kit_api.CancelResult, error) {
+	state.counter = -1
 	return &preflight_kit_api.CancelResult{}, nil
 }
