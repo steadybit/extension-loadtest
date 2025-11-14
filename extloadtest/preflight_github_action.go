@@ -126,6 +126,10 @@ func (preflight *GithubActionPreflight) Status(_ context.Context, state *GithubA
 				},
 			},
 		),
+		Summary: extutil.Ptr(preflight_kit_api.Summary{
+			Text:  "Preflight was happy to serve you today!",
+			Level: preflight_kit_api.SummaryLevelInfo,
+		}),
 	}, nil
 }
 
