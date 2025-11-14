@@ -410,8 +410,12 @@ func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_ki
 
 	var summary *action_kit_api.Summary
 	if state.StatusCount == 1 && rand.Intn(2) == 0 {
+		level := action_kit_api.SummaryLevelInfo
+		if rand.Intn(2) == 0 {
+			level = action_kit_api.SummaryLevelWarning
+		}
 		summary = &action_kit_api.Summary{
-			Level: action_kit_api.SummaryLevelInfo,
+			Level: level,
 			Text:  "Uuuuuh, lucky you are! On the first status call, you got a summary!",
 		}
 	}
