@@ -7,3 +7,4 @@ go.docker.mod
 /licenses
 /snyk.sarif
 
+/revision.txt

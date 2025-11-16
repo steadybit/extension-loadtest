@@ -462,7 +462,7 @@ func (l *logAction) Stop(_ context.Context, state *LogActionState) (*action_kit_
 
 	artifacts := make([]action_kit_api.Artifact, 0)
 	if state.AddArtifact {
-		content, err := extfile.File2Base64("/revision.txt")
+		content, err := extfile.File2Base64("./revision.txt")
 		if err != nil {
 			return nil, extension_kit.ToError("Failed to encode dummy-artifact.txt.", err)
 		}
@@ -499,5 +499,6 @@ func (l *logAction) Stop(_ context.Context, state *LogActionState) (*action_kit_
 				},
 			},
 		),
+		Artifacts: extutil.Ptr(artifacts),
 	}, nil
 }
