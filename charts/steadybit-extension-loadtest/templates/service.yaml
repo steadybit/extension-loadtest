@@ -10,7 +10,7 @@ metadata:
     steadybit.com/extension-auto-registration: |
       {"extensions":[{"port":{{ . }},"protocol":"http"}]}
   name: steadybit-extension-loadtest-{{ . }}
-  namespace: steadybit-agent
+  namespace: {{ $.Release.Namespace }}
   labels:
   {{- range $key, $value := $.Values.extraLabels }}
     {{ $key }}: {{ $value }}

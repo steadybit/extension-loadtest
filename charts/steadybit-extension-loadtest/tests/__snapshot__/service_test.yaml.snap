@@ -10,7 +10,7 @@ manifest should match snapshot:
           {"extensions":[{"port":9000,"protocol":"http"}]}
       labels: null
       name: steadybit-extension-loadtest-9000
-      namespace: steadybit-agent
+      namespace: NAMESPACE
     spec:
       ports:
         - port: 9000
@@ -30,7 +30,7 @@ manifest should match snapshot:
           {"extensions":[{"port":9001,"protocol":"http"}]}
       labels: null
       name: steadybit-extension-loadtest-9001
-      namespace: steadybit-agent
+      namespace: NAMESPACE
     spec:
       ports:
         - port: 9001
@@ -50,7 +50,7 @@ manifest should match snapshot:
           {"extensions":[{"port":9002,"protocol":"http"}]}
       labels: null
       name: steadybit-extension-loadtest-9002
-      namespace: steadybit-agent
+      namespace: NAMESPACE
     spec:
       ports:
         - port: 9002
