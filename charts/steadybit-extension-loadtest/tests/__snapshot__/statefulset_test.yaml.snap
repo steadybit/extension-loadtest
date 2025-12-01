@@ -78,6 +78,12 @@ manifest should match snapshot:
                       fieldPath: metadata.name
                 - name: STEADYBIT_EXTENSION_EVENT_LISTENER_ENABLED
                   value: "true"
+                - name: STEADYBIT_EXTENSION_ENRICHMENT_HOST_TO_CONTAINER_ENABLED
+                  value: "false"
+                - name: STEADYBIT_EXTENSION_ENRICHMENT_CONTAINER_TO_HOST_ENABLED
+                  value: "false"
+                - name: STEADYBIT_EXTENSION_ENRICHMENT_EC2_TO_HOST_ENABLED
+                  value: "false"
               image: ghcr.io/steadybit/extension-loadtest:0.0.0
               imagePullPolicy: Always
               livenessProbe:
@@ -200,6 +206,12 @@ manifest should render simulateExtensionRestarts:
                       fieldPath: metadata.name
                 - name: STEADYBIT_EXTENSION_EVENT_LISTENER_ENABLED
                   value: "true"
+                - name: STEADYBIT_EXTENSION_ENRICHMENT_HOST_TO_CONTAINER_ENABLED
+                  value: "false"
+                - name: STEADYBIT_EXTENSION_ENRICHMENT_CONTAINER_TO_HOST_ENABLED
+                  value: "false"
+                - name: STEADYBIT_EXTENSION_ENRICHMENT_EC2_TO_HOST_ENABLED
+                  value: "false"
               image: ghcr.io/steadybit/extension-loadtest:0.0.0
               imagePullPolicy: Always
               livenessProbe:
@@ -322,6 +334,12 @@ manifest should render targetReplacements:
                       fieldPath: metadata.name
                 - name: STEADYBIT_EXTENSION_EVENT_LISTENER_ENABLED
                   value: "true"
+                - name: STEADYBIT_EXTENSION_ENRICHMENT_HOST_TO_CONTAINER_ENABLED
+                  value: "false"
+                - name: STEADYBIT_EXTENSION_ENRICHMENT_CONTAINER_TO_HOST_ENABLED
+                  value: "false"
+                - name: STEADYBIT_EXTENSION_ENRICHMENT_EC2_TO_HOST_ENABLED
+                  value: "false"
               image: ghcr.io/steadybit/extension-loadtest:0.0.0
               imagePullPolicy: Always
               livenessProbe:
@@ -442,6 +460,12 @@ manifest should use empty update values:
                       fieldPath: metadata.name
                 - name: STEADYBIT_EXTENSION_EVENT_LISTENER_ENABLED
                   value: "true"
+                - name: STEADYBIT_EXTENSION_ENRICHMENT_HOST_TO_CONTAINER_ENABLED
+                  value: "false"
+                - name: STEADYBIT_EXTENSION_ENRICHMENT_CONTAINER_TO_HOST_ENABLED
+                  value: "false"
+                - name: STEADYBIT_EXTENSION_ENRICHMENT_EC2_TO_HOST_ENABLED
+                  value: "false"
               image: ghcr.io/steadybit/extension-loadtest:0.0.0
               imagePullPolicy: Always
               livenessProbe:

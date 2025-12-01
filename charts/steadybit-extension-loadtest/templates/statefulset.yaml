@@ -32,7 +32,7 @@ spec:
         {{- end }}
       annotations:
         oneagent.dynatrace.com/injection: "false"
-        {{ if eq .Values.loadtest.servicesEnabled "false" }}
+        {{ if not .Values.loadtest.servicesEnabled }}
         {{- include "extensionlib.annotation" (list . 8082 (list "ACTION" "DISCOVERY" "EVENT") ) | nindent 8 }}
         {{- end }}
         {{- with .Values.podAnnotations }}
@@ -65,23 +65,23 @@ spec:
             {{ end }}
             {{ if .Values.loadtest.containerPerPod -}}
             - name: STEADYBIT_EXTENSION_CONTAINER_PER_POD
-              value: "{{ .Values.loadtest.containerPerPod }}"
+              value: {{ .Values.loadtest.containerPerPod | quote }}
             {{ end }}
             {{ if .Values.loadtest.deploymentsPerNode -}}
             - name: STEADYBIT_EXTENSION_DEPLOYMENTS_PER_NODE
-              value: "{{ .Values.loadtest.deploymentsPerNode }}"
+              value: {{ .Values.loadtest.deploymentsPerNode | quote }}
             {{ end }}
             - name: STEADYBIT_EXTENSION_EC2_NODE_COUNT
-              value: "{{ .Values.loadtest.ec2NodeCount }}"
+              value: {{ .Values.loadtest.ec2NodeCount | quote }}
             - name: STEADYBIT_EXTENSION_GCP_NODE_COUNT
-              value: "{{ .Values.loadtest.gcpNodeCount }}"
+              value: {{ .Values.loadtest.gcpNodeCount | quote }}
             - name: STEADYBIT_EXTENSION_AZURE_NODE_COUNT
-              value: "{{ .Values.loadtest.azureNodeCount }}"
+              value: {{ .Values.loadtest.azureNodeCount | quote }}
             - name: STEADYBIT_EXTENSION_DISCOVERY_DELAY_IN_MS
-              value: "{{ .Values.loadtest.discoveryDelayInMs }}"
+              value: {{ .Values.loadtest.discoveryDelayInMs | quote }}
             {{ if .Values.loadtest.podsPerDeployment -}}
             - name: STEADYBIT_EXTENSION_PODS_PER_DEPLOYMENT
-              value: "{{ .Values.loadtest.podsPerDeployment }}"
+              value: {{ .Values.loadtest.podsPerDeployment | quote }}
             {{ end }}
             {{- with .Values.extraEnv }}
               {{- toYaml . | nindent 12 }}
@@ -110,10 +110,8 @@ spec:
             - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_HOST
               value: {{ join "," .Values.discovery.attributes.excludes.host | quote }}
             {{ end }}
-            {{ if .Values.loadtest.servicesEnabled -}}
             - name: STEADYBIT_EXTENSION_SERVICES_ENABLED
               value: {{ .Values.loadtest.servicesEnabled | quote }}
-            {{ end }}
             - name: STEADYBIT_EXTENSION_DISABLE_AWS_DISCOVERY
               value: {{ .Values.loadtest.disableAWSDiscovery | quote }}
             - name: STEADYBIT_EXTENSION_DISABLE_GCP_DISCOVERY
@@ -144,6 +142,12 @@ spec:
                   fieldPath: metadata.name
             - name: STEADYBIT_EXTENSION_EVENT_LISTENER_ENABLED
               value: {{ .Values.loadtest.eventListenerEnabled | quote }}
+            - name: STEADYBIT_EXTENSION_ENRICHMENT_HOST_TO_CONTAINER_ENABLED
+              value: {{ .Values.loadtest.enrichmentHostToContainerEnabled | quote }}
+            - name: STEADYBIT_EXTENSION_ENRICHMENT_CONTAINER_TO_HOST_ENABLED
+              value: {{ .Values.loadtest.enrichmentContainerToHostEnabled | quote }}
+            - name: STEADYBIT_EXTENSION_ENRICHMENT_EC2_TO_HOST_ENABLED
+              value: {{ .Values.loadtest.enrichmentEc2ToHostEnabled | quote }}
           {{- with .Values.extraEnvFrom }}
           envFrom:
             {{- toYaml . | nindent 12 }}

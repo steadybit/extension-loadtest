@@ -12,7 +12,7 @@ image:
 
 loadtest:
   replicaCount: 1
-  servicesEnabled: "false"
+  servicesEnabled: false
   servicePortFrom: 9000
   servicePortTo: 9002
   clusterName: "cluster-loadtest"
@@ -22,14 +22,17 @@ loadtest:
   deploymentsPerNode: 5
   podsPerDeployment: 4
   containerPerPod: 2
-  disableAWSDiscovery: "false"
-  disableGCPDiscovery: "false"
-  disableAzureDiscovery: "false"
-  disableKubernetesDiscovery: "false"
-  disableHostDiscovery: "false"
-  disableContainerDiscovery: "false"
+  disableAWSDiscovery: false
+  disableGCPDiscovery: false
+  disableAzureDiscovery: false
+  disableKubernetesDiscovery: false
+  disableHostDiscovery: false
+  disableContainerDiscovery: false
   discoveryDelayInMs: 0
-  eventListenerEnabled: "true"
+  eventListenerEnabled: true
+  enrichmentHostToContainerEnabled: false
+  enrichmentContainerToHostEnabled: false
+  enrichmentEc2ToHostEnabled: false
   attributeUpdates:
     - type: "com.steadybit.extension_aws.ec2-instance"
       attributeName: "aws-ec2.label.change-ts"
