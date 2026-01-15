@@ -53,7 +53,7 @@ func (r *recreateAction) NewEmptyState() RecreateActionState {
 func (r *recreateAction) Describe() action_kit_api.ActionDescription {
 	return action_kit_api.ActionDescription{
 		Id:          fmt.Sprintf("%s.recreate", r.targetId),
-		Label:       "Recreate targets",
+		Label:       "Recreate Targets",
 		Description: "Simulate targets removal and creation by altering the id",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{

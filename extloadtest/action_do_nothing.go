@@ -47,7 +47,7 @@ func (l *doNothingAction) Describe() action_kit_api.ActionDescription {
 	targetTypeShort := l.targetId[strings.LastIndex(l.targetId, ".")+1:]
 	return action_kit_api.ActionDescription{
 		Id:          fmt.Sprintf("com.steadybit.extension_loadtest.nothing.%s", targetTypeShort),
-		Label:       "Do nothing",
+		Label:       "Do Nothing",
 		Description: "This action does nothing.",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{

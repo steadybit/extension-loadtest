@@ -34,7 +34,7 @@ func (l *targetlessAction) NewEmptyState() TargetlessActionState {
 func (l *targetlessAction) Describe() action_kit_api.ActionDescription {
 	return action_kit_api.ActionDescription{
 		Id:          "com.steadybit.extension_loadtest.targetless",
-		Label:       "Do nothing without a target",
+		Label:       "Do Nothing Without a Target",
 		Description: "This action does nothing.",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		Technology:  extutil.Ptr("Debug"),
