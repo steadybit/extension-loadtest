@@ -64,6 +64,7 @@ func main() {
 	action_kit_sdk.RegisterCoverageEndpoints()
 
 	action_kit_sdk.RegisterAction(extloadtest.NewTargetlessAction())
+	action_kit_sdk.RegisterAction(extloadtest.NewMultiOptionParameterAction())
 	action_kit_sdk.RegisterAction(extloadtest.NewLogAction("com.steadybit.extension_loadtest.log.host", "com.steadybit.extension_host.host", action_kit_api.TargetSelectionTemplate{
 		Label:       "by host name",
 		Description: extutil.Ptr("Find host by host name."),
