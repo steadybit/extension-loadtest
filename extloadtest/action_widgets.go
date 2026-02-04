@@ -7,13 +7,14 @@ package extloadtest
 import (
 	"context"
 	"fmt"
+	"math/rand/v2"
+	"strconv"
+	"time"
+
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extutil"
-	"math/rand/v2"
-	"strconv"
-	"time"
 )
 
 type widgetAction struct {
@@ -60,8 +61,8 @@ func (l *widgetAction) Describe() action_kit_api.ActionDescription {
 				},
 			}),
 		}),
-		Technology:  extutil.Ptr("Debug"),
-		Category:    extutil.Ptr("Debug"), //Can be removed in Q1/24 - support for backward compatibility of old sidebar
+		Technology: extutil.Ptr("Debug"),
+
 		Kind:        action_kit_api.Other,
 		TimeControl: action_kit_api.TimeControlExternal,
 		Parameters: []action_kit_api.ActionParameter{
