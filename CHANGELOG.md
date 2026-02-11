@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.6
+
+- Add action with option parameter based on multiple target attributes
+- Update dependencies
+
 ## v1.0.5
 
 - Update dependencies
