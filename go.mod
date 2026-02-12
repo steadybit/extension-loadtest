@@ -18,7 +18,6 @@ require (
 	github.com/steadybit/preflight-kit/go/preflight_kit_api v1.4.2
 	github.com/steadybit/preflight-kit/go/preflight_kit_sdk/v2 v2.0.2
 	github.com/stretchr/testify v1.11.1
-	go.uber.org/automaxprocs v1.6.0
 )
 
 require (
