@@ -8,3 +8,5 @@ go.docker.mod
 /snyk.sarif
 
 /revision.txt
+
+.env
