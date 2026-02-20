@@ -59,10 +59,10 @@ spec:
               cpu: {{ .Values.resources.limits.cpu }}
           env:
             {{- include "extensionlib.deployment.env" (list .) | nindent 12 }}
-            {{ if .Values.loadtest.clusterName -}}
+            {{- with (.Values.loadtest.clusterName | default (dig "clusterName" nil (.Values.global | default dict))) }}
             - name: STEADYBIT_EXTENSION_CLUSTER_NAME
-              value: {{ .Values.loadtest.clusterName }}
-            {{ end }}
+              value: {{ . }}
+            {{- end }}
             {{ if .Values.loadtest.containerPerPod -}}
             - name: STEADYBIT_EXTENSION_CONTAINER_PER_POD
               value: {{ .Values.loadtest.containerPerPod | quote }}
