@@ -37,6 +37,8 @@ loadtest:
   enrichmentHostToContainerEnabled: false
   enrichmentContainerToHostEnabled: false
   enrichmentEc2ToHostEnabled: false
+  # loadtest.podUid -- Override the pod UID. If set, this fixed value is used instead of the actual pod UID from the downward API.
+  podUid: null
   attributeUpdates:
     - type: "com.steadybit.extension_aws.ec2-instance"
       attributeName: "aws-ec2.label.change-ts"

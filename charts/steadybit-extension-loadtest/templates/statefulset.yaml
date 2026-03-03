@@ -134,9 +134,13 @@ spec:
               value: {{ join "," .Values.discovery.attributes.excludes.kubernetes.deployment | quote }}
             {{ end }}
             - name: STEADYBIT_EXTENSION_POD_UID
+            {{- if .Values.loadtest.podUid }}
+              value: {{ .Values.loadtest.podUid | quote }}
+            {{- else }}
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.uid
+            {{- end }}
             - name: STEADYBIT_EXTENSION_POD_NAME
               valueFrom:
                 fieldRef:

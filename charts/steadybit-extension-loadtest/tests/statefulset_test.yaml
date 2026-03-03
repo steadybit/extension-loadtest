@@ -89,3 +89,10 @@ tests:
             - global-pull-secret
     asserts:
       - matchSnapshot: {}
+
+  - it: manifest should match snapshot with overridden poduid
+    set:
+      loadtest:
+        podUid: "my-fixed-uid"
+    asserts:
+      - matchSnapshot: {}
