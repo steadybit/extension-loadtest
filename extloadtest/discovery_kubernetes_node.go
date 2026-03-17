@@ -64,6 +64,7 @@ func createKubernetesNodeTargets(containerTargets []discovery_kit_api.Enrichment
 				"k8s.pod.name":              keys(nodeData.Pods),
 				"k8s.container.id":          keys(nodeData.ContainerIds),
 				"k8s.container.id.stripped": keys(nodeData.ContainerIdsStripped),
+				"steadybit.loadtest":        {"true"},
 			},
 		}
 		result = append(result, target)

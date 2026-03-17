@@ -7,14 +7,15 @@ package extloadtest
 import (
 	"context"
 	"fmt"
+	"math/rand"
+	"time"
+
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
 	extension_kit "github.com/steadybit/extension-kit"
 	"github.com/steadybit/extension-kit/extbuild"
 	"github.com/steadybit/extension-kit/extconversion"
 	"github.com/steadybit/extension-kit/extutil"
-	"math/rand"
-	"time"
 )
 
 type recreateAction struct {
@@ -58,6 +59,7 @@ func (r *recreateAction) Describe() action_kit_api.ActionDescription {
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{
 			TargetType: r.targetId,
+			TargetQuery: extutil.Ptr("steadybit.loadtest=\"true\""),
 			SelectionTemplates: extutil.Ptr([]action_kit_api.TargetSelectionTemplate{
 				r.selectionTemplate,
 			}),

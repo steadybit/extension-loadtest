@@ -23,7 +23,8 @@ func createKubernetesClusterTargets() []discovery_kit_api.Target {
 				TargetType: "com.steadybit.extension_kubernetes.kubernetes-cluster",
 				Label:      config.Config.ClusterName,
 				Attributes: map[string][]string{
-					"k8s.cluster-name": {config.Config.ClusterName},
+					"k8s.cluster-name":   {config.Config.ClusterName},
+					"steadybit.loadtest": {"true"},
 				},
 			},
 		}

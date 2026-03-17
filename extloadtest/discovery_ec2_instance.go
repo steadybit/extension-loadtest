@@ -2,6 +2,7 @@ package extloadtest
 
 import (
 	"fmt"
+
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_commons"
 	"github.com/steadybit/extension-kit/extutil"
@@ -54,6 +55,7 @@ func createEc2InstanceTargets(hosts []discovery_kit_api.Target) []discovery_kit_
 				"aws.account":        {"503171660203"},
 				"aws.region":         {"eu-central-1"},
 				"aws.zone":           {"eu-central-1b"},
+				"steadybit.loadtest": {"true"},
 			},
 		}
 		result = append(result, target)

@@ -64,6 +64,7 @@ func createKubernetesDeploymentTargets(nodeCount int, suffix string) []discovery
 			"k8s.namespace":                                   {namespace},
 			"k8s.pod.name":                                    pods,
 			"k8s.dependencies":                                {"deps1", "deps2"},
+			"steadybit.loadtest":                              {"true"},
 		}
 
 		if i%2 == 0 {

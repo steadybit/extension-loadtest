@@ -58,6 +58,7 @@ func createKubernetesPodTargets(hostTargets, deploymentTargets []discovery_kit_a
 						"k8s.replicaset":                       deployment.Attributes["k8s.deployment"],
 						"k8s.container.id":                     containers,
 						"k8s.container.id.stripped":            containersStripped,
+						"steadybit.loadtest":                   {"true"},
 					},
 				}
 				deployment.Attributes["host.hostname"] = append(deployment.Attributes["host.hostname"], host.Attributes["host.hostname"]...)

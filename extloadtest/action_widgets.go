@@ -52,7 +52,8 @@ func (l *widgetAction) Describe() action_kit_api.ActionDescription {
 		Description: "Showcase for multiple widgets in the run view",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{
-			TargetType: "com.steadybit.extension_host.host",
+			TargetType:  "com.steadybit.extension_host.host",
+			TargetQuery: extutil.Ptr("steadybit.loadtest=\"true\""),
 			SelectionTemplates: extutil.Ptr([]action_kit_api.TargetSelectionTemplate{
 				{
 					Label:       "host name",

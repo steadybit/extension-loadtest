@@ -42,6 +42,7 @@ func (l *multiOptionParameterAction) Describe() action_kit_api.ActionDescription
 		TimeControl: action_kit_api.TimeControlInstantaneous,
 		TargetSelection: &action_kit_api.TargetSelection{
 			TargetType: "com.steadybit.extension_kubernetes.kubernetes-pod",
+			TargetQuery: extutil.Ptr("steadybit.loadtest=\"true\""),
 		},
 		Parameters: []action_kit_api.ActionParameter{
 			{

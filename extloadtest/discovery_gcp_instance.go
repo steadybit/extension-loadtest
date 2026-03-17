@@ -2,6 +2,7 @@ package extloadtest
 
 import (
 	"fmt"
+
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_commons"
 	"github.com/steadybit/extension-kit/extutil"
@@ -47,6 +48,7 @@ func createGcpInstanceTargets(hosts []discovery_kit_api.Target) []discovery_kit_
 				"gcp.project.id":                         {"steadybit-loadtest"},
 				"gcp-kubernetes-engine.cluster.name":     {config.Config.ClusterName},
 				"gcp-kubernetes-engine.cluster.location": zones,
+				"steadybit.loadtest":                     {"true"},
 			},
 		}
 		result = append(result, target)

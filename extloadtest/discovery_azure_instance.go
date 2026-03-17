@@ -2,6 +2,7 @@ package extloadtest
 
 import (
 	"fmt"
+
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_commons"
 	"github.com/steadybit/extension-kit/extutil"
@@ -46,6 +47,7 @@ func createAzureInstanceTargets(hosts []discovery_kit_api.Target) []discovery_ki
 				"azure.location":                    {"westeurope"},
 				"azure.zone":                        zones,
 				"azure.resource-group.name":         {config.Config.ClusterName},
+				"steadybit.loadtest":                {"true"},
 			},
 		}
 		result = append(result, target)

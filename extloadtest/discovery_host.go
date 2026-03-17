@@ -2,6 +2,7 @@ package extloadtest
 
 import (
 	"fmt"
+
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_commons"
 	"github.com/steadybit/extension-kit/extutil"
@@ -69,6 +70,7 @@ func createHostTargets(count int, suffix string) []discovery_kit_api.Target {
 				"host.os.family":       {"debian"},
 				"host.os.manufacturer": {"Debian GNU/Linux"},
 				"host.os.version":      {"12 (bookworm)"},
+				"steadybit.loadtest": {"true"},
 			},
 		}
 		result = append(result, target)

@@ -2,6 +2,7 @@ package extloadtest
 
 import (
 	"fmt"
+
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_commons"
 	"github.com/steadybit/extension-kit/extutil"
@@ -52,6 +53,7 @@ func createKubernetesContainerTargets(podTargets []discovery_kit_api.Target) []d
 					"k8s.pod.name":                             {pod.Id},
 					"k8s.replicaset":                           pod.Attributes["k8s.replicaset"],
 					"k8s.service.name":                         {fmt.Sprintf("%s-%s-service", config.Config.PodUID, pod.Attributes["k8s.deployment"][0])},
+					"steadybit.loadtest":                       {"true"},
 				},
 			}
 			result = append(result, target)

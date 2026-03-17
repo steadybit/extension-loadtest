@@ -86,6 +86,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
 		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{
 			TargetType:         l.targetId,
+			TargetQuery: extutil.Ptr("steadybit.loadtest=\"true\""),
 			SelectionTemplates: extutil.Ptr(selectionTemplates),
 		}),
 		Technology:  extutil.Ptr("Debug"),

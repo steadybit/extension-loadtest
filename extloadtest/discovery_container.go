@@ -40,6 +40,7 @@ func createContainerTargets(kubernetesContainers []discovery_kit_api.EnrichmentD
 				"k8s.container.name":                     kubernetesContainer.Attributes["k8s.container.name"],
 				"k8s.namespace":                          kubernetesContainer.Attributes["k8s.namespace"],
 				"k8s.pod.name":                           kubernetesContainer.Attributes["k8s.pod.name"],
+				"steadybit.loadtest":                     {"true"},
 			},
 		}
 		result = append(result, target)
