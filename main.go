@@ -46,8 +46,6 @@ func main() {
 		extloadtest.GetAdviceDescriptionKubernetesDeploymentLoadtest))
 	exthttp.RegisterHttpHandler("/advice/loadtest-dependencies", exthttp.GetterAsHandler(
 		extloadtest.GetAdviceDescriptionKubernetesDeploymentDependencies))
-	exthttp.RegisterHttpHandler("/advice/checkout-dependency", exthttp.GetterAsHandler(
-		extloadtest.GetAdviceDescriptionCheckoutDependency))
 
 	extloadtest.RegisterEventListenerHandlers()
 
@@ -163,9 +161,6 @@ func getExtensionList(eventListenerEnabled bool) ExtensionListResponse {
 			}, {
 				Method: "GET",
 				Path:   "/advice/loadtest-dependencies",
-			}, {
-				Method: "GET",
-				Path:   "/advice/checkout-dependency",
 			}},
 		},
 	}
