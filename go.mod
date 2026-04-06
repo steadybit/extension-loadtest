@@ -15,7 +15,7 @@ require (
 	github.com/steadybit/discovery-kit/go/discovery_kit_sdk v1.3.2
 	github.com/steadybit/event-kit/go/event_kit_api v1.6.2
 	github.com/steadybit/extension-kit v1.10.3
-	github.com/steadybit/preflight-kit/go/preflight_kit_api v1.4.2
+	github.com/steadybit/preflight-kit/go/preflight_kit_api v1.4.3
 	github.com/steadybit/preflight-kit/go/preflight_kit_sdk/v2 v2.0.2
 	github.com/stretchr/testify v1.11.1
 )
@@ -35,7 +35,7 @@ require (
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
-	github.com/oapi-codegen/runtime v1.2.0 // indirect
+	github.com/oapi-codegen/runtime v1.3.1 // indirect
 	github.com/oasdiff/yaml v0.0.0-20260313112342-a3ea61cb4d4c // indirect
 	github.com/oasdiff/yaml3 v0.0.0-20260224194419-61cd415a242b // indirect
 	github.com/pbnjay/memory v0.0.0-20210728143218-7b4eea64cf58 // indirect
