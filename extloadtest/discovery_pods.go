@@ -5,7 +5,6 @@ import (
 
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_commons"
-	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
 )
 
@@ -13,7 +12,7 @@ func getDiscoveryKubernetesPods() discovery_kit_api.DiscoveryDescription {
 	return discovery_kit_api.DiscoveryDescription{
 		Id: "com.steadybit.extension_kubernetes.kubernetes-pod",
 		Discover: discovery_kit_api.DescribingEndpointReferenceWithCallInterval{
-			CallInterval: extutil.Ptr("1m"),
+			CallInterval: new("1m"),
 		},
 	}
 }
@@ -21,14 +20,14 @@ func getDiscoveryKubernetesPods() discovery_kit_api.DiscoveryDescription {
 func createKubernetesPodTargets(hostTargets, deploymentTargets []discovery_kit_api.Target) []discovery_kit_api.Target {
 	result := make([]discovery_kit_api.Target, 0, len(deploymentTargets)*config.Config.PodsPerDeployment)
 
-	for hostIndex := 0; hostIndex < len(hostTargets); hostIndex++ {
+	for hostIndex := range hostTargets {
 		host := hostTargets[hostIndex]
 
 		for deploymentIndex := 0; deploymentIndex < config.Config.DeploymentsPerNode; deploymentIndex++ {
 			deployment := deploymentTargets[(hostIndex*config.Config.DeploymentsPerNode)+deploymentIndex]
 			pods := deployment.Attributes["k8s.pod.name"]
 
-			for podIndex := 0; podIndex < len(pods); podIndex++ {
+			for podIndex := range pods {
 				podName := pods[podIndex]
 
 				containers := make([]string, 0, config.Config.ContainerPerPod)

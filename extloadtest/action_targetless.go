@@ -38,7 +38,7 @@ func (l *targetlessAction) Describe() action_kit_api.ActionDescription {
 		Label:       "Do Nothing Without a Target",
 		Description: "This action does nothing.",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
-		Technology:  extutil.Ptr("Debug"),
+		Technology:  new("Debug"),
 
 		Kind:        action_kit_api.Other,
 		TimeControl: action_kit_api.TimeControlInstantaneous,
@@ -46,7 +46,7 @@ func (l *targetlessAction) Describe() action_kit_api.ActionDescription {
 }
 
 func (l *targetlessAction) Prepare(_ context.Context, _ *TargetlessActionState, request action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {
-	return &action_kit_api.PrepareResult{Messages: extutil.Ptr([]action_kit_api.Message{
+	return &action_kit_api.PrepareResult{Messages: new([]action_kit_api.Message{
 		{
 			Level:   extutil.Ptr(action_kit_api.Info),
 			Message: "Prepared do nothing",
@@ -56,7 +56,7 @@ func (l *targetlessAction) Prepare(_ context.Context, _ *TargetlessActionState, 
 
 func (l *targetlessAction) Start(_ context.Context, _ *TargetlessActionState) (*action_kit_api.StartResult, error) {
 	return &action_kit_api.StartResult{
-		Messages: extutil.Ptr([]action_kit_api.Message{
+		Messages: new([]action_kit_api.Message{
 			{
 				Level:   extutil.Ptr(action_kit_api.Info),
 				Message: "Started do nothing",

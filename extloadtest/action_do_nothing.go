@@ -51,33 +51,33 @@ func (l *doNothingAction) Describe() action_kit_api.ActionDescription {
 		Label:       "Do Nothing",
 		Description: "This action does nothing.",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
-		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{
+		TargetSelection: new(action_kit_api.TargetSelection{
 			TargetType:  l.targetId,
-			TargetQuery: extutil.Ptr("steadybit.loadtest=\"true\""),
-			SelectionTemplates: extutil.Ptr([]action_kit_api.TargetSelectionTemplate{
+			TargetQuery: new("steadybit.loadtest=\"true\""),
+			SelectionTemplates: new([]action_kit_api.TargetSelectionTemplate{
 				l.selectionTemplate,
 			}),
 		}),
-		Technology:  extutil.Ptr("Debug"),
+		Technology:  new("Debug"),
 		Kind:        action_kit_api.Attack,
 		TimeControl: action_kit_api.TimeControlInstantaneous,
 		Parameters: []action_kit_api.ActionParameter{
 			{
 				Name:        "foo",
 				Label:       "Example Parameter 1",
-				Description: extutil.Ptr("Example parameter"),
+				Description: new("Example parameter"),
 				Type:        action_kit_api.ActionParameterTypeString,
 			},
 			{
 				Name:        "message",
 				Label:       "Example target selection",
-				Description: extutil.Ptr("Dummy target selection."),
+				Description: new("Dummy target selection."),
 				Type:        action_kit_api.ActionParameterTypeTargetSelection,
 			},
 			{
 				Name:        "bar",
 				Label:       "Example Parameter 2",
-				Description: extutil.Ptr("Example parameter"),
+				Description: new("Example parameter"),
 				Type:        action_kit_api.ActionParameterTypeString,
 			},
 		},
@@ -90,7 +90,7 @@ func (l *doNothingAction) Prepare(_ context.Context, _ *DoNothingActionState, re
 		return nil, extension_kit.ToError("Failed to unmarshal the config.", err)
 	}
 
-	return &action_kit_api.PrepareResult{Messages: extutil.Ptr([]action_kit_api.Message{
+	return &action_kit_api.PrepareResult{Messages: new([]action_kit_api.Message{
 		{
 			Level:   extutil.Ptr(action_kit_api.Info),
 			Message: "Prepared do nothing",
@@ -100,7 +100,7 @@ func (l *doNothingAction) Prepare(_ context.Context, _ *DoNothingActionState, re
 
 func (l *doNothingAction) Start(_ context.Context, _ *DoNothingActionState) (*action_kit_api.StartResult, error) {
 	return &action_kit_api.StartResult{
-		Messages: extutil.Ptr([]action_kit_api.Message{
+		Messages: new([]action_kit_api.Message{
 			{
 				Level:   extutil.Ptr(action_kit_api.Info),
 				Message: "Started do nothing",

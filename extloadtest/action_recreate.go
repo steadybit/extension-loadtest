@@ -57,32 +57,32 @@ func (r *recreateAction) Describe() action_kit_api.ActionDescription {
 		Label:       "Recreate Targets",
 		Description: "Simulate targets removal and creation by altering the id",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
-		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{
-			TargetType: r.targetId,
-			TargetQuery: extutil.Ptr("steadybit.loadtest=\"true\""),
-			SelectionTemplates: extutil.Ptr([]action_kit_api.TargetSelectionTemplate{
+		TargetSelection: new(action_kit_api.TargetSelection{
+			TargetType:  r.targetId,
+			TargetQuery: new("steadybit.loadtest=\"true\""),
+			SelectionTemplates: new([]action_kit_api.TargetSelectionTemplate{
 				r.selectionTemplate,
 			}),
 		}),
-		Technology:  extutil.Ptr("Debug"),
+		Technology:  new("Debug"),
 		Kind:        action_kit_api.Attack,
 		TimeControl: action_kit_api.TimeControlInstantaneous,
 		Parameters: []action_kit_api.ActionParameter{
 			{
 				Name:         "prepareFailureRate",
 				Label:        "Prepare Failure Rate",
-				Description:  extutil.Ptr("The rate of prepare calls to fail"),
+				Description:  new("The rate of prepare calls to fail"),
 				Type:         action_kit_api.ActionParameterTypePercentage,
-				DefaultValue: extutil.Ptr("0"),
-				Required:     extutil.Ptr(true),
+				DefaultValue: new("0"),
+				Required:     new(true),
 			},
 			{
 				Name:         "startFailureRate",
 				Label:        "Start Failure Rate",
-				Description:  extutil.Ptr("The rate of Start calls to fail"),
+				Description:  new("The rate of Start calls to fail"),
 				Type:         action_kit_api.ActionParameterTypePercentage,
-				DefaultValue: extutil.Ptr("0"),
-				Required:     extutil.Ptr(true),
+				DefaultValue: new("0"),
+				Required:     new(true),
 			},
 		},
 	}
@@ -112,7 +112,7 @@ func (r *recreateAction) Start(_ context.Context, state *RecreateActionState) (*
 	sleepRandom()
 
 	return &action_kit_api.StartResult{
-		Messages: extutil.Ptr([]action_kit_api.Message{
+		Messages: new([]action_kit_api.Message{
 			{
 				Level:   extutil.Ptr(action_kit_api.Info),
 				Message: fmt.Sprintf("Recreated %s", state.Name),

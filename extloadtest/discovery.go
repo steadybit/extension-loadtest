@@ -291,7 +291,7 @@ func (t *TargetData) RegisterRecreateActions() {
 		"com.steadybit.extension_host.host",
 		action_kit_api.TargetSelectionTemplate{
 			Label:       "by host name",
-			Description: extutil.Ptr("Find host by host name."),
+			Description: new("Find host by host name."),
 			Query:       "host.hostname=\"\"",
 		},
 		func(name string) {
@@ -308,7 +308,7 @@ func (t *TargetData) RegisterRecreateActions() {
 		"com.steadybit.extension_container.container",
 		action_kit_api.TargetSelectionTemplate{
 			Label:       "by kubernetes deployment",
-			Description: extutil.Ptr("Find container by kubernetes deployment."),
+			Description: new("Find container by kubernetes deployment."),
 			Query:       "k8s.cluster-name=\"\" and k8s.namespace=\"\" and k8s.deployment=\"\"",
 		},
 		func(name string) {
@@ -323,7 +323,7 @@ func (t *TargetData) RegisterConfigUpdateHandlers() {
 	exthttp.RegisterHttpHandler("/config/attributeUpdates", t.updateConfigHandler(&config.Config.AttributeUpdates))
 }
 
-func (t *TargetData) updateConfigHandler(config interface{}) exthttp.Handler {
+func (t *TargetData) updateConfigHandler(config any) exthttp.Handler {
 	return func(w http.ResponseWriter, r *http.Request, body []byte) {
 		if r.Method == http.MethodPost {
 			clone := extutil.JsonMangle(config)
