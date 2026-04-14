@@ -5,7 +5,6 @@ import (
 
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_commons"
-	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
 )
 
@@ -13,7 +12,7 @@ func getDiscoveryHost() discovery_kit_api.DiscoveryDescription {
 	return discovery_kit_api.DiscoveryDescription{
 		Id: "com.steadybit.extension_host.host",
 		Discover: discovery_kit_api.DescribingEndpointReferenceWithCallInterval{
-			CallInterval: extutil.Ptr("1m"),
+			CallInterval: new("1m"),
 		},
 	}
 }
@@ -70,7 +69,7 @@ func createHostTargets(count int, suffix string) []discovery_kit_api.Target {
 				"host.os.family":       {"debian"},
 				"host.os.manufacturer": {"Debian GNU/Linux"},
 				"host.os.version":      {"12 (bookworm)"},
-				"steadybit.loadtest": {"true"},
+				"steadybit.loadtest":   {"true"},
 			},
 		}
 		result = append(result, target)

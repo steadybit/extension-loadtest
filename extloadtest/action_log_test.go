@@ -12,7 +12,7 @@ import (
 func TestPrepare(t *testing.T) {
 	// Given
 	request := extutil.JsonMangle(action_kit_api.PrepareActionRequestBody{
-		Config: map[string]interface{}{
+		Config: map[string]any{
 			"duration":        1000 * 60,
 			"message":         "lorem ipsum %s",
 			"errorEndpoint":   "stop",
@@ -24,7 +24,7 @@ func TestPrepare(t *testing.T) {
 		Target: &action_kit_api.Target{
 			Name: "example-target",
 		},
-		ExecutionContext: extutil.Ptr(action_kit_api.ExecutionContext{}),
+		ExecutionContext: new(action_kit_api.ExecutionContext{}),
 	})
 	action := NewLogAction("com.steadybit.extension_loadtest.log.target", "com.example.target", action_kit_api.TargetSelectionTemplate{})
 	state := action.NewEmptyState()

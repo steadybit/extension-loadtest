@@ -84,12 +84,12 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 		Label:       l.actionLabel,
 		Description: "Logs a message for the given duration to the agent log",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
-		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{
+		TargetSelection: new(action_kit_api.TargetSelection{
 			TargetType:         l.targetId,
-			TargetQuery: extutil.Ptr("steadybit.loadtest=\"true\""),
-			SelectionTemplates: extutil.Ptr(selectionTemplates),
+			TargetQuery:        new("steadybit.loadtest=\"true\""),
+			SelectionTemplates: new(selectionTemplates),
 		}),
-		Technology:  extutil.Ptr("Debug"),
+		Technology:  new("Debug"),
 		Kind:        action_kit_api.Attack,
 		TimeControl: action_kit_api.TimeControlExternal,
 		Parameters: []action_kit_api.ActionParameter{
@@ -97,25 +97,25 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Name:         "duration",
 				Label:        "Duration",
 				Type:         action_kit_api.ActionParameterTypeDuration,
-				DefaultValue: extutil.Ptr("10s"),
-				Required:     extutil.Ptr(true),
+				DefaultValue: new("10s"),
+				Required:     new(true),
 			},
 			{
 				Name:         "message",
 				Label:        "Message",
-				Description:  extutil.Ptr("What should we log to the console? Use %s to insert the target name."),
+				Description:  new("What should we log to the console? Use %s to insert the target name."),
 				Type:         action_kit_api.ActionParameterTypeString,
-				DefaultValue: extutil.Ptr("Hello from %s"),
-				Required:     extutil.Ptr(true),
+				DefaultValue: new("Hello from %s"),
+				Required:     new(true),
 			},
 			{
 				Name:         "errorEndpoint",
 				Label:        "Error in endpoint",
-				Description:  extutil.Ptr("Should we throw an error in the selected endpoint?"),
+				Description:  new("Should we throw an error in the selected endpoint?"),
 				Type:         action_kit_api.ActionParameterTypeString,
-				Advanced:     extutil.Ptr(true),
-				DefaultValue: extutil.Ptr("none"),
-				Options: extutil.Ptr([]action_kit_api.ParameterOption{
+				Advanced:     new(true),
+				DefaultValue: new("none"),
+				Options: new([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
 						Label: "no error",
 						Value: "none",
@@ -145,11 +145,11 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 			{
 				Name:         "latencyEndpoint",
 				Label:        "Latency in endpoint",
-				Description:  extutil.Ptr("Should we add latency in the selected endpoint?"),
+				Description:  new("Should we add latency in the selected endpoint?"),
 				Type:         action_kit_api.ActionParameterTypeString,
-				Advanced:     extutil.Ptr(true),
-				DefaultValue: extutil.Ptr("none"),
-				Options: extutil.Ptr([]action_kit_api.ParameterOption{
+				Advanced:     new(true),
+				DefaultValue: new("none"),
+				Options: new([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
 						Label: "no latency",
 						Value: "none",
@@ -176,54 +176,54 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Name:         "latencyDuration",
 				Label:        "Latency",
 				Type:         action_kit_api.ActionParameterTypeDuration,
-				DefaultValue: extutil.Ptr("5s"),
-				Required:     extutil.Ptr(false),
-				Advanced:     extutil.Ptr(true),
+				DefaultValue: new("5s"),
+				Required:     new(false),
+				Advanced:     new(true),
 			},
 			{
 				Name:         "targetFilter",
 				Label:        "Target Filter for error / latency",
-				Description:  extutil.Ptr("For which target should we throw an error / add latency? '*' throws for all targets."),
-				DefaultValue: extutil.Ptr("*"),
+				Description:  new("For which target should we throw an error / add latency? '*' throws for all targets."),
+				DefaultValue: new("*"),
 				Type:         action_kit_api.ActionParameterTypeString,
-				Advanced:     extutil.Ptr(true),
+				Advanced:     new(true),
 			},
 			{
 				Name:         "addArtifact",
 				Label:        "Add a dummy artifact to all results",
-				DefaultValue: extutil.Ptr("false"),
+				DefaultValue: new("false"),
 				Type:         action_kit_api.ActionParameterTypeBoolean,
-				Advanced:     extutil.Ptr(true),
+				Advanced:     new(true),
 			},
 			{
 				Name:         "booleanParameter",
 				Label:        "Just a dummy boolean parameter",
-				Description:  extutil.Ptr("This is not used."),
-				DefaultValue: extutil.Ptr("false"),
+				Description:  new("This is not used."),
+				DefaultValue: new("false"),
 				Type:         action_kit_api.ActionParameterTypeBoolean,
-				Advanced:     extutil.Ptr(true),
+				Advanced:     new(true),
 			},
 			{
 				Name:        "integerParameter",
 				Label:       "Just a dummy integer parameter",
-				Description: extutil.Ptr("This is not used."),
+				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeInteger,
-				Advanced:    extutil.Ptr(true),
+				Advanced:    new(true),
 			},
 			{
 				Name:        "keyValueParameter",
 				Label:       "Just a dummy key value parameter",
-				Description: extutil.Ptr("This is not used."),
+				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeKeyValue,
-				Advanced:    extutil.Ptr(true),
+				Advanced:    new(true),
 			},
 			{
 				Name:        "stringArrayParameter",
 				Label:       "Just a dummy string array parameter",
-				Description: extutil.Ptr("This is not used."),
+				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeStringArray,
-				Advanced:    extutil.Ptr(true),
-				Options: extutil.Ptr([]action_kit_api.ParameterOption{
+				Advanced:    new(true),
+				Options: new([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
 						Label: "value1",
 						Value: "value1",
@@ -241,71 +241,71 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 			{
 				Name:        "stringArrayWithoutOptionsParameter",
 				Label:       "Just a dummy string array without options parameter",
-				Description: extutil.Ptr("This is not used."),
+				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeStringArray,
-				Advanced:    extutil.Ptr(true),
+				Advanced:    new(true),
 			},
 			{
 				Name:        "fileParameter",
 				Label:       "Just a dummy file parameter",
-				Description: extutil.Ptr("This is not used."),
+				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeFile,
-				Advanced:    extutil.Ptr(true),
+				Advanced:    new(true),
 			},
 			{
 				Name:        "regexParameter",
 				Label:       "Just a dummy regex parameter",
-				Description: extutil.Ptr("This is not used."),
+				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeRegex,
-				Advanced:    extutil.Ptr(true),
+				Advanced:    new(true),
 			},
 			{
 				Name:        "textareaParameter",
 				Label:       "Just a dummy textarea parameter",
-				Description: extutil.Ptr("This is not used."),
+				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeTextarea,
-				Advanced:    extutil.Ptr(true),
+				Advanced:    new(true),
 			},
 			{
 				Name:        "urlParameter",
 				Label:       "Just a dummy url parameter",
-				Description: extutil.Ptr("This is not used."),
+				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeUrl,
-				Advanced:    extutil.Ptr(true),
+				Advanced:    new(true),
 			},
 			{
 				Name:        "percentageParameter",
 				Label:       "Just a dummy percentage parameter",
-				Description: extutil.Ptr("This is not used."),
+				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypePercentage,
-				Advanced:    extutil.Ptr(true),
+				Advanced:    new(true),
 			},
 			{
 				Name:        "headerParameter",
 				Label:       "Just a dummy header parameter",
-				Description: extutil.Ptr("This is not used."),
+				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeHeader,
-				Advanced:    extutil.Ptr(true),
+				Advanced:    new(true),
 			},
 			{
 				Name:        "bitrateParameter",
 				Label:       "Just a dummy bitrate parameter",
-				Description: extutil.Ptr("This is not used."),
+				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeBitrate,
-				Advanced:    extutil.Ptr(true),
+				Advanced:    new(true),
 			},
 			{
 				Name:        "stressngworkersParameter",
 				Label:       "Just a dummy stressng workers parameter",
-				Description: extutil.Ptr("This is not used."),
+				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeStressngWorkers,
-				Advanced:    extutil.Ptr(true),
+				Advanced:    new(true),
 			},
 		},
-		Status: extutil.Ptr(action_kit_api.MutatingEndpointReferenceWithCallInterval{
-			CallInterval: extutil.Ptr("1s"),
+		Status: new(action_kit_api.MutatingEndpointReferenceWithCallInterval{
+			CallInterval: new("1s"),
 		}),
-		Stop: extutil.Ptr(action_kit_api.MutatingEndpointReference{}),
+		Stop: new(action_kit_api.MutatingEndpointReference{}),
 	}
 }
 
@@ -338,13 +338,13 @@ func (l *logAction) Prepare(_ context.Context, state *LogActionState, request ac
 	}
 
 	return &action_kit_api.PrepareResult{
-		Messages: extutil.Ptr([]action_kit_api.Message{
+		Messages: new([]action_kit_api.Message{
 			{
 				Level:   extutil.Ptr(action_kit_api.Info),
 				Message: fmt.Sprintf("Called `prepare` for logging '%+v'", state),
 			},
 		}),
-		Modifications: extutil.Ptr(
+		Modifications: new(
 			[]action_kit_api.ExecutionModification{
 				action_kit_api.ExecutionModificationSetPropertyValue{
 					Type:        action_kit_api.SetPropertyValue,
@@ -374,13 +374,13 @@ func (l *logAction) Start(_ context.Context, state *LogActionState) (*action_kit
 	}
 
 	return &action_kit_api.StartResult{
-		Messages: extutil.Ptr([]action_kit_api.Message{
+		Messages: new([]action_kit_api.Message{
 			{
 				Level:   extutil.Ptr(action_kit_api.Info),
 				Message: fmt.Sprintf("Called `start` for logging '%+v'", state),
 			},
 		}),
-		Modifications: extutil.Ptr(
+		Modifications: new(
 			[]action_kit_api.ExecutionModification{
 				action_kit_api.ExecutionModificationAddValueToListProperty{
 					Type:        action_kit_api.AddValueToListProperty,
@@ -436,13 +436,13 @@ func (l *logAction) Status(_ context.Context, state *LogActionState) (*action_ki
 		//indicate that the action is still running
 		Completed: false,
 		//These messages will show up in agent log
-		Messages: extutil.Ptr([]action_kit_api.Message{
+		Messages: new([]action_kit_api.Message{
 			{
 				Level:   extutil.Ptr(action_kit_api.Info),
 				Message: fmt.Sprintf("Called `status` for logging '%+v'", state),
 			},
 		}),
-		Modifications: extutil.Ptr(
+		Modifications: new(
 			modifications,
 		),
 		Summary: summary,
@@ -475,13 +475,13 @@ func (l *logAction) Stop(_ context.Context, state *LogActionState) (*action_kit_
 
 	return &action_kit_api.StopResult{
 		//These messages will show up in agent log
-		Messages: extutil.Ptr([]action_kit_api.Message{
+		Messages: new([]action_kit_api.Message{
 			{
 				Level:   extutil.Ptr(action_kit_api.Info),
 				Message: fmt.Sprintf("Called `stop` for logging '%+v' - previous step: '%s'", state, previousStep),
 			},
 		}),
-		Modifications: extutil.Ptr(
+		Modifications: new(
 			[]action_kit_api.ExecutionModification{
 				action_kit_api.ExecutionModificationAddValueToListProperty{
 					Type:        action_kit_api.AddValueToListProperty,
@@ -500,6 +500,6 @@ func (l *logAction) Stop(_ context.Context, state *LogActionState) (*action_kit_
 				},
 			},
 		),
-		Artifacts: extutil.Ptr(artifacts),
+		Artifacts: new(artifacts),
 	}, nil
 }

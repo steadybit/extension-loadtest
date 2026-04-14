@@ -37,22 +37,22 @@ func (l *multiOptionParameterAction) Describe() action_kit_api.ActionDescription
 		Label:       "Do nothing but provide an option parameter",
 		Description: "This action does nothing but provides an option parameter based on multiple target attributes (k8s.container.id, k8s.deployment).",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
-		Technology:  extutil.Ptr("Debug"),
+		Technology:  new("Debug"),
 		Kind:        action_kit_api.Other,
 		TimeControl: action_kit_api.TimeControlInstantaneous,
 		TargetSelection: &action_kit_api.TargetSelection{
-			TargetType: "com.steadybit.extension_kubernetes.kubernetes-pod",
-			TargetQuery: extutil.Ptr("steadybit.loadtest=\"true\""),
+			TargetType:  "com.steadybit.extension_kubernetes.kubernetes-pod",
+			TargetQuery: new("steadybit.loadtest=\"true\""),
 		},
 		Parameters: []action_kit_api.ActionParameter{
 			{
 				Name:         "Parameter with option",
 				Label:        "Option",
-				Description:  extutil.Ptr("Select on option (static, k8s.container_id, k8s.deployment)"),
+				Description:  new("Select on option (static, k8s.container_id, k8s.deployment)"),
 				Type:         action_kit_api.ActionParameterTypeString,
-				Advanced:     extutil.Ptr(true),
-				DefaultValue: extutil.Ptr("none"),
-				Options: extutil.Ptr([]action_kit_api.ParameterOption{
+				Advanced:     new(true),
+				DefaultValue: new("none"),
+				Options: new([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
 						Label: "static",
 						Value: "static",
@@ -70,7 +70,7 @@ func (l *multiOptionParameterAction) Describe() action_kit_api.ActionDescription
 }
 
 func (l *multiOptionParameterAction) Prepare(_ context.Context, _ *MultiOptionParameterActionState, request action_kit_api.PrepareActionRequestBody) (*action_kit_api.PrepareResult, error) {
-	return &action_kit_api.PrepareResult{Messages: extutil.Ptr([]action_kit_api.Message{
+	return &action_kit_api.PrepareResult{Messages: new([]action_kit_api.Message{
 		{
 			Level:   extutil.Ptr(action_kit_api.Info),
 			Message: "Prepared do nothing",
@@ -80,7 +80,7 @@ func (l *multiOptionParameterAction) Prepare(_ context.Context, _ *MultiOptionPa
 
 func (l *multiOptionParameterAction) Start(_ context.Context, _ *MultiOptionParameterActionState) (*action_kit_api.StartResult, error) {
 	return &action_kit_api.StartResult{
-		Messages: extutil.Ptr([]action_kit_api.Message{
+		Messages: new([]action_kit_api.Message{
 			{
 				Level:   extutil.Ptr(action_kit_api.Info),
 				Message: "Started do nothing",

@@ -51,18 +51,18 @@ func (l *widgetAction) Describe() action_kit_api.ActionDescription {
 		Label:       "Render Widgets",
 		Description: "Showcase for multiple widgets in the run view",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
-		TargetSelection: extutil.Ptr(action_kit_api.TargetSelection{
+		TargetSelection: new(action_kit_api.TargetSelection{
 			TargetType:  "com.steadybit.extension_host.host",
-			TargetQuery: extutil.Ptr("steadybit.loadtest=\"true\""),
-			SelectionTemplates: extutil.Ptr([]action_kit_api.TargetSelectionTemplate{
+			TargetQuery: new("steadybit.loadtest=\"true\""),
+			SelectionTemplates: new([]action_kit_api.TargetSelectionTemplate{
 				{
 					Label:       "host name",
-					Description: extutil.Ptr("Find by host name"),
+					Description: new("Find by host name"),
 					Query:       "host.hostname=\"\"",
 				},
 			}),
 		}),
-		Technology: extutil.Ptr("Debug"),
+		Technology: new("Debug"),
 
 		Kind:        action_kit_api.Other,
 		TimeControl: action_kit_api.TimeControlExternal,
@@ -71,14 +71,14 @@ func (l *widgetAction) Describe() action_kit_api.ActionDescription {
 				Name:         "duration",
 				Label:        "Duration",
 				Type:         action_kit_api.ActionParameterTypeDuration,
-				DefaultValue: extutil.Ptr("10s"),
-				Required:     extutil.Ptr(true),
+				DefaultValue: new("10s"),
+				Required:     new(true),
 			},
 		},
-		Status: extutil.Ptr(action_kit_api.MutatingEndpointReferenceWithCallInterval{
-			CallInterval: extutil.Ptr("1s"),
+		Status: new(action_kit_api.MutatingEndpointReferenceWithCallInterval{
+			CallInterval: new("1s"),
 		}),
-		Widgets: extutil.Ptr([]action_kit_api.Widget{
+		Widgets: new([]action_kit_api.Widget{
 			action_kit_api.StateOverTimeWidget{
 				Type:  action_kit_api.ComSteadybitWidgetStateOverTime,
 				Title: "Example State Over Time Widget 1",
@@ -94,11 +94,11 @@ func (l *widgetAction) Describe() action_kit_api.ActionDescription {
 				Tooltip: action_kit_api.StateOverTimeWidgetTooltipConfig{
 					From: "metric.tooltip",
 				},
-				Url: extutil.Ptr(action_kit_api.StateOverTimeWidgetUrlConfig{
-					From: extutil.Ptr("metric.url"),
+				Url: new(action_kit_api.StateOverTimeWidgetUrlConfig{
+					From: new("metric.url"),
 				}),
-				Value: extutil.Ptr(action_kit_api.StateOverTimeWidgetValueConfig{
-					Hide: extutil.Ptr(true),
+				Value: new(action_kit_api.StateOverTimeWidgetValueConfig{
+					Hide: new(true),
 				}),
 			},
 			action_kit_api.StateOverTimeWidget{
@@ -116,11 +116,11 @@ func (l *widgetAction) Describe() action_kit_api.ActionDescription {
 				Tooltip: action_kit_api.StateOverTimeWidgetTooltipConfig{
 					From: "metric.tooltip",
 				},
-				Url: extutil.Ptr(action_kit_api.StateOverTimeWidgetUrlConfig{
-					From: extutil.Ptr("metric.url"),
+				Url: new(action_kit_api.StateOverTimeWidgetUrlConfig{
+					From: new("metric.url"),
 				}),
-				Value: extutil.Ptr(action_kit_api.StateOverTimeWidgetValueConfig{
-					Hide: extutil.Ptr(true),
+				Value: new(action_kit_api.StateOverTimeWidgetValueConfig{
+					Hide: new(true),
 				}),
 			},
 			action_kit_api.LogWidget{
@@ -153,15 +153,15 @@ func (l *widgetAction) Start(_ context.Context, _ *WidgetActionState) (*action_k
 		Messages: &[]action_kit_api.Message{
 			{
 				Message: "# This will be a header",
-				Type:    extutil.Ptr(TYPE_MARKDOWN_APPEND_EXAMPLE),
+				Type:    new(TYPE_MARKDOWN_APPEND_EXAMPLE),
 			},
 			{
 				Message: "## And a nice sub-header",
-				Type:    extutil.Ptr(TYPE_MARKDOWN_APPEND_EXAMPLE),
+				Type:    new(TYPE_MARKDOWN_APPEND_EXAMPLE),
 			},
 			{
 				Message: "# Hello - I just started",
-				Type:    extutil.Ptr(TYPE_MARKDOWN_REPLACE_EXAMPLE),
+				Type:    new(TYPE_MARKDOWN_REPLACE_EXAMPLE),
 			},
 		},
 	}, nil
@@ -176,7 +176,7 @@ func (l *widgetAction) Status(_ context.Context, _ *WidgetActionState) (*action_
 
 	metrics := []action_kit_api.Metric{
 		{
-			Name: extutil.Ptr("example-state-over-time-1"),
+			Name: new("example-state-over-time-1"),
 			Metric: map[string]string{
 				"metric.type-1":  "example-row-1",
 				"metric.label":   "Row 1",
@@ -188,7 +188,7 @@ func (l *widgetAction) Status(_ context.Context, _ *WidgetActionState) (*action_
 			Value:     0,
 		},
 		{
-			Name: extutil.Ptr("example-state-over-time-1"),
+			Name: new("example-state-over-time-1"),
 			Metric: map[string]string{
 				"metric.type-1":  "example-row-2",
 				"metric.label":   "Row 2",
@@ -200,7 +200,7 @@ func (l *widgetAction) Status(_ context.Context, _ *WidgetActionState) (*action_
 			Value:     0,
 		},
 		{
-			Name: extutil.Ptr("example-state-over-time-2"),
+			Name: new("example-state-over-time-2"),
 			Metric: map[string]string{
 				"metric.type-2":  "example-row-1-for-second-widget",
 				"metric.label":   "Row 1 - Widget 2",
@@ -217,33 +217,33 @@ func (l *widgetAction) Status(_ context.Context, _ *WidgetActionState) (*action_
 	messages := []action_kit_api.Message{
 		{
 			Message:         "This is an example log message",
-			Type:            extutil.Ptr(TYPE_LOG_EXAMPLE),
-			Level:           extutil.Ptr(randomLevel),
-			Timestamp:       extutil.Ptr(now),
+			Type:            new(TYPE_LOG_EXAMPLE),
+			Level:           new(randomLevel),
+			Timestamp:       new(now),
 			TimestampSource: extutil.Ptr(action_kit_api.TimestampSourceExternal),
-			Fields: extutil.Ptr(action_kit_api.MessageFields{
+			Fields: new(action_kit_api.MessageFields{
 				"tooltip-example": strconv.Itoa(rand.IntN(20)),
 			}),
 		},
 		{
 			Message: "- Status " + now.Format("01-02-2006 15:04:05.000000"),
-			Type:    extutil.Ptr(TYPE_MARKDOWN_APPEND_EXAMPLE),
+			Type:    new(TYPE_MARKDOWN_APPEND_EXAMPLE),
 		},
 		{
 			Message:   "- Status " + now.Format("01-02-2006 15:04:05.000000"),
-			Type:      extutil.Ptr(TYPE_MARKDOWN_REPLACE_EXAMPLE),
-			Timestamp: extutil.Ptr(now),
+			Type:      new(TYPE_MARKDOWN_REPLACE_EXAMPLE),
+			Timestamp: new(now),
 		},
 		{
 			Message:   "- Condition " + randomEmoji,
-			Type:      extutil.Ptr(TYPE_MARKDOWN_REPLACE_EXAMPLE),
-			Timestamp: extutil.Ptr(now),
+			Type:      new(TYPE_MARKDOWN_REPLACE_EXAMPLE),
+			Timestamp: new(now),
 		},
 	}
 
 	return &action_kit_api.StatusResult{
 		Completed: false,
-		Metrics:   extutil.Ptr(metrics),
-		Messages:  extutil.Ptr(messages),
+		Metrics:   new(metrics),
+		Messages:  new(messages),
 	}, nil
 }
