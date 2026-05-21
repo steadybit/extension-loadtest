@@ -301,6 +301,111 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Type:        action_kit_api.ActionParameterTypeStressngWorkers,
 				Advanced:    new(true),
 			},
+			{
+				Name:     "dummyParameter21",
+				Label:    "Dummy Parameter 21",
+				Type:     action_kit_api.ActionParameterTypeString,
+				Advanced: new(true),
+				Required: new(false),
+			},
+			{
+				Name:     "dummyParameter22",
+				Label:    "Dummy Parameter 22",
+				Type:     action_kit_api.ActionParameterTypeString,
+				Advanced: new(true),
+				Required: new(false),
+			},
+			{
+				Name:     "dummyParameter23",
+				Label:    "Dummy Parameter 23",
+				Type:     action_kit_api.ActionParameterTypeString,
+				Advanced: new(true),
+				Required: new(false),
+			},
+			{
+				Name:     "dummyParameter24",
+				Label:    "Dummy Parameter 24",
+				Type:     action_kit_api.ActionParameterTypeString,
+				Advanced: new(true),
+				Required: new(false),
+			},
+			{
+				Name:     "dummyParameter25",
+				Label:    "Dummy Parameter 25",
+				Type:     action_kit_api.ActionParameterTypeString,
+				Advanced: new(true),
+				Required: new(false),
+			},
+			{
+				Name:     "dummyParameter26",
+				Label:    "Dummy Parameter 26",
+				Type:     action_kit_api.ActionParameterTypeString,
+				Advanced: new(true),
+				Required: new(false),
+			},
+			{
+				Name:     "dummyParameter27",
+				Label:    "Dummy Parameter 27",
+				Type:     action_kit_api.ActionParameterTypeString,
+				Advanced: new(true),
+				Required: new(false),
+			},
+			{
+				Name:     "dummyParameter28",
+				Label:    "Dummy Parameter 28",
+				Type:     action_kit_api.ActionParameterTypeString,
+				Advanced: new(true),
+				Required: new(false),
+			},
+			{
+				Name:     "dummyParameter29",
+				Label:    "Dummy Parameter 29",
+				Type:     action_kit_api.ActionParameterTypeString,
+				Advanced: new(true),
+				Required: new(false),
+			},
+			{
+				Name:     "dummyParameter30",
+				Label:    "Dummy Parameter 30",
+				Type:     action_kit_api.ActionParameterTypeString,
+				Advanced: new(true),
+				Required: new(false),
+			},
+			{
+				Name:     "dummyParameter31",
+				Label:    "Dummy Parameter 31",
+				Type:     action_kit_api.ActionParameterTypeString,
+				Advanced: new(true),
+				Required: new(false),
+			},
+			{
+				Name:     "dummyParameter32",
+				Label:    "Dummy Parameter 32",
+				Type:     action_kit_api.ActionParameterTypeString,
+				Advanced: new(true),
+				Required: new(false),
+			},
+			{
+				Name:     "dummyParameter33",
+				Label:    "Dummy Parameter 33",
+				Type:     action_kit_api.ActionParameterTypeString,
+				Advanced: new(true),
+				Required: new(false),
+			},
+			{
+				Name:     "dummyParameter34",
+				Label:    "Dummy Parameter 34",
+				Type:     action_kit_api.ActionParameterTypeString,
+				Advanced: new(true),
+				Required: new(false),
+			},
+			{
+				Name:     "dummyParameter35",
+				Label:    "Dummy Parameter 35",
+				Type:     action_kit_api.ActionParameterTypeString,
+				Advanced: new(true),
+				Required: new(false),
+			},
 		},
 		Status: new(action_kit_api.MutatingEndpointReferenceWithCallInterval{
 			CallInterval: new("1s"),
@@ -326,6 +431,16 @@ func (l *logAction) Prepare(_ context.Context, state *LogActionState, request ac
 
 	log.Info().Str("message", state.FormattedMessage).Msg("Logging in log action **prepare**")
 	log.Info().Bool("booleanParameter", config.BooleanParameter).Msg("Value of booleanParameter in log action **prepare**")
+
+	for name, value := range request.Config {
+		if value == nil {
+			continue
+		}
+		if s, ok := value.(string); ok && s == "" {
+			continue
+		}
+		log.Info().Str("name", name).Interface("value", value).Msg("Parameter value in log action **prepare**")
+	}
 
 	log.Info().Msgf("Received current State of execution properties: %+v", request.Properties)
 
