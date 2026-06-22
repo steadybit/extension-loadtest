@@ -102,8 +102,8 @@ github.com/steadybit/extension-kit v1.10.4 h1:/XJH43+WepBz0xX7vPTB0X+nJeAB0Hu1fm
 github.com/steadybit/extension-kit v1.10.4/go.mod h1:nHO0lQixaBUC2ynInJ3g2fQXoEqcoP6Qn3Iq2mcpQ4E=
 github.com/steadybit/preflight-kit/go/preflight_kit_api v1.4.3 h1:W1Wi8nbvnIHCZmY4yvlEhXvDjBuKmhXdmR7EHfXlEkE=
 github.com/steadybit/preflight-kit/go/preflight_kit_api v1.4.3/go.mod h1:AvBOztqafE46BlIiQ1zYwKr8QloCbcn2u+SdTL8rYvc=
-github.com/steadybit/preflight-kit/go/preflight_kit_sdk/v2 v2.0.2 h1:45v6eH+S6TY47ysTRgjS2pphOnJvXBzKaWiYCKo3/ls=
-github.com/steadybit/preflight-kit/go/preflight_kit_sdk/v2 v2.0.2/go.mod h1:gxQdP+cQfIEkTpz+7kM+tPL6l3Tqy+QrV7VeTzHh0W8=
+github.com/steadybit/preflight-kit/go/preflight_kit_sdk/v2 v2.1.0 h1:4Hg5yBGx/ftZpRMtaU2rNCiIn7rCL7zwlbsd9gxKGB8=
+github.com/steadybit/preflight-kit/go/preflight_kit_sdk/v2 v2.1.0/go.mod h1:g+VDrq25crVSIuX5z4Ab8Bx5+R2oJ2co264yBtM9uiQ=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.5.3 h1:jmXUvGomnU1o3W/V5h2VEradbpJDwGrzugQQvL0POH4=
 github.com/stretchr/objx v0.5.3/go.mod h1:rDQraq+vQZU7Fde9LOZLr8Tax6zZvy4kuNKF+QYS+U0=
