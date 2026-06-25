@@ -166,6 +166,14 @@ func (l ltTargetDiscovery) DiscoverTargets(ctx context.Context) ([]discovery_kit
 		}
 	}
 
+	// Zero-copy fast path: with no host projection and nothing to mutate, serve the
+	// shared slice directly so simulating lots of targets keeps the previous (no
+	// per-request allocation) memory profile.
+	hasAttr := attrSpec != nil && attrSpec.Rate > attributeUpdateDisableThreshold
+	if host == "" && !hasAttr && replSpec == nil {
+		return *l.targets, nil
+	}
+
 	result := make([]discovery_kit_api.Target, 0, total)
 	for i := range *l.targets {
 		base := &(*l.targets)[i]
@@ -250,6 +258,12 @@ func (l ltEdDiscovery) DiscoverEnrichmentData(_ context.Context) ([]discovery_ki
 	attrSpec := config.Config.FindAttributeUpdate(typeId)
 	replSpec := config.Config.FindTargetReplacementsSpecification(typeId)
 	total := len(*l.data)
+
+	// Zero-copy fast path (see DiscoverTargets): nothing to mutate, serve the shared slice.
+	hasAttr := attrSpec != nil && attrSpec.Rate > attributeUpdateDisableThreshold
+	if !hasAttr && replSpec == nil {
+		return *l.data, nil
+	}
 
 	result := make([]discovery_kit_api.EnrichmentData, 0, total)
 	for i := range *l.data {
