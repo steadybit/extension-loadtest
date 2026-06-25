@@ -16,6 +16,22 @@ var (
 	Config Specification
 )
 
+const (
+	// MaxClockSkewSeconds is the cross-replica wall-clock skew the deterministic
+	// serve-time updates tolerate. See extloadtest/deterministic.go.
+	MaxClockSkewSeconds = 30
+	// MinBucketIntervalFactor: every time-bucketed interval must be at least this
+	// multiple of MaxClockSkewSeconds, bounding per-boundary disagreement to
+	// <= 1/factor of the interval.
+	MinBucketIntervalFactor = 20
+)
+
+// MinBucketIntervalSeconds is the smallest interval allowed for any time-bucketed
+// spec (attribute updates, target replacements, extension restarts).
+func MinBucketIntervalSeconds() int {
+	return MaxClockSkewSeconds * MinBucketIntervalFactor
+}
+
 // Specification is the configuration specification for the extension. Configuration values can be applied
 // through environment variables. Learn more through the documentation of the envconfig package.
 // https://github.com/kelseyhightower/envconfig
@@ -169,6 +185,38 @@ func ValidateConfiguration() {
 			if tr.Type == sr.Type {
 				log.Fatal().Msgf("You can only use either target replacements or simulate extension restarts for type '%s', not both at the same time.", tr.Type)
 			}
+		}
+	}
+
+	// Serve-time updates are quantized into time buckets so every replica derives
+	// the same value at the same instant. The bucket interval must be far larger
+	// than the tolerated clock skew, otherwise replicas straddling a boundary
+	// would disagree. Clamp too-small intervals up and warn; raise the rate/count
+	// to preserve the change frequency.
+	minInterval := MinBucketIntervalSeconds()
+	for i := range Config.AttributeUpdates {
+		if s := &Config.AttributeUpdates[i]; s.Interval > 0 && s.Interval < minInterval {
+			log.Warn().Msgf("attribute-update interval %ds for '%s' is below the minimum %ds (%dx the %ds clock-skew budget); clamping to %ds. Raise 'rate' to keep the same change frequency.", s.Interval, s.Type, minInterval, MinBucketIntervalFactor, MaxClockSkewSeconds, minInterval)
+			s.Interval = minInterval
+		}
+	}
+	for i := range Config.TargetReplacements {
+		if s := &Config.TargetReplacements[i]; s.Interval > 0 && s.Interval < minInterval {
+			log.Warn().Msgf("target-replacement interval %ds for '%s' is below the minimum %ds; clamping to %ds. Raise 'count' to keep the same replacement frequency.", s.Interval, s.Type, minInterval, minInterval)
+			s.Interval = minInterval
+		}
+	}
+	for i := range Config.SimulateExtensionRestarts {
+		if s := &Config.SimulateExtensionRestarts[i]; s.Interval > 0 && s.Interval < minInterval {
+			log.Warn().Msgf("extension-restart interval %ds for '%s' is below the minimum %ds; clamping to %ds.", s.Interval, s.Type, minInterval, minInterval)
+			s.Interval = minInterval
+		}
+		if s := &Config.SimulateExtensionRestarts[i]; s.Duration > 0 && s.Duration < MaxClockSkewSeconds {
+			log.Warn().Msgf("extension-restart duration %ds for '%s' is below the %ds clock-skew budget; replicas may disagree at the window edges. Raising to %ds.", s.Duration, s.Type, MaxClockSkewSeconds, MaxClockSkewSeconds)
+			s.Duration = MaxClockSkewSeconds
+		}
+		if s := &Config.SimulateExtensionRestarts[i]; s.Duration > 0 && s.Interval > 0 && s.Duration >= s.Interval {
+			log.Fatal().Msgf("extension-restart duration %ds for '%s' must be less than interval %ds; otherwise the extension would be permanently down with no recovery window.", s.Duration, s.Type, s.Interval)
 		}
 	}
 }

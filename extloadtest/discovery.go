@@ -7,7 +7,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/procyon-projects/chrono"
 	"github.com/rs/zerolog/log"
 	"github.com/steadybit/action-kit/go/action_kit_api/v2"
 	"github.com/steadybit/action-kit/go/action_kit_sdk"
@@ -21,26 +20,16 @@ import (
 )
 
 type TargetData struct {
-	hosts                       []discovery_kit_api.Target
-	hostsBackup                 []discovery_kit_api.Target
-	ec2Instances                []discovery_kit_api.Target
-	ec2InstancesBackup          []discovery_kit_api.Target
-	azureInstances              []discovery_kit_api.Target
-	azureInstancesBackup        []discovery_kit_api.Target
-	gcpInstances                []discovery_kit_api.Target
-	gcpInstancesBackup          []discovery_kit_api.Target
-	kubernetesClusters          []discovery_kit_api.Target
-	kubernetesClustersBackup    []discovery_kit_api.Target
-	kubernetesDeployments       []discovery_kit_api.Target
-	kubernetesDeploymentsBackup []discovery_kit_api.Target
-	kubernetesPods              []discovery_kit_api.Target
-	kubernetesPodsBackup        []discovery_kit_api.Target
-	kubernetesContainers        []discovery_kit_api.EnrichmentData
-	kubernetesContainersBackup  []discovery_kit_api.EnrichmentData
-	kubernetesNodes             []discovery_kit_api.Target
-	kubernetesNodesBackup       []discovery_kit_api.Target
-	containers                  []discovery_kit_api.Target
-	containersBackup            []discovery_kit_api.Target
+	hosts                 []discovery_kit_api.Target
+	ec2Instances          []discovery_kit_api.Target
+	azureInstances        []discovery_kit_api.Target
+	gcpInstances          []discovery_kit_api.Target
+	kubernetesClusters    []discovery_kit_api.Target
+	kubernetesDeployments []discovery_kit_api.Target
+	kubernetesPods        []discovery_kit_api.Target
+	kubernetesContainers  []discovery_kit_api.EnrichmentData
+	kubernetesNodes       []discovery_kit_api.Target
+	containers            []discovery_kit_api.Target
 }
 
 func NewTargetData() *TargetData {
@@ -154,43 +143,92 @@ func (l ltTargetDiscovery) DiscoverTargets(ctx context.Context) ([]discovery_kit
 	if config.Config.DiscoveryDelayInMs > 0 {
 		time.Sleep(time.Duration(config.Config.DiscoveryDelayInMs) * time.Millisecond)
 	}
+
+	now := time.Now()
+	typeId := l.description().Id
+
+	// Simulated extension restart: the whole type is unavailable during a restart window.
+	if isExtensionDown(config.Config.FindSimulateExtensionRestartSpecification(typeId), now) {
+		return []discovery_kit_api.Target{}, nil
+	}
+
+	attrSpec := config.Config.FindAttributeUpdate(typeId)
+	replSpec := config.Config.FindTargetReplacementsSpecification(typeId)
+	total := len(*l.targets)
+
+	host := ""
 	if config.Config.ServicesEnabled {
 		var key discovery_kit_sdk.HttpRequestContextKey = "httpRequest"
-		value := ctx.Value(key)
-		if value != nil {
-			httpRequest := value.(*http.Request)
-			if httpRequest != nil {
-				newTargets := make([]discovery_kit_api.Target, len(*l.targets))
-				//copy(newTargets, *l.targets)
-				for i := range *l.targets {
-					newTargets[i] = discovery_kit_api.Target{
-						Id:         fmt.Sprintf("%s#%s", httpRequest.Host, (*l.targets)[i].Id),
-						TargetType: (*l.targets)[i].TargetType,
-						Label:      fmt.Sprintf("%s#%s", httpRequest.Host, (*l.targets)[i].Label),
-						Attributes: make(map[string][]string),
-					}
-					for k, v := range (*l.targets)[i].Attributes {
-						newTargets[i].Attributes[k] = make([]string, len(v))
-						copy(newTargets[i].Attributes[k], v)
-					}
-					prefixAttribute(&newTargets[i], "host.hostname", httpRequest.Host)
-					prefixAttribute(&newTargets[i], "aws-ec2.hostname.internal", httpRequest.Host)
-					prefixAttribute(&newTargets[i], "azure-scale-set-instance.hostname", httpRequest.Host)
-					prefixAttribute(&newTargets[i], "azure-vm.hostname", httpRequest.Host)
-					prefixAttribute(&newTargets[i], "gcp-vm.hostname", httpRequest.Host)
-					prefixAttribute(&newTargets[i], "k8s.container.id.stripped", httpRequest.Host)
-					prefixAttribute(&newTargets[i], "k8s.node.name", httpRequest.Host)
-					prefixAttribute(&newTargets[i], "container.host", httpRequest.Host)
-					prefixAttribute(&newTargets[i], "container.host/name", httpRequest.Host)
-					prefixAttribute(&newTargets[i], "container.id", httpRequest.Host)
-					prefixAttribute(&newTargets[i], "container.id.stripped", httpRequest.Host)
-					prefixAttribute(&newTargets[i], "container.id.stripped", httpRequest.Host)
-				}
-				return newTargets, nil
+		if value := ctx.Value(key); value != nil {
+			if httpRequest, ok := value.(*http.Request); ok && httpRequest != nil {
+				host = httpRequest.Host
 			}
 		}
 	}
-	return *l.targets, nil
+
+	// Zero-copy fast path: with no host projection and nothing to mutate, serve the
+	// shared slice directly so simulating lots of targets keeps the previous (no
+	// per-request allocation) memory profile.
+	hasAttr := attrSpec != nil && attrSpec.Rate > attributeUpdateDisableThreshold
+	if host == "" && !hasAttr && replSpec == nil {
+		return *l.targets, nil
+	}
+
+	result := make([]discovery_kit_api.Target, 0, total)
+	for i := range *l.targets {
+		base := &(*l.targets)[i]
+		if isTargetReplaced(base.Id, total, replSpec, now) {
+			continue
+		}
+		target := copyTargetWithHost(base, host)
+		// Use the canonical base id (not the per-service host#id) so every service
+		// projection of a target shares one change schedule, matching isTargetReplaced.
+		applyAttributeUpdate(target.Attributes, base.Id, attrSpec, now)
+		result = append(result, target)
+	}
+	return result, nil
+}
+
+// copyTargetWithHost deep-copies the base target so serve-time mutations never
+// touch the shared slice, applying the per-service host prefix when host != "".
+func copyTargetWithHost(base *discovery_kit_api.Target, host string) discovery_kit_api.Target {
+	target := discovery_kit_api.Target{
+		Id:         base.Id,
+		TargetType: base.TargetType,
+		Label:      base.Label,
+		Attributes: make(map[string][]string, len(base.Attributes)),
+	}
+	for k, v := range base.Attributes {
+		cp := make([]string, len(v))
+		copy(cp, v)
+		target.Attributes[k] = cp
+	}
+	if host != "" {
+		target.Id = fmt.Sprintf("%s#%s", host, base.Id)
+		target.Label = fmt.Sprintf("%s#%s", host, base.Label)
+		prefixAttribute(&target, "host.hostname", host)
+		prefixAttribute(&target, "aws-ec2.hostname.internal", host)
+		prefixAttribute(&target, "azure-scale-set-instance.hostname", host)
+		prefixAttribute(&target, "azure-vm.hostname", host)
+		prefixAttribute(&target, "gcp-vm.hostname", host)
+		prefixAttribute(&target, "k8s.container.id.stripped", host)
+		prefixAttribute(&target, "k8s.node.name", host)
+		prefixAttribute(&target, "container.host", host)
+		prefixAttribute(&target, "container.host/name", host)
+		prefixAttribute(&target, "container.id", host)
+		prefixAttribute(&target, "container.id.stripped", host)
+		prefixAttribute(&target, "container.id.stripped", host)
+	}
+	return target
+}
+
+// applyAttributeUpdate sets the deterministic, replica-consistent value for a
+// configured update-attribute (no-op when no spec or the rate disables it).
+func applyAttributeUpdate(attributes map[string][]string, id string, spec *config.AttributeUpdateSpecification, now time.Time) {
+	if spec == nil || spec.Rate <= attributeUpdateDisableThreshold {
+		return
+	}
+	attributes[spec.AttributeName] = []string{deterministicAttributeValue(id, spec, now)}
 }
 
 func prefixAttribute(target *discovery_kit_api.Target, attributeName string, prefix string) {
@@ -210,7 +248,43 @@ func (l ltEdDiscovery) Describe() discovery_kit_api.DiscoveryDescription {
 }
 
 func (l ltEdDiscovery) DiscoverEnrichmentData(_ context.Context) ([]discovery_kit_api.EnrichmentData, error) {
-	return *l.data, nil
+	now := time.Now()
+	typeId := l.description().Id
+
+	if isExtensionDown(config.Config.FindSimulateExtensionRestartSpecification(typeId), now) {
+		return []discovery_kit_api.EnrichmentData{}, nil
+	}
+
+	attrSpec := config.Config.FindAttributeUpdate(typeId)
+	replSpec := config.Config.FindTargetReplacementsSpecification(typeId)
+	total := len(*l.data)
+
+	// Zero-copy fast path (see DiscoverTargets): nothing to mutate, serve the shared slice.
+	hasAttr := attrSpec != nil && attrSpec.Rate > attributeUpdateDisableThreshold
+	if !hasAttr && replSpec == nil {
+		return *l.data, nil
+	}
+
+	result := make([]discovery_kit_api.EnrichmentData, 0, total)
+	for i := range *l.data {
+		base := &(*l.data)[i]
+		if isTargetReplaced(base.Id, total, replSpec, now) {
+			continue
+		}
+		ed := discovery_kit_api.EnrichmentData{
+			Id:                 base.Id,
+			EnrichmentDataType: base.EnrichmentDataType,
+			Attributes:         make(map[string][]string, len(base.Attributes)),
+		}
+		for k, v := range base.Attributes {
+			cp := make([]string, len(v))
+			copy(cp, v)
+			ed.Attributes[k] = cp
+		}
+		applyAttributeUpdate(ed.Attributes, ed.Id, attrSpec, now)
+		result = append(result, ed)
+	}
+	return result, nil
 }
 
 func (t *TargetData) RegisterDiscoveries() {
@@ -235,54 +309,6 @@ func (t *TargetData) RegisterDiscoveries() {
 	}
 	if !config.Config.DisableContainerDiscovery {
 		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryContainer, targets: &t.containers})
-	}
-}
-
-func (t *TargetData) ScheduleUpdates() {
-	if !config.Config.DisableHostDiscovery {
-		scheduleTargetAttributeUpdateIfNecessary(t.hosts, "com.steadybit.extension_host.host")
-		scheduleTargetReplacementIfNecessary(&t.hosts, &t.hostsBackup, "com.steadybit.extension_host.host")
-		scheduleTargetExtensionRestartIfNecessary(&t.hosts, &t.hostsBackup, "com.steadybit.extension_host.host")
-	}
-	if !config.Config.DisableAWSDiscovery {
-		scheduleTargetAttributeUpdateIfNecessary(t.ec2Instances, "com.steadybit.extension_aws.ec2-instance")
-		scheduleTargetReplacementIfNecessary(&t.ec2Instances, &t.ec2InstancesBackup, "com.steadybit.extension_aws.ec2-instance")
-		scheduleTargetExtensionRestartIfNecessary(&t.ec2Instances, &t.ec2InstancesBackup, "com.steadybit.extension_aws.ec2-instance")
-
-	}
-	if !config.Config.DisableGCPDiscovery {
-		scheduleTargetAttributeUpdateIfNecessary(t.gcpInstances, "com.steadybit.extension_gcp.vm")
-		scheduleTargetReplacementIfNecessary(&t.gcpInstances, &t.gcpInstancesBackup, "com.steadybit.extension_gcp.vm")
-		scheduleTargetExtensionRestartIfNecessary(&t.gcpInstances, &t.gcpInstancesBackup, "com.steadybit.extension_gcp.vm")
-
-	}
-	if !config.Config.DisableAzureDiscovery {
-		scheduleTargetAttributeUpdateIfNecessary(t.azureInstances, "com.steadybit.extension_azure.scale_set.instance")
-		scheduleTargetReplacementIfNecessary(&t.azureInstances, &t.azureInstancesBackup, "com.steadybit.extension_azure.scale_set.instance")
-		scheduleTargetExtensionRestartIfNecessary(&t.azureInstances, &t.azureInstancesBackup, "com.steadybit.extension_azure.scale_set.instance")
-	}
-
-	if !config.Config.DisableKubernetesDiscovery {
-		scheduleTargetAttributeUpdateIfNecessary(t.kubernetesClusters, "com.steadybit.extension_kubernetes.kubernetes-cluster")
-		scheduleTargetReplacementIfNecessary(&t.kubernetesClusters, &t.kubernetesClustersBackup, "com.steadybit.extension_kubernetes.kubernetes-cluster")
-		scheduleTargetExtensionRestartIfNecessary(&t.kubernetesClusters, &t.kubernetesClustersBackup, "com.steadybit.extension_kubernetes.kubernetes-cluster")
-
-		scheduleTargetAttributeUpdateIfNecessary(t.kubernetesDeployments, "com.steadybit.extension_kubernetes.kubernetes-deployment")
-		scheduleTargetReplacementIfNecessary(&t.kubernetesDeployments, &t.kubernetesDeploymentsBackup, "com.steadybit.extension_kubernetes.kubernetes-deployment")
-		scheduleTargetExtensionRestartIfNecessary(&t.kubernetesDeployments, &t.kubernetesDeploymentsBackup, "com.steadybit.extension_kubernetes.kubernetes-deployment")
-
-		scheduleTargetAttributeUpdateIfNecessary(t.kubernetesPods, "com.steadybit.extension_kubernetes.kubernetes-pod")
-		scheduleTargetReplacementIfNecessary(&t.kubernetesPods, &t.kubernetesPodsBackup, "com.steadybit.extension_kubernetes.kubernetes-pod")
-		scheduleTargetExtensionRestartIfNecessary(&t.kubernetesPods, &t.kubernetesPodsBackup, "com.steadybit.extension_kubernetes.kubernetes-pod")
-	}
-	if !config.Config.DisableContainerDiscovery {
-		scheduleTargetAttributeUpdateIfNecessary(t.containers, "com.steadybit.extension_container.container")
-		scheduleTargetReplacementIfNecessary(&t.containers, &t.containersBackup, "com.steadybit.extension_container.container")
-		scheduleTargetExtensionRestartIfNecessary(&t.containers, &t.containersBackup, "com.steadybit.extension_container.container")
-	}
-	if !config.Config.DisableKubernetesDiscovery {
-		scheduleEnrichmentDataAttributeUpdateIfNecessary(t.kubernetesContainers, "com.steadybit.extension_kubernetes.kubernetes-container")
-		scheduleEnrichmentDataReplacementIfNecessary(&t.kubernetesContainers, &t.kubernetesContainersBackup, "com.steadybit.extension_kubernetes.kubernetes-container")
 	}
 }
 
@@ -344,8 +370,7 @@ func (t *TargetData) updateConfigHandler(config any) exthttp.Handler {
 }
 
 func (t *TargetData) rescheduleUpdates() {
-	log.Info().Msg("Stopping all scheduled updates")
-	scheduler.Shutdown()
-	scheduler = chrono.NewDefaultTaskScheduler()
-	t.ScheduleUpdates()
+	// Updates are computed deterministically at serve time, so configuration
+	// changes take effect on the next discovery without any rescheduling.
+	log.Info().Msg("Configuration updated; deterministic serve-time updates take effect on the next discovery")
 }
