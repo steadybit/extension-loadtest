@@ -49,7 +49,6 @@ func main() {
 	extloadtest.RegisterEventListenerHandlers()
 
 	targetData := extloadtest.NewTargetData()
-	targetData.ScheduleUpdates()
 	targetData.RegisterDiscoveries()
 	targetData.RegisterRecreateActions()
 	targetData.RegisterConfigUpdateHandlers()
