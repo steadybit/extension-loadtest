@@ -215,6 +215,9 @@ func ValidateConfiguration() {
 			log.Warn().Msgf("extension-restart duration %ds for '%s' is below the %ds clock-skew budget; replicas may disagree at the window edges. Raising to %ds.", s.Duration, s.Type, MaxClockSkewSeconds, MaxClockSkewSeconds)
 			s.Duration = MaxClockSkewSeconds
 		}
+		if s := &Config.SimulateExtensionRestarts[i]; s.Duration > 0 && s.Interval > 0 && s.Duration >= s.Interval {
+			log.Fatal().Msgf("extension-restart duration %ds for '%s' must be less than interval %ds; otherwise the extension would be permanently down with no recovery window.", s.Duration, s.Type, s.Interval)
+		}
 	}
 }
 
