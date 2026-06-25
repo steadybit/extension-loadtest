@@ -173,7 +173,9 @@ func (l ltTargetDiscovery) DiscoverTargets(ctx context.Context) ([]discovery_kit
 			continue
 		}
 		target := copyTargetWithHost(base, host)
-		applyAttributeUpdate(target.Attributes, target.Id, attrSpec, now)
+		// Use the canonical base id (not the per-service host#id) so every service
+		// projection of a target shares one change schedule, matching isTargetReplaced.
+		applyAttributeUpdate(target.Attributes, base.Id, attrSpec, now)
 		result = append(result, target)
 	}
 	return result, nil

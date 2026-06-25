@@ -93,9 +93,11 @@ func isTargetReplaced(id string, total int, spec *config.TargetReplacementsSpeci
 }
 
 // isExtensionDown reports whether the extension for a type is currently
-// simulating a restart (all targets unavailable). The type is down for the first
-// `Duration` seconds of every `Interval`-second cycle. Pure function of
-// (type, now); identical on every replica.
+// simulating a restart (all targets unavailable). Within each `Interval`-second
+// cycle the type is down for `Duration` seconds. The clock-skew guard shifts the
+// window back, so in wall-clock terms it spans
+// [cycleStart+clockSkewGuard, cycleStart+clockSkewGuard+Duration]. Pure function
+// of (type, now); identical on every replica.
 func isExtensionDown(spec *config.SimulateExtensionRestartSpecification, now time.Time) bool {
 	if spec == nil || spec.Interval <= 0 || spec.Duration <= 0 {
 		return false
