@@ -13,13 +13,19 @@ import (
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_sdk"
 	"github.com/steadybit/extension-kit/exthttp"
-	"github.com/steadybit/extension-kit/extutil"
 	"github.com/steadybit/extension-loadtest/config"
 	"net/http"
+	"sync"
 	"time"
 )
 
 type TargetData struct {
+	// mu guards the target/enrichment-data slices below against the data race
+	// between the recreate actions replacing them and the discoveries reading them.
+	// Recreate takes Lock and replaces slices wholesale (copy-on-write); the
+	// discoveries read through the targetSnapshot/enrichmentDataSnapshot closures,
+	// which take RLock and return the current slice header.
+	mu                    sync.RWMutex
 	hosts                 []discovery_kit_api.Target
 	ec2Instances          []discovery_kit_api.Target
 	azureInstances        []discovery_kit_api.Target
@@ -131,7 +137,7 @@ func NewTargetData() *TargetData {
 }
 
 type ltTargetDiscovery struct {
-	targets     *[]discovery_kit_api.Target
+	snapshot    func() []discovery_kit_api.Target
 	description func() discovery_kit_api.DiscoveryDescription
 }
 
@@ -154,7 +160,9 @@ func (l ltTargetDiscovery) DiscoverTargets(ctx context.Context) ([]discovery_kit
 
 	attrSpec := config.Config.FindAttributeUpdate(typeId)
 	replSpec := config.Config.FindTargetReplacementsSpecification(typeId)
-	total := len(*l.targets)
+
+	targets := l.snapshot()
+	total := len(targets)
 
 	host := ""
 	if config.Config.ServicesEnabled {
@@ -171,12 +179,12 @@ func (l ltTargetDiscovery) DiscoverTargets(ctx context.Context) ([]discovery_kit
 	// per-request allocation) memory profile.
 	hasAttr := attrSpec != nil && attrSpec.Rate > attributeUpdateDisableThreshold
 	if host == "" && !hasAttr && replSpec == nil {
-		return *l.targets, nil
+		return targets, nil
 	}
 
 	result := make([]discovery_kit_api.Target, 0, total)
-	for i := range *l.targets {
-		base := &(*l.targets)[i]
+	for i := range targets {
+		base := &targets[i]
 		if isTargetReplaced(base.Id, total, replSpec, now) {
 			continue
 		}
@@ -238,7 +246,7 @@ func prefixAttribute(target *discovery_kit_api.Target, attributeName string, pre
 }
 
 type ltEdDiscovery struct {
-	data        *[]discovery_kit_api.EnrichmentData
+	snapshot    func() []discovery_kit_api.EnrichmentData
 	description func() discovery_kit_api.DiscoveryDescription
 }
 
@@ -257,17 +265,19 @@ func (l ltEdDiscovery) DiscoverEnrichmentData(_ context.Context) ([]discovery_ki
 
 	attrSpec := config.Config.FindAttributeUpdate(typeId)
 	replSpec := config.Config.FindTargetReplacementsSpecification(typeId)
-	total := len(*l.data)
+
+	data := l.snapshot()
+	total := len(data)
 
 	// Zero-copy fast path (see DiscoverTargets): nothing to mutate, serve the shared slice.
 	hasAttr := attrSpec != nil && attrSpec.Rate > attributeUpdateDisableThreshold
 	if !hasAttr && replSpec == nil {
-		return *l.data, nil
+		return data, nil
 	}
 
 	result := make([]discovery_kit_api.EnrichmentData, 0, total)
-	for i := range *l.data {
-		base := &(*l.data)[i]
+	for i := range data {
+		base := &data[i]
 		if isTargetReplaced(base.Id, total, replSpec, now) {
 			continue
 		}
@@ -287,28 +297,46 @@ func (l ltEdDiscovery) DiscoverEnrichmentData(_ context.Context) ([]discovery_ki
 	return result, nil
 }
 
+// targetSnapshot returns a reader that serves the current slice under RLock, so
+// the recreate actions can replace the slice without racing the discoveries.
+func (t *TargetData) targetSnapshot(targets *[]discovery_kit_api.Target) func() []discovery_kit_api.Target {
+	return func() []discovery_kit_api.Target {
+		t.mu.RLock()
+		defer t.mu.RUnlock()
+		return *targets
+	}
+}
+
+func (t *TargetData) enrichmentDataSnapshot(data *[]discovery_kit_api.EnrichmentData) func() []discovery_kit_api.EnrichmentData {
+	return func() []discovery_kit_api.EnrichmentData {
+		t.mu.RLock()
+		defer t.mu.RUnlock()
+		return *data
+	}
+}
+
 func (t *TargetData) RegisterDiscoveries() {
 	if !config.Config.DisableHostDiscovery {
-		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryHost, targets: &t.hosts})
+		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryHost, snapshot: t.targetSnapshot(&t.hosts)})
 	}
 	if !config.Config.DisableAWSDiscovery {
-		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryEc2Instance, targets: &t.ec2Instances})
+		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryEc2Instance, snapshot: t.targetSnapshot(&t.ec2Instances)})
 	}
 	if !config.Config.DisableGCPDiscovery {
-		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryGcpInstance, targets: &t.gcpInstances})
+		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryGcpInstance, snapshot: t.targetSnapshot(&t.gcpInstances)})
 	}
 	if !config.Config.DisableAzureDiscovery {
-		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryAzureInstance, targets: &t.azureInstances})
+		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryAzureInstance, snapshot: t.targetSnapshot(&t.azureInstances)})
 	}
 	if !config.Config.DisableKubernetesDiscovery {
-		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryKubernetesCluster, targets: &t.kubernetesClusters})
-		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryKubernetesDeployment, targets: &t.kubernetesDeployments})
-		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryKubernetesPods, targets: &t.kubernetesPods})
-		discovery_kit_sdk.Register(&ltEdDiscovery{description: getDiscoveryKubernetesContainer, data: &t.kubernetesContainers})
-		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryKubernetesNode, targets: &t.kubernetesNodes})
+		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryKubernetesCluster, snapshot: t.targetSnapshot(&t.kubernetesClusters)})
+		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryKubernetesDeployment, snapshot: t.targetSnapshot(&t.kubernetesDeployments)})
+		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryKubernetesPods, snapshot: t.targetSnapshot(&t.kubernetesPods)})
+		discovery_kit_sdk.Register(&ltEdDiscovery{description: getDiscoveryKubernetesContainer, snapshot: t.enrichmentDataSnapshot(&t.kubernetesContainers)})
+		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryKubernetesNode, snapshot: t.targetSnapshot(&t.kubernetesNodes)})
 	}
 	if !config.Config.DisableContainerDiscovery {
-		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryContainer, targets: &t.containers})
+		discovery_kit_sdk.Register(&ltTargetDiscovery{description: getDiscoveryContainer, snapshot: t.targetSnapshot(&t.containers)})
 	}
 }
 
@@ -321,7 +349,9 @@ func (t *TargetData) RegisterRecreateActions() {
 			Query:       "host.hostname=\"\"",
 		},
 		func(name string) {
-			updateTargetId(t.hosts, name, "com.steadybit.extension_host.host")
+			t.mu.Lock()
+			defer t.mu.Unlock()
+			t.hosts = updateTargetId(t.hosts, name, "com.steadybit.extension_host.host")
 			t.ec2Instances = createEc2InstanceTargets(t.hosts)
 			t.kubernetesPods = createKubernetesPodTargets(t.hosts, t.kubernetesDeployments)
 			t.kubernetesContainers = createKubernetesContainerTargets(t.kubernetesPods)
@@ -338,7 +368,9 @@ func (t *TargetData) RegisterRecreateActions() {
 			Query:       "k8s.cluster-name=\"\" and k8s.namespace=\"\" and k8s.deployment=\"\"",
 		},
 		func(name string) {
-			updateEnrichmentDataId(t.kubernetesContainers, name, "com.steadybit.extension_kubernetes.kubernetes-container")
+			t.mu.Lock()
+			defer t.mu.Unlock()
+			t.kubernetesContainers = updateEnrichmentDataId(t.kubernetesContainers, name, "com.steadybit.extension_kubernetes.kubernetes-container")
 			t.containers = createContainerTargets(t.kubernetesContainers)
 		},
 	))
@@ -349,21 +381,32 @@ func (t *TargetData) RegisterConfigUpdateHandlers() {
 	exthttp.RegisterHttpHandler("/config/attributeUpdates", t.updateConfigHandler(&config.Config.AttributeUpdates))
 }
 
-func (t *TargetData) updateConfigHandler(config any) exthttp.Handler {
+func (t *TargetData) updateConfigHandler(configField any) exthttp.Handler {
 	return func(w http.ResponseWriter, r *http.Request, body []byte) {
-		if r.Method == http.MethodPost {
-			clone := extutil.JsonMangle(config)
-			err := json.Unmarshal(body, clone)
+		switch r.Method {
+		case http.MethodPost:
+			// Unmarshal into the live config field (configField is a pointer into
+			// config.Config) under the write lock so the update both takes effect and
+			// is serialized against the discoveries reading it via the Find* accessors.
+			// The lock is released before writing the response so a slow client cannot
+			// stall the discoveries; the echo below re-reads under RLock.
+			config.Mu.Lock()
+			err := json.Unmarshal(body, configField)
+			if err == nil {
+				t.rescheduleUpdates()
+			}
+			config.Mu.Unlock()
 			if err != nil {
 				w.WriteHeader(400)
 				_, _ = w.Write([]byte(err.Error()))
+				return
 			}
-			config = clone
-			t.rescheduleUpdates()
-			exthttp.WriteBody(w, config)
-		} else if r.Method == http.MethodGet {
-			exthttp.WriteBody(w, config)
-		} else {
+			fallthrough
+		case http.MethodGet:
+			config.Mu.RLock()
+			defer config.Mu.RUnlock()
+			exthttp.WriteBody(w, configField)
+		default:
 			w.WriteHeader(405)
 		}
 	}
