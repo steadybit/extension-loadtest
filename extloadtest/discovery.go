@@ -388,12 +388,15 @@ func (t *TargetData) updateConfigHandler(configField any) exthttp.Handler {
 			// Unmarshal into the live config field (configField is a pointer into
 			// config.Config) under the write lock so the update both takes effect and
 			// is serialized against the discoveries reading it via the Find* accessors.
-			// The lock is released before writing the response so a slow client cannot
-			// stall the discoveries; the echo below re-reads under RLock.
+			// Marshal the echo while still holding the lock so it reflects exactly what
+			// was just written, then release before the socket write so a slow client
+			// cannot stall the discoveries.
 			config.Mu.Lock()
 			err := json.Unmarshal(body, configField)
+			var responseBody []byte
 			if err == nil {
 				t.rescheduleUpdates()
+				responseBody, err = json.Marshal(configField)
 			}
 			config.Mu.Unlock()
 			if err != nil {
@@ -401,7 +404,8 @@ func (t *TargetData) updateConfigHandler(configField any) exthttp.Handler {
 				_, _ = w.Write([]byte(err.Error()))
 				return
 			}
-			fallthrough
+			w.Header().Set("Content-Type", "application/json")
+			_, _ = w.Write(responseBody)
 		case http.MethodGet:
 			config.Mu.RLock()
 			defer config.Mu.RUnlock()

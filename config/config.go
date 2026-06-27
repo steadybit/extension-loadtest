@@ -229,6 +229,11 @@ func ValidateConfiguration() {
 	}
 }
 
+// FindAttributeUpdate returns the matching spec or nil. It returns a pointer to
+// the range-loop copy (heap-allocated via escape analysis), never &s.AttributeUpdates[i],
+// so callers may safely dereference it after RUnlock has fired. Any new accessor
+// must keep this property — returning a slice-element pointer would let callers
+// race a concurrent write through Mu. The Find* accessors below follow the same rule.
 func (s *Specification) FindAttributeUpdate(t string) *AttributeUpdateSpecification {
 	Mu.RLock()
 	defer Mu.RUnlock()
