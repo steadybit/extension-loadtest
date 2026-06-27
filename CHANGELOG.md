@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- fix: synchronize discovery reads with the `/config/*` updates and the recreate actions so concurrent requests no longer race on the configuration and target data
+- fix: make the recreate actions actually bump the target id (the previous in-place update was discarded, so recreate was a silent no-op)
+
 ## v1.0.10
 
 - Support discovery group attribute via `STEADYBIT_EXTENSION_DISCOVERY_GROUP` env var (or `discovery.group` Helm value) — when set, the extension adds `steadybit.group=<value>` to every discovered target
