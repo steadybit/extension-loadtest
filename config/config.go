@@ -10,10 +10,18 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	"github.com/rs/zerolog/log"
 	"strings"
+	"sync"
 )
 
 var (
 	Config Specification
+
+	// Mu guards the runtime-mutable Config fields (AttributeUpdates,
+	// TargetReplacements, SimulateExtensionRestarts) against the data race between
+	// the /config/* update handlers writing them and the discoveries reading them.
+	// Readers take RLock via the Find* accessors; the update handlers take Lock
+	// while unmarshalling the request body into Config.
+	Mu sync.RWMutex
 )
 
 const (
@@ -221,7 +229,14 @@ func ValidateConfiguration() {
 	}
 }
 
+// FindAttributeUpdate returns the matching spec or nil. It returns a pointer to
+// the range-loop copy (heap-allocated via escape analysis), never &s.AttributeUpdates[i],
+// so callers may safely dereference it after RUnlock has fired. Any new accessor
+// must keep this property — returning a slice-element pointer would let callers
+// race a concurrent write through Mu. The Find* accessors below follow the same rule.
 func (s *Specification) FindAttributeUpdate(t string) *AttributeUpdateSpecification {
+	Mu.RLock()
+	defer Mu.RUnlock()
 	for _, update := range s.AttributeUpdates {
 		if update.Type == t {
 			return &update
@@ -231,6 +246,8 @@ func (s *Specification) FindAttributeUpdate(t string) *AttributeUpdateSpecificat
 }
 
 func (s *Specification) FindTargetReplacementsSpecification(t string) *TargetReplacementsSpecification {
+	Mu.RLock()
+	defer Mu.RUnlock()
 	for _, replacement := range s.TargetReplacements {
 		if replacement.Type == t {
 			return &replacement
@@ -240,6 +257,8 @@ func (s *Specification) FindTargetReplacementsSpecification(t string) *TargetRep
 }
 
 func (s *Specification) FindSimulateExtensionRestartSpecification(t string) *SimulateExtensionRestartSpecification {
+	Mu.RLock()
+	defer Mu.RUnlock()
 	for _, restart := range s.SimulateExtensionRestarts {
 		if restart.Type == t {
 			return &restart
