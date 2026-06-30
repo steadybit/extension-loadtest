@@ -383,18 +383,18 @@ func (t *TargetData) RegisterConfigUpdateHandlers() {
 
 func (t *TargetData) updateConfigHandler(configField any) exthttp.Handler {
 	return func(w http.ResponseWriter, r *http.Request, body []byte) {
+		// Both methods marshal the response while holding the config lock so it
+		// reflects exactly the serialized state, then release before the socket write
+		// so a slow client cannot stall the discoveries (a pending writer would
+		// otherwise block their Find* RLock calls for the duration of the write).
+		var responseBody []byte
+		var err error
 		switch r.Method {
 		case http.MethodPost:
-			// Unmarshal into the live config field (configField is a pointer into
-			// config.Config) under the write lock so the update both takes effect and
-			// is serialized against the discoveries reading it via the Find* accessors.
-			// Marshal the echo while still holding the lock so it reflects exactly what
-			// was just written, then release before the socket write so a slow client
-			// cannot stall the discoveries.
+			// configField is a pointer into config.Config; unmarshal under the write
+			// lock so the update takes effect and is serialized against the discoveries.
 			config.Mu.Lock()
-			err := json.Unmarshal(body, configField)
-			var responseBody []byte
-			if err == nil {
+			if err = json.Unmarshal(body, configField); err == nil {
 				t.rescheduleUpdates()
 				responseBody, err = json.Marshal(configField)
 			}
@@ -404,15 +404,21 @@ func (t *TargetData) updateConfigHandler(configField any) exthttp.Handler {
 				_, _ = w.Write([]byte(err.Error()))
 				return
 			}
-			w.Header().Set("Content-Type", "application/json")
-			_, _ = w.Write(responseBody)
 		case http.MethodGet:
 			config.Mu.RLock()
-			defer config.Mu.RUnlock()
-			exthttp.WriteBody(w, configField)
+			responseBody, err = json.Marshal(configField)
+			config.Mu.RUnlock()
+			if err != nil {
+				w.WriteHeader(500)
+				_, _ = w.Write([]byte(err.Error()))
+				return
+			}
 		default:
 			w.WriteHeader(405)
+			return
 		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write(responseBody)
 	}
 }
 
