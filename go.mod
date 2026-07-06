@@ -15,7 +15,7 @@ require (
 	github.com/steadybit/event-kit/go/event_kit_api v1.6.2
 	github.com/steadybit/extension-kit v1.10.7
 	github.com/steadybit/preflight-kit/go/preflight_kit_api v1.4.5
-	github.com/steadybit/preflight-kit/go/preflight_kit_sdk/v2 v2.1.0
+	github.com/steadybit/preflight-kit/go/preflight_kit_sdk/v2 v2.1.1
 	github.com/stretchr/testify v1.11.1
 )
 
