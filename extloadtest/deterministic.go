@@ -66,10 +66,7 @@ func deterministicAttributeValue(id string, spec *config.AttributeUpdateSpecific
 	cur := bucketIndex(now, spec.Interval)
 	period := int64(1)
 	if spec.Rate > 0 {
-		period = int64(math.Round(1.0 / spec.Rate))
-		if period < 1 {
-			period = 1
-		}
+		period = max(int64(math.Round(1.0/spec.Rate)), 1)
 	}
 	phase := int64(stableHash(id) % uint64(period))
 	lastChange := cur - positiveMod(cur-phase, period)
