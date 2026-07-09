@@ -45,7 +45,7 @@ func TestAttributeValueChangesAcrossBuckets(t *testing.T) {
 	spec := attrSpec(0.5, 600) // period 2
 	id := "x"
 	seen := map[string]bool{}
-	for b := int64(0); b < 12; b++ {
+	for b := range int64(12) {
 		seen[deterministicAttributeValue(id, spec, time.Unix(b*600+300, 0))] = true
 	}
 	require.Greater(t, len(seen), 1, "value must roll over across buckets")
@@ -57,7 +57,7 @@ func TestAttributeChangeRateMatchesConfiguredRate(t *testing.T) {
 	b0 := time.Unix(1000*600+300, 0)
 	b1 := time.Unix(1001*600+300, 0)
 	changed := 0
-	for i := 0; i < n; i++ {
+	for i := range n {
 		id := "id-" + strconv.Itoa(i)
 		if deterministicAttributeValue(id, spec, b0) != deterministicAttributeValue(id, spec, b1) {
 			changed++
@@ -84,7 +84,7 @@ func TestReplacementOmitsApproximatelyCountAndRotates(t *testing.T) {
 	b1 := time.Unix(3001*600+300, 0)
 
 	omitted, rotated := 0, false
-	for i := 0; i < total; i++ {
+	for i := range total {
 		id := "id-" + strconv.Itoa(i)
 		o0 := isTargetReplaced(id, total, spec, b0)
 		if o0 {
