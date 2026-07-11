@@ -5,8 +5,6 @@
 package main
 
 import (
-	"time"
-
 	_ "github.com/KimMachineGun/automemlimit" // By default, it sets `GOMEMLIMIT` to 90% of cgroup's memory limit.
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -27,8 +25,6 @@ import (
 	"github.com/steadybit/preflight-kit/go/preflight_kit_api"
 	"github.com/steadybit/preflight-kit/go/preflight_kit_sdk/v2"
 )
-
-var startedAt = time.Now().Format(time.RFC3339)
 
 func main() {
 	extlogging.InitZeroLog()
@@ -96,9 +92,9 @@ func main() {
 	preflight_kit_sdk.RegisterPreflight(extloadtest.NewGitHubActionPreflight())
 	preflight_kit_sdk.RegisterPreflight(extloadtest.NewSimplePreflight())
 
-	exthttp.RegisterHttpHandler("/", exthttp.IfNoneMatchHandler(func() string { return startedAt }, exthttp.GetterAsHandler(func() ExtensionListResponse {
+	exthttp.RegisterRevisionedHandler("/", func() ExtensionListResponse {
 		return getExtensionList(config.Config.EventListenerEnabled)
-	})))
+	})
 
 	if config.IsPodZero() {
 		log.Info().Msg("I am pod zero")
