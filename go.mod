@@ -14,7 +14,7 @@ require (
 	github.com/steadybit/discovery-kit/go/discovery_kit_sdk v1.4.1
 	github.com/steadybit/event-kit/go/event_kit_api v1.6.3
 	github.com/steadybit/extension-kit v1.11.1
-	github.com/steadybit/preflight-kit/go/preflight_kit_api v1.4.5
+	github.com/steadybit/preflight-kit/go/preflight_kit_api v1.4.6
 	github.com/steadybit/preflight-kit/go/preflight_kit_sdk/v2 v2.2.0
 	github.com/stretchr/testify v1.11.1
 )
