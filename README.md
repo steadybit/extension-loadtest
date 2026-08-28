@@ -59,9 +59,16 @@ actions do nothing at all beyond logging that they ran:
 | `com.steadybit.extension_loadtest.nothing.hoverboard`     | `Do Nothing (Hoverboard)`     | `com.steadybit.extension_loadtest.hoverboard`     |
 | ...                                                       | ...                           | ...                                              |
 
-They are registered under the `Debug` technology, one per registered type, and their labels name the type -
-the action picker shows the label and nothing else, so a shared *Do Nothing* across all of them would be
-unusable. Targets are selected `by name` via `loadtest.<type>.name`.
+Every action of this extension is registered under the `Debug` **technology**; the **category** separates
+these from the rest, the way `extension-aws` uses the `AWS` technology with `EC2`, `ECS`, ... categories:
+
+| Technology | Category                 | Actions                                                        |
+|------------|--------------------------|----------------------------------------------------------------|
+| `Debug`    | `Loadtest`               | the long-standing loadtest actions (log, recreate, widgets, ...) |
+| `Debug`    | `Loadtest Broken Target` | the no-op action of each pseudo target type                    |
+
+Their labels name the type - the action picker shows the label and nothing else, so a shared *Do Nothing*
+across all of them would be unusable. Targets are selected `by name` via `loadtest.<type>.name`.
 
 ```bash
 STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT=5 \
