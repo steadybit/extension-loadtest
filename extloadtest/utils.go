@@ -13,6 +13,16 @@ import (
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 )
 
+// Action descriptions group by technology first, category second - like
+// extension-aws, where the technology is "AWS" and the category is "EC2", "ECS", ...
+// Everything this extension registers is Debug technology; the category separates
+// the long-standing loadtest actions from those on the pseudo target types.
+const (
+	actionTechnology           = "Debug"
+	actionCategoryLoadtest     = "Loadtest"
+	actionCategoryBrokenTarget = "Loadtest Broken Target"
+)
+
 func updateTargetId(targets []discovery_kit_api.Target, name, targetType string) []discovery_kit_api.Target {
 	return updateId(targets, name, targetType, func(i discovery_kit_api.Target) string {
 		return i.Id

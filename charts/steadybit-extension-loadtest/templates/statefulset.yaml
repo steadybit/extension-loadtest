@@ -125,6 +125,10 @@ spec:
               value: {{ .Values.loadtest.disableHostDiscovery | quote }}
             - name: STEADYBIT_EXTENSION_DISABLE_CONTAINER_DISCOVERY
               value: {{ .Values.loadtest.disableContainerDiscovery | quote }}
+            - name: STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT
+              value: {{ .Values.loadtest.fakeTargetTypeCount | quote }}
+            - name: STEADYBIT_EXTENSION_FAKE_TARGETS_PER_TYPE
+              value: {{ .Values.loadtest.fakeTargetsPerType | quote }}
             {{ if .Values.discovery.attributes.excludes.kubernetes.container -}}
             - name: STEADYBIT_EXTENSION_DISCOVERY_ATTRIBUTES_EXCLUDES_KUBERNETES_CONTAINER
               value: {{ join "," .Values.discovery.attributes.excludes.kubernetes.container | quote }}

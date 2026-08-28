@@ -49,6 +49,8 @@ func main() {
 	targetData.RegisterRecreateActions()
 	targetData.RegisterConfigUpdateHandlers()
 
+	extloadtest.RegisterFakeTargetTypeDiscoveries()
+
 	discovery_kit_sdk.Register(extloadtest.NewEnrichmentRuleProvider())
 
 	extsignals.ActivateSignalHandlers()
@@ -88,6 +90,8 @@ func main() {
 		Query:       "k8s.cluster-name=\"\" and k8s.namespace=\"\" and k8s.deployment=\"\"",
 	}))
 	action_kit_sdk.RegisterAction(extloadtest.NewWidgetAction())
+
+	extloadtest.RegisterFakeTargetTypeActions()
 
 	preflight_kit_sdk.RegisterPreflight(extloadtest.NewGitHubActionPreflight())
 	preflight_kit_sdk.RegisterPreflight(extloadtest.NewSimplePreflight())

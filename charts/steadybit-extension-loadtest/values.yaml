@@ -32,6 +32,12 @@ loadtest:
   disableKubernetesDiscovery: false
   disableHostDiscovery: false
   disableContainerDiscovery: false
+  # loadtest.fakeTargetTypeCount -- Number of pseudo target types owned by this extension (made-up names,
+  # no actions) used to exercise the platform/UI with icons that are missing or unrenderable. Their icons
+  # rotate through none -> broken -> valid, so a count of >= 3 covers all three cases. 0 registers none.
+  fakeTargetTypeCount: 5
+  # loadtest.fakeTargetsPerType -- Number of targets discovered per pseudo target type.
+  fakeTargetsPerType: 10
   discoveryDelayInMs: 0
   eventListenerEnabled: true
   enrichmentHostToContainerEnabled: false

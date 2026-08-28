@@ -62,7 +62,8 @@ func (l *widgetAction) Describe() action_kit_api.ActionDescription {
 				},
 			}),
 		}),
-		Technology: new("Debug"),
+		Technology: new(actionTechnology),
+		Category:   new(actionCategoryLoadtest),
 
 		Kind:        action_kit_api.Other,
 		TimeControl: action_kit_api.TimeControlExternal,

@@ -68,6 +68,10 @@ manifest should match snapshot:
                   value: "false"
                 - name: STEADYBIT_EXTENSION_DISABLE_CONTAINER_DISCOVERY
                   value: "false"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGETS_PER_TYPE
+                  value: "10"
                 - name: STEADYBIT_EXTENSION_POD_UID
                   valueFrom:
                     fieldRef:
@@ -196,6 +200,10 @@ manifest should match snapshot with custom image registry:
                   value: "false"
                 - name: STEADYBIT_EXTENSION_DISABLE_CONTAINER_DISCOVERY
                   value: "false"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGETS_PER_TYPE
+                  value: "10"
                 - name: STEADYBIT_EXTENSION_POD_UID
                   valueFrom:
                     fieldRef:
@@ -324,6 +332,10 @@ manifest should match snapshot with global image pull secrets:
                   value: "false"
                 - name: STEADYBIT_EXTENSION_DISABLE_CONTAINER_DISCOVERY
                   value: "false"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGETS_PER_TYPE
+                  value: "10"
                 - name: STEADYBIT_EXTENSION_POD_UID
                   valueFrom:
                     fieldRef:
@@ -454,6 +466,10 @@ manifest should match snapshot with global image registry:
                   value: "false"
                 - name: STEADYBIT_EXTENSION_DISABLE_CONTAINER_DISCOVERY
                   value: "false"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGETS_PER_TYPE
+                  value: "10"
                 - name: STEADYBIT_EXTENSION_POD_UID
                   valueFrom:
                     fieldRef:
@@ -582,6 +598,10 @@ manifest should match snapshot with image pull secrets:
                   value: "false"
                 - name: STEADYBIT_EXTENSION_DISABLE_CONTAINER_DISCOVERY
                   value: "false"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGETS_PER_TYPE
+                  value: "10"
                 - name: STEADYBIT_EXTENSION_POD_UID
                   valueFrom:
                     fieldRef:
@@ -712,6 +732,10 @@ manifest should match snapshot with legacy image name containing registry:
                   value: "false"
                 - name: STEADYBIT_EXTENSION_DISABLE_CONTAINER_DISCOVERY
                   value: "false"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGETS_PER_TYPE
+                  value: "10"
                 - name: STEADYBIT_EXTENSION_POD_UID
                   valueFrom:
                     fieldRef:
@@ -840,6 +864,10 @@ manifest should match snapshot with overridden poduid:
                   value: "false"
                 - name: STEADYBIT_EXTENSION_DISABLE_CONTAINER_DISCOVERY
                   value: "false"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGETS_PER_TYPE
+                  value: "10"
                 - name: STEADYBIT_EXTENSION_POD_UID
                   value: my-fixed-uid
                 - name: STEADYBIT_EXTENSION_POD_NAME
@@ -966,6 +994,10 @@ manifest should render simulateExtensionRestarts:
                   value: "false"
                 - name: STEADYBIT_EXTENSION_DISABLE_CONTAINER_DISCOVERY
                   value: "false"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGETS_PER_TYPE
+                  value: "10"
                 - name: STEADYBIT_EXTENSION_POD_UID
                   valueFrom:
                     fieldRef:
@@ -1094,6 +1126,10 @@ manifest should render targetReplacements:
                   value: "false"
                 - name: STEADYBIT_EXTENSION_DISABLE_CONTAINER_DISCOVERY
                   value: "false"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGETS_PER_TYPE
+                  value: "10"
                 - name: STEADYBIT_EXTENSION_POD_UID
                   valueFrom:
                     fieldRef:
@@ -1220,6 +1256,10 @@ manifest should use empty update values:
                   value: "false"
                 - name: STEADYBIT_EXTENSION_DISABLE_CONTAINER_DISCOVERY
                   value: "false"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT
+                  value: "5"
+                - name: STEADYBIT_EXTENSION_FAKE_TARGETS_PER_TYPE
+                  value: "10"
                 - name: STEADYBIT_EXTENSION_POD_UID
                   valueFrom:
                     fieldRef:

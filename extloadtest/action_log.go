@@ -89,7 +89,8 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 			TargetQuery:        new("steadybit.loadtest=\"true\""),
 			SelectionTemplates: new(selectionTemplates),
 		}),
-		Technology:  new("Debug"),
+		Technology:  new(actionTechnology),
+		Category:    new(actionCategoryLoadtest),
 		Kind:        action_kit_api.Attack,
 		TimeControl: action_kit_api.TimeControlExternal,
 		Parameters: []action_kit_api.ActionParameter{
