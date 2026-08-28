@@ -4,8 +4,10 @@ Internal extension used to load test agent & platform.
 
 ## Configuration
 
-| Environment Variable              | Helm value | Meaning                                     | Required | Default                 |
-|-----------------------------------|------------|---------------------------------------------|----------|-------------------------|
+| Environment Variable                             | Helm value                     | Meaning                                                                                                                                   | Required | Default |
+|--------------------------------------------------|--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|----------|---------|
+| `STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT`     | `loadtest.fakeTargetTypeCount` | Number of pseudo target types to register. Set to `0` to register none at all.                                                                 | no       | `5`     |
+| `STEADYBIT_EXTENSION_FAKE_TARGETS_PER_TYPE`      | `loadtest.fakeTargetsPerType`  | Number of targets discovered per pseudo target type.                                                                                          | no       | `10`    |
 
 Beyond the settings above, this extension supports the configuration common to all Steadybit
 extensions:
@@ -16,6 +18,40 @@ extensions:
   stop the extension reporting targets you do not want.
 - [Group Matching](https://github.com/steadybit/discovery-kit/blob/main/docs/target-enrichment.md#group-matching) —
   tag discovered targets with a group, so enrichment rules only match within it.
+
+## Pseudo target types
+
+Every regular discovery of this extension borrows the target type id of a real extension
+(`com.steadybit.extension_host.host`, `com.steadybit.extension_kubernetes.kubernetes-deployment`, ...)
+and therefore inherits its description and icon. The pseudo target types are the exception: they are
+owned by this extension, carry deliberately made-up names (`com.steadybit.extension_loadtest.flux-capacitor`,
+`...hoverboard`, `...rubber-duck`, ...) so they cannot be mistaken for anything real, and have no actions.
+
+They exist to exercise the platform and the UI with target type icons that are missing or unrenderable.
+The registered types rotate through the three cases, so a count of `3` or more always covers all of them:
+
+| Index | Icon                                              | `loadtest.icon` |
+|-------|---------------------------------------------------|-----------------|
+| 0     | none - the `icon` field is omitted entirely       | `none`          |
+| 1     | broken - a data URI whose payload is not an image | `broken`        |
+| 2     | valid - a plain star SVG                          | `valid`         |
+| 3     | none again, and so on                             | `none`          |
+
+To tell a rendered fallback apart from a working icon without having to guess, the icon case is visible
+in two places:
+
+- every target carries the `loadtest.icon` attribute. It is shared by all pseudo target types (the
+  `loadtest.<type>.name` and `loadtest.<type>.serial` attributes are per type), so the explorer can group
+  by it and put the three cases side by side. It is also the second column of every type's target table.
+- the target type label names it, e.g. *Flux Capacitor (none icon)*, *Hoverboard (broken icon)*. A target
+  type carries no attributes of its own, so the label is the only place this can show where the type
+  itself is rendered.
+
+```bash
+STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT=5 \
+STEADYBIT_EXTENSION_FAKE_TARGETS_PER_TYPE=10 \
+./extension-loadtest
+```
 
 ## Installation
 
