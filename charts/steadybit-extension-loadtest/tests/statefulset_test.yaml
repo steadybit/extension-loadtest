@@ -50,6 +50,39 @@ tests:
     asserts:
       - matchSnapshot: { }
 
+  - it: manifest should render the pseudo target type settings
+    set:
+      loadtest:
+        attributeUpdates: []
+        targetReplacements: []
+        simulateExtensionRestarts: []
+        fakeTargetTypeCount: 3
+        fakeTargetsPerType: 25
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT
+            value: "3"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STEADYBIT_EXTENSION_FAKE_TARGETS_PER_TYPE
+            value: "25"
+  - it: manifest should render zero pseudo target types when turned off
+    set:
+      loadtest:
+        attributeUpdates: []
+        targetReplacements: []
+        simulateExtensionRestarts: []
+        fakeTargetTypeCount: 0
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT
+            value: "0"
+
   - it: manifest should match snapshot with custom image registry
     set:
       image:

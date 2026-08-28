@@ -17,6 +17,22 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// withFakeTargetsPerType sets the config for one test and restores it afterwards,
+// so a later test in this package cannot inherit a mutated package-level Config.
+func withFakeTargetsPerType(t *testing.T, perType int) {
+	t.Helper()
+	previous := config.Config
+	t.Cleanup(func() { config.Config = previous })
+	config.Config.FakeTargetsPerType = perType
+}
+
+func withFakeTargetTypeCount(t *testing.T, count int) {
+	t.Helper()
+	previous := config.Config
+	t.Cleanup(func() { config.Config = previous })
+	config.Config.FakeTargetTypeCount = count
+}
+
 func TestFakeTargetTypeIconsRotate(t *testing.T) {
 	// none -> broken -> valid, so a count of >= 3 always covers all three cases
 	for index, kind := range map[int]string{
@@ -34,7 +50,7 @@ func TestFakeTargetTypeIconsRotate(t *testing.T) {
 // The attribute must say what the type's icon actually is, otherwise it cannot be
 // trusted to explain the fallback the UI renders.
 func TestIconAttributeMatchesTheDescribedIcon(t *testing.T) {
-	config.Config.FakeTargetsPerType = 1
+	withFakeTargetsPerType(t, 1)
 
 	for i := 0; i < len(fakeTargetTypeSpecs); i++ {
 		discovery := newFakeTargetDiscovery(i)
@@ -57,7 +73,7 @@ func TestIconAttributeMatchesTheDescribedIcon(t *testing.T) {
 
 // The type label names the icon case too - a target type carries no attributes.
 func TestFakeTargetTypeLabelNamesTheIconCase(t *testing.T) {
-	config.Config.FakeTargetsPerType = 1
+	withFakeTargetsPerType(t, 1)
 
 	require.Equal(t, "Flux Capacitor (none icon)", newFakeTargetDiscovery(0).DescribeTarget().Label.One)
 	require.Equal(t, "Hoverboards (broken icon)", newFakeTargetDiscovery(1).DescribeTarget().Label.Other)
@@ -67,7 +83,7 @@ func TestFakeTargetTypeLabelNamesTheIconCase(t *testing.T) {
 // The shared attribute is described exactly once, no matter how many types run,
 // otherwise the sdk logs a duplicate warning per type.
 func TestSharedIconAttributeIsDescribedOnce(t *testing.T) {
-	config.Config.FakeTargetsPerType = 1
+	withFakeTargetsPerType(t, 1)
 
 	for i := 0; i < len(fakeTargetTypeSpecs); i++ {
 		for _, described := range newFakeTargetDiscovery(i).DescribeAttributes() {
@@ -95,7 +111,7 @@ func TestValidIconIsAWellFormedSvgDataUri(t *testing.T) {
 // The description must omit the icon entirely for the 'none' slot of the rotation -
 // that is the case the fake types exist to reproduce.
 func TestFakeTargetDescriptionHasNoIcon(t *testing.T) {
-	config.Config.FakeTargetsPerType = 2
+	withFakeTargetsPerType(t, 2)
 
 	description := newFakeTargetDiscovery(0).DescribeTarget()
 	require.Nil(t, description.Icon)
@@ -107,7 +123,7 @@ func TestFakeTargetDescriptionHasNoIcon(t *testing.T) {
 
 // Every fake type shares one category, so they group together in the UI.
 func TestAllFakeTargetTypesShareTheDebugCategory(t *testing.T) {
-	config.Config.FakeTargetsPerType = 1
+	withFakeTargetsPerType(t, 1)
 
 	for i := 0; i < len(fakeTargetTypeSpecs); i++ {
 		require.Equal(t, "Debug", *newFakeTargetDiscovery(i).DescribeTarget().Category)
@@ -115,7 +131,7 @@ func TestAllFakeTargetTypesShareTheDebugCategory(t *testing.T) {
 }
 
 func TestFakeTargetTypeIdsAreUniqueBeyondThePool(t *testing.T) {
-	config.Config.FakeTargetsPerType = 1
+	withFakeTargetsPerType(t, 1)
 
 	seen := make(map[string]bool)
 	for i := 0; i < len(fakeTargetTypeSpecs)*2+3; i++ {
@@ -126,7 +142,7 @@ func TestFakeTargetTypeIdsAreUniqueBeyondThePool(t *testing.T) {
 }
 
 func TestFakeTargetsCarryTheirTypeAndAttributes(t *testing.T) {
-	config.Config.FakeTargetsPerType = 3
+	withFakeTargetsPerType(t, 3)
 	config.Config.PodUID = "PodUID1"
 
 	discovery := newFakeTargetDiscovery(1)
@@ -148,12 +164,12 @@ func TestFakeTargetsCarryTheirTypeAndAttributes(t *testing.T) {
 }
 
 func TestFakeTargetTypesCanBeTurnedOff(t *testing.T) {
-	config.Config.FakeTargetTypeCount = 0
+	withFakeTargetTypeCount(t, 0)
 	require.NotPanics(t, RegisterFakeTargetTypeDiscoveries)
 }
 
 func TestFakeAttributeDescriptionsMatchTheColumns(t *testing.T) {
-	config.Config.FakeTargetsPerType = 1
+	withFakeTargetsPerType(t, 1)
 
 	discovery := newFakeTargetDiscovery(4)
 	described := make(map[string]bool)
@@ -171,7 +187,7 @@ func TestFakeAttributeDescriptionsMatchTheColumns(t *testing.T) {
 // Each fake target type needs its own action, otherwise it cannot be reached from
 // an experiment - which is where its icon (or the fallback) is rendered.
 func TestEveryFakeTargetTypeHasItsOwnAction(t *testing.T) {
-	config.Config.FakeTargetsPerType = 1
+	withFakeTargetsPerType(t, 1)
 
 	ids := make(map[string]bool)
 	for i := 0; i < len(fakeTargetTypeSpecs); i++ {
@@ -189,7 +205,7 @@ func TestEveryFakeTargetTypeHasItsOwnAction(t *testing.T) {
 // The action picker shows the label and nothing else, so a shared "Do Nothing"
 // across all of them would be unusable.
 func TestFakeTargetTypeActionLabelsNameTheirType(t *testing.T) {
-	config.Config.FakeTargetsPerType = 1
+	withFakeTargetsPerType(t, 1)
 
 	require.Equal(t, "Do Nothing (Flux Capacitor)", fakeTargetTypeAction(0).Describe().Label)
 	require.Equal(t, "Do Nothing (Hoverboard)", fakeTargetTypeAction(1).Describe().Label)
@@ -202,7 +218,7 @@ func TestFakeTargetTypeActionLabelsNameTheirType(t *testing.T) {
 // Technology is the umbrella, category the sub-grouping inside it: the pseudo
 // target type actions must not land among the long-standing loadtest ones.
 func TestFakeTargetTypeActionsHaveTheirOwnCategory(t *testing.T) {
-	config.Config.FakeTargetsPerType = 1
+	withFakeTargetsPerType(t, 1)
 
 	for i := 0; i < len(fakeTargetTypeSpecs); i++ {
 		description := fakeTargetTypeAction(i).Describe()
@@ -219,7 +235,7 @@ func TestFakeTargetTypeActionsHaveTheirOwnCategory(t *testing.T) {
 
 // The selection template must query an attribute the targets actually carry.
 func TestFakeTargetTypeActionSelectionTemplateMatchesTheTargets(t *testing.T) {
-	config.Config.FakeTargetsPerType = 1
+	withFakeTargetsPerType(t, 1)
 
 	for i := 0; i < len(fakeTargetTypeSpecs); i++ {
 		discovery := newFakeTargetDiscovery(i)
