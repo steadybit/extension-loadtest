@@ -91,6 +91,8 @@ func main() {
 	}))
 	action_kit_sdk.RegisterAction(extloadtest.NewWidgetAction())
 
+	extloadtest.RegisterFakeTargetTypeActions()
+
 	preflight_kit_sdk.RegisterPreflight(extloadtest.NewGitHubActionPreflight())
 	preflight_kit_sdk.RegisterPreflight(extloadtest.NewSimplePreflight())
 

@@ -7,6 +7,8 @@ import (
 	"fmt"
 
 	"github.com/rs/zerolog/log"
+	"github.com/steadybit/action-kit/go/action_kit_api/v2"
+	"github.com/steadybit/action-kit/go/action_kit_sdk"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_api"
 	"github.com/steadybit/discovery-kit/go/discovery_kit_sdk"
 	"github.com/steadybit/extension-kit/extbuild"
@@ -17,7 +19,9 @@ import (
 // this extension owns itself - unlike every other discovery here, which borrows
 // the target type ids (and therefore the descriptions, including the icons) of
 // the real extensions. Their deliberately made-up names keep them apart from
-// anything a customer would ever discover.
+// anything a customer would ever discover. Each one comes with a no-op action, so
+// it can be used in an experiment - which is where the icon (or the fallback the
+// UI renders for it) shows up next to the selected targets.
 //
 // Their main purpose is the icon handling, so the registered types rotate through
 // the three cases: no icon at all, an icon that cannot be rendered, and a perfectly
@@ -251,4 +255,28 @@ func RegisterFakeTargetTypeDiscoveries() {
 			Msgf("Registered fake target type with %d targets", config.Config.FakeTargetsPerType)
 	}
 	log.Info().Msgf("Registered %d fake target types", config.Config.FakeTargetTypeCount)
+}
+
+// fakeTargetTypeAction builds the no-op action of the index-th (0-based) fake
+// target type. Its label names the type, since that is all the action picker shows.
+func fakeTargetTypeAction(index int) action_kit_sdk.Action[DoNothingActionState] {
+	spec := fakeTargetTypeSpecAt(index)
+	return NewDoNothingActionWithLabel(
+		fakeTargetTypeIdPrefix+spec.key,
+		action_kit_api.TargetSelectionTemplate{
+			Label:       "by name",
+			Description: new(fmt.Sprintf("Find %s by name.", spec.one)),
+			Query:       fmt.Sprintf("loadtest.%s.name=\"\"", spec.key),
+		},
+		fmt.Sprintf("Do Nothing (%s)", spec.one),
+	)
+}
+
+// RegisterFakeTargetTypeActions registers one no-op action per fake target type.
+// It loops over the same count as RegisterFakeTargetTypeDiscoveries, so a
+// registered type always has an action to reach it with.
+func RegisterFakeTargetTypeActions() {
+	for i := 0; i < config.Config.FakeTargetTypeCount; i++ {
+		action_kit_sdk.RegisterAction(fakeTargetTypeAction(i))
+	}
 }

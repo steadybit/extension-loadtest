@@ -11,6 +11,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/steadybit/action-kit/go/action_kit_api/v2"
+
 	"github.com/steadybit/extension-loadtest/config"
 	"github.com/stretchr/testify/require"
 )
@@ -164,4 +166,55 @@ func TestFakeAttributeDescriptionsMatchTheColumns(t *testing.T) {
 		require.Truef(t, described[column.Attribute], "column %s has no attribute description", column.Attribute)
 	}
 	require.Equal(t, fmt.Sprintf("loadtest.%s.name", discovery.spec.key), discovery.attribute("name"))
+}
+
+// Each fake target type needs its own action, otherwise it cannot be reached from
+// an experiment - which is where its icon (or the fallback) is rendered.
+func TestEveryFakeTargetTypeHasItsOwnAction(t *testing.T) {
+	config.Config.FakeTargetsPerType = 1
+
+	ids := make(map[string]bool)
+	for i := 0; i < len(fakeTargetTypeSpecs); i++ {
+		targetType := newFakeTargetDiscovery(i).DescribeTarget().Id
+		description := fakeTargetTypeAction(i).Describe()
+
+		require.NotNil(t, description.TargetSelection)
+		require.Equal(t, targetType, description.TargetSelection.TargetType)
+		require.Falsef(t, ids[description.Id], "duplicate action id %s at index %d", description.Id, i)
+		ids[description.Id] = true
+	}
+	require.Len(t, ids, len(fakeTargetTypeSpecs))
+}
+
+// The action picker shows the label and nothing else, so a shared "Do Nothing"
+// across all of them would be unusable.
+func TestFakeTargetTypeActionLabelsNameTheirType(t *testing.T) {
+	config.Config.FakeTargetsPerType = 1
+
+	require.Equal(t, "Do Nothing (Flux Capacitor)", fakeTargetTypeAction(0).Describe().Label)
+	require.Equal(t, "Do Nothing (Hoverboard)", fakeTargetTypeAction(1).Describe().Label)
+
+	// the shared constructor keeps its own label for the pre-existing registrations
+	require.Equal(t, "Do Nothing", NewDoNothingAction("com.steadybit.extension_container.container",
+		action_kit_api.TargetSelectionTemplate{}).Describe().Label)
+}
+
+// The selection template must query an attribute the targets actually carry.
+func TestFakeTargetTypeActionSelectionTemplateMatchesTheTargets(t *testing.T) {
+	config.Config.FakeTargetsPerType = 1
+
+	for i := 0; i < len(fakeTargetTypeSpecs); i++ {
+		discovery := newFakeTargetDiscovery(i)
+		targets, err := discovery.DiscoverTargets(context.Background())
+		require.NoError(t, err)
+
+		templates := fakeTargetTypeAction(i).Describe().TargetSelection.SelectionTemplates
+		require.NotNil(t, templates)
+		require.Len(t, *templates, 1)
+
+		attribute, _, found := strings.Cut((*templates)[0].Query, "=")
+		require.True(t, found)
+		require.NotEmptyf(t, targets[0].Attributes[attribute],
+			"selection template queries %s, which the targets do not carry", attribute)
+	}
 }
