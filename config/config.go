@@ -89,6 +89,11 @@ type Specification struct {
 
 	// discovery delay in ms
 	DiscoveryDelayInMs int `json:"discoveryDelayInMs" split_words:"true" required:"false" default:"0"`
+
+	// Simulate target types owned by this extension. Set FakeTargetTypeCount to 0 to
+	// register none at all. See extloadtest/discovery_fake_target_types.go.
+	FakeTargetTypeCount int `json:"fakeTargetTypeCount" split_words:"true" required:"false" default:"5"`
+	FakeTargetsPerType  int `json:"fakeTargetsPerType" split_words:"true" required:"false" default:"10"`
 }
 
 func IsPodZero() bool {
@@ -226,6 +231,16 @@ func ValidateConfiguration() {
 		if s := &Config.SimulateExtensionRestarts[i]; s.Duration > 0 && s.Interval > 0 && s.Duration >= s.Interval {
 			log.Fatal().Msgf("extension-restart duration %ds for '%s' must be less than interval %ds; otherwise the extension would be permanently down with no recovery window.", s.Duration, s.Type, s.Interval)
 		}
+	}
+	validateFakeTargetTypes()
+}
+
+func validateFakeTargetTypes() {
+	if Config.FakeTargetTypeCount < 0 {
+		log.Fatal().Msgf("fake target type count %d must not be negative.", Config.FakeTargetTypeCount)
+	}
+	if Config.FakeTargetsPerType < 0 {
+		log.Fatal().Msgf("fake targets per type %d must not be negative.", Config.FakeTargetsPerType)
 	}
 }
 

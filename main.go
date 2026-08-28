@@ -49,6 +49,8 @@ func main() {
 	targetData.RegisterRecreateActions()
 	targetData.RegisterConfigUpdateHandlers()
 
+	extloadtest.RegisterFakeTargetTypeDiscoveries()
+
 	discovery_kit_sdk.Register(extloadtest.NewEnrichmentRuleProvider())
 
 	extsignals.ActivateSignalHandlers()
