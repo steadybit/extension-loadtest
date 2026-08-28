@@ -199,6 +199,24 @@ func TestFakeTargetTypeActionLabelsNameTheirType(t *testing.T) {
 		action_kit_api.TargetSelectionTemplate{}).Describe().Label)
 }
 
+// Technology is the umbrella, category the sub-grouping inside it: the pseudo
+// target type actions must not land among the long-standing loadtest ones.
+func TestFakeTargetTypeActionsHaveTheirOwnCategory(t *testing.T) {
+	config.Config.FakeTargetsPerType = 1
+
+	for i := 0; i < len(fakeTargetTypeSpecs); i++ {
+		description := fakeTargetTypeAction(i).Describe()
+		require.Equal(t, actionTechnology, *description.Technology)
+		require.Equal(t, actionCategoryBrokenTarget, *description.Category)
+	}
+
+	// the pre-existing registrations stay in the plain loadtest category
+	existing := NewDoNothingAction("com.steadybit.extension_container.container",
+		action_kit_api.TargetSelectionTemplate{}).Describe()
+	require.Equal(t, actionTechnology, *existing.Technology)
+	require.Equal(t, actionCategoryLoadtest, *existing.Category)
+}
+
 // The selection template must query an attribute the targets actually carry.
 func TestFakeTargetTypeActionSelectionTemplateMatchesTheTargets(t *testing.T) {
 	config.Config.FakeTargetsPerType = 1

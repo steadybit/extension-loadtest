@@ -21,6 +21,7 @@ type doNothingAction struct {
 	targetId          string
 	selectionTemplate action_kit_api.TargetSelectionTemplate
 	actionLabel       string
+	actionCategory    string
 }
 
 // Make sure action implements all required interfaces
@@ -35,16 +36,18 @@ type DoNothingActionConfig struct {
 }
 
 func NewDoNothingAction(targetId string, selectionTemplate action_kit_api.TargetSelectionTemplate) action_kit_sdk.Action[DoNothingActionState] {
-	return NewDoNothingActionWithLabel(targetId, selectionTemplate, "Do Nothing")
+	return NewDoNothingActionWithLabel(targetId, selectionTemplate, "Do Nothing", actionCategoryLoadtest)
 }
 
 // NewDoNothingActionWithLabel lets callers registering several of these tell them
-// apart in the action picker, where the label is all there is to go by.
-func NewDoNothingActionWithLabel(targetId string, selectionTemplate action_kit_api.TargetSelectionTemplate, actionLabel string) action_kit_sdk.Action[DoNothingActionState] {
+// apart in the action picker, where the label is all there is to go by, and put
+// them in their own category.
+func NewDoNothingActionWithLabel(targetId string, selectionTemplate action_kit_api.TargetSelectionTemplate, actionLabel string, actionCategory string) action_kit_sdk.Action[DoNothingActionState] {
 	return &doNothingAction{
 		targetId:          targetId,
 		selectionTemplate: selectionTemplate,
 		actionLabel:       actionLabel,
+		actionCategory:    actionCategory,
 	}
 }
 
@@ -66,7 +69,8 @@ func (l *doNothingAction) Describe() action_kit_api.ActionDescription {
 				l.selectionTemplate,
 			}),
 		}),
-		Technology:  new("Debug"),
+		Technology:  new(actionTechnology),
+		Category:    new(l.actionCategory),
 		Kind:        action_kit_api.Attack,
 		TimeControl: action_kit_api.TimeControlInstantaneous,
 		Parameters: []action_kit_api.ActionParameter{

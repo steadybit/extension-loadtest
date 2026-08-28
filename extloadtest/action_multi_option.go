@@ -37,7 +37,8 @@ func (l *multiOptionParameterAction) Describe() action_kit_api.ActionDescription
 		Label:       "Do nothing but provide an option parameter",
 		Description: "This action does nothing but provides an option parameter based on multiple target attributes (k8s.container.id, k8s.deployment).",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
-		Technology:  new("Debug"),
+		Technology:  new(actionTechnology),
+		Category:    new(actionCategoryLoadtest),
 		Kind:        action_kit_api.Other,
 		TimeControl: action_kit_api.TimeControlInstantaneous,
 		TargetSelection: &action_kit_api.TargetSelection{

@@ -38,7 +38,8 @@ func (l *targetlessAction) Describe() action_kit_api.ActionDescription {
 		Label:       "Do Nothing Without a Target",
 		Description: "This action does nothing.",
 		Version:     extbuild.GetSemverVersionStringOrUnknown(),
-		Technology:  new("Debug"),
+		Technology:  new(actionTechnology),
+		Category:    new(actionCategoryLoadtest),
 
 		Kind:        action_kit_api.Other,
 		TimeControl: action_kit_api.TimeControlInstantaneous,

@@ -269,6 +269,7 @@ func fakeTargetTypeAction(index int) action_kit_sdk.Action[DoNothingActionState]
 			Query:       fmt.Sprintf("loadtest.%s.name=\"\"", spec.key),
 		},
 		fmt.Sprintf("Do Nothing (%s)", spec.one),
+		actionCategoryBrokenTarget,
 	)
 }
 
