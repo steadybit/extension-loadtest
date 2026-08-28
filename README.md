@@ -24,8 +24,8 @@ extensions:
 Every regular discovery of this extension borrows the target type id of a real extension
 (`com.steadybit.extension_host.host`, `com.steadybit.extension_kubernetes.kubernetes-deployment`, ...)
 and therefore inherits its description and icon. The pseudo target types are the exception: they are
-owned by this extension, carry deliberately made-up names (`com.steadybit.extension_loadtest.flux-capacitor`,
-`...hoverboard`, `...rubber-duck`, ...) so they cannot be mistaken for anything real, and have no actions.
+owned by this extension and carry deliberately made-up names (`com.steadybit.extension_loadtest.flux-capacitor`,
+`...hoverboard`, `...rubber-duck`, ...) so they cannot be mistaken for anything real.
 
 They exist to exercise the platform and the UI with target type icons that are missing or unrenderable.
 The registered types rotate through the three cases, so a count of `3` or more always covers all of them:
@@ -46,6 +46,22 @@ in two places:
 - the target type label names it, e.g. *Flux Capacitor (none icon)*, *Hoverboard (broken icon)*. A target
   type carries no attributes of its own, so the label is the only place this can show where the type
   itself is rendered.
+
+### Using them in an experiment
+
+Each pseudo target type gets its own **no-op action**, so the type can be put into an experiment - which is
+where its icon, or the fallback the UI renders in its place, shows up next to the selected targets. The
+actions do nothing at all beyond logging that they ran:
+
+| Action id                                                 | Label                         | Target type                                      |
+|-----------------------------------------------------------|-------------------------------|--------------------------------------------------|
+| `com.steadybit.extension_loadtest.nothing.flux-capacitor` | `Do Nothing (Flux Capacitor)` | `com.steadybit.extension_loadtest.flux-capacitor` |
+| `com.steadybit.extension_loadtest.nothing.hoverboard`     | `Do Nothing (Hoverboard)`     | `com.steadybit.extension_loadtest.hoverboard`     |
+| ...                                                       | ...                           | ...                                              |
+
+They are registered under the `Debug` technology, one per registered type, and their labels name the type -
+the action picker shows the label and nothing else, so a shared *Do Nothing* across all of them would be
+unusable. Targets are selected `by name` via `loadtest.<type>.name`.
 
 ```bash
 STEADYBIT_EXTENSION_FAKE_TARGET_TYPE_COUNT=5 \
