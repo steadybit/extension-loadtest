@@ -57,15 +57,11 @@ type LogActionConfig struct {
 }
 
 func NewLogAction(actionId string, targetId string, selectionTemplate action_kit_api.TargetSelectionTemplate) action_kit_sdk.Action[LogActionState] {
-	return NewLogActionWithLabel(actionId, targetId, &selectionTemplate, "Log message")
-}
-
-func NewLogActionWithLabel(actionId string, targetId string, selectionTemplate *action_kit_api.TargetSelectionTemplate, actionLabel string) action_kit_sdk.Action[LogActionState] {
 	return &logAction{
 		actionId:          actionId,
 		targetId:          targetId,
-		selectionTemplate: selectionTemplate,
-		actionLabel:       actionLabel,
+		selectionTemplate: &selectionTemplate,
+		actionLabel:       "Log message",
 	}
 }
 
