@@ -1,9 +1,19 @@
 # Changelog
 
-## Unreleased
+## v1.0.12
 
-- fix: synchronize discovery reads with the `/config/*` updates and the recreate actions so concurrent requests no longer race on the configuration and target data
+- build(deps): bump github.com/steadybit/preflight-kit/go/preflight_kit_api
+- chore(chart): bump chart version to 1.0.65
+- chore(deps): bump extensionlib to ^1.5.5
+- chore(deps): bump golang.org/x/net to v0.61.0
+- chore: remove action that causes a warning
+- feat(chart): expose the pseudo target type settings
+- feat: add a no-op action per pseudo target type
+- feat: add pseudo target types with rotating icon cases
+- feat: categorize the actions by technology and category
+- feat: initialize OpenTelemetry tracing (#119)
 - fix: make the recreate actions actually bump the target id (the previous in-place update was discarded, so recreate was a silent no-op)
+- fix: synchronize discovery reads with the `/config/*` updates and the recreate actions so concurrent requests no longer race on the configuration and target data
 
 ## v1.0.10
 
