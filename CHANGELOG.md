@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- feat: the log action shows its parameters in the groups "Fault Injection", "Parameter Types" and "Many Parameters" on platforms that support parameter groups
+
 ## v1.0.12
 
 - build(deps): bump github.com/steadybit/preflight-kit/go/preflight_kit_api
