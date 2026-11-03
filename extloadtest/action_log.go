@@ -85,10 +85,11 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 			TargetQuery:        new("steadybit.loadtest=\"true\""),
 			SelectionTemplates: new(selectionTemplates),
 		}),
-		Technology:  new(actionTechnology),
-		Category:    new(actionCategoryLoadtest),
-		Kind:        action_kit_api.Attack,
-		TimeControl: action_kit_api.TimeControlExternal,
+		Technology:      new(actionTechnology),
+		Category:        new(actionCategoryLoadtest),
+		Kind:            action_kit_api.Attack,
+		TimeControl:     action_kit_api.TimeControlExternal,
+		ParameterGroups: new([]action_kit_api.ParameterGroup{faultInjectionGroup, parameterTypesGroup}),
 		Parameters: []action_kit_api.ActionParameter{
 			{
 				Name:         "duration",
@@ -111,6 +112,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Description:  new("Should we throw an error in the selected endpoint?"),
 				Type:         action_kit_api.ActionParameterTypeString,
 				Advanced:     new(true),
+				Group:        new(groupFaultInjection),
 				DefaultValue: new("none"),
 				Options: new([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
@@ -145,6 +147,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Description:  new("Should we add latency in the selected endpoint?"),
 				Type:         action_kit_api.ActionParameterTypeString,
 				Advanced:     new(true),
+				Group:        new(groupFaultInjection),
 				DefaultValue: new("none"),
 				Options: new([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
@@ -176,6 +179,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				DefaultValue: new("5s"),
 				Required:     new(false),
 				Advanced:     new(true),
+				Group:        new(groupFaultInjection),
 			},
 			{
 				Name:         "targetFilter",
@@ -184,6 +188,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				DefaultValue: new("*"),
 				Type:         action_kit_api.ActionParameterTypeString,
 				Advanced:     new(true),
+				Group:        new(groupFaultInjection),
 			},
 			{
 				Name:         "addArtifact",
@@ -199,6 +204,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				DefaultValue: new("false"),
 				Type:         action_kit_api.ActionParameterTypeBoolean,
 				Advanced:     new(true),
+				Group:        new(groupParameterTypes),
 			},
 			{
 				Name:        "integerParameter",
@@ -206,6 +212,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeInteger,
 				Advanced:    new(true),
+				Group:       new(groupParameterTypes),
 			},
 			{
 				Name:        "keyValueParameter",
@@ -213,6 +220,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeKeyValue,
 				Advanced:    new(true),
+				Group:       new(groupParameterTypes),
 			},
 			{
 				Name:        "stringArrayParameter",
@@ -220,6 +228,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeStringArray,
 				Advanced:    new(true),
+				Group:       new(groupParameterTypes),
 				Options: new([]action_kit_api.ParameterOption{
 					action_kit_api.ExplicitParameterOption{
 						Label: "value1",
@@ -241,6 +250,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeStringArray,
 				Advanced:    new(true),
+				Group:       new(groupParameterTypes),
 			},
 			{
 				Name:        "fileParameter",
@@ -248,6 +258,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeFile,
 				Advanced:    new(true),
+				Group:       new(groupParameterTypes),
 			},
 			{
 				Name:        "regexParameter",
@@ -255,6 +266,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeRegex,
 				Advanced:    new(true),
+				Group:       new(groupParameterTypes),
 			},
 			{
 				Name:        "textareaParameter",
@@ -262,6 +274,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeTextarea,
 				Advanced:    new(true),
+				Group:       new(groupParameterTypes),
 			},
 			{
 				Name:        "urlParameter",
@@ -269,6 +282,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeUrl,
 				Advanced:    new(true),
+				Group:       new(groupParameterTypes),
 			},
 			{
 				Name:        "percentageParameter",
@@ -276,6 +290,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypePercentage,
 				Advanced:    new(true),
+				Group:       new(groupParameterTypes),
 			},
 			{
 				Name:        "headerParameter",
@@ -283,6 +298,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeHeader,
 				Advanced:    new(true),
+				Group:       new(groupParameterTypes),
 			},
 			{
 				Name:        "bitrateParameter",
@@ -290,6 +306,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeBitrate,
 				Advanced:    new(true),
+				Group:       new(groupParameterTypes),
 			},
 			{
 				Name:        "stressngworkersParameter",
@@ -297,12 +314,14 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Description: new("This is not used."),
 				Type:        action_kit_api.ActionParameterTypeStressngWorkers,
 				Advanced:    new(true),
+				Group:       new(groupParameterTypes),
 			},
 			{
 				Name:     "dummyParameter21",
 				Label:    "Dummy Parameter 21",
 				Type:     action_kit_api.ActionParameterTypeString,
 				Advanced: new(true),
+				Group:    new(groupManyParameters),
 				Required: new(false),
 			},
 			{
@@ -310,6 +329,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Label:    "Dummy Parameter 22",
 				Type:     action_kit_api.ActionParameterTypeString,
 				Advanced: new(true),
+				Group:    new(groupManyParameters),
 				Required: new(false),
 			},
 			{
@@ -317,6 +337,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Label:    "Dummy Parameter 23",
 				Type:     action_kit_api.ActionParameterTypeString,
 				Advanced: new(true),
+				Group:    new(groupManyParameters),
 				Required: new(false),
 			},
 			{
@@ -324,6 +345,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Label:    "Dummy Parameter 24",
 				Type:     action_kit_api.ActionParameterTypeString,
 				Advanced: new(true),
+				Group:    new(groupManyParameters),
 				Required: new(false),
 			},
 			{
@@ -331,6 +353,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Label:    "Dummy Parameter 25",
 				Type:     action_kit_api.ActionParameterTypeString,
 				Advanced: new(true),
+				Group:    new(groupManyParameters),
 				Required: new(false),
 			},
 			{
@@ -338,6 +361,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Label:    "Dummy Parameter 26",
 				Type:     action_kit_api.ActionParameterTypeString,
 				Advanced: new(true),
+				Group:    new(groupManyParameters),
 				Required: new(false),
 			},
 			{
@@ -345,6 +369,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Label:    "Dummy Parameter 27",
 				Type:     action_kit_api.ActionParameterTypeString,
 				Advanced: new(true),
+				Group:    new(groupManyParameters),
 				Required: new(false),
 			},
 			{
@@ -352,6 +377,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Label:    "Dummy Parameter 28",
 				Type:     action_kit_api.ActionParameterTypeString,
 				Advanced: new(true),
+				Group:    new(groupManyParameters),
 				Required: new(false),
 			},
 			{
@@ -359,6 +385,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Label:    "Dummy Parameter 29",
 				Type:     action_kit_api.ActionParameterTypeString,
 				Advanced: new(true),
+				Group:    new(groupManyParameters),
 				Required: new(false),
 			},
 			{
@@ -366,6 +393,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Label:    "Dummy Parameter 30",
 				Type:     action_kit_api.ActionParameterTypeString,
 				Advanced: new(true),
+				Group:    new(groupManyParameters),
 				Required: new(false),
 			},
 			{
@@ -373,6 +401,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Label:    "Dummy Parameter 31",
 				Type:     action_kit_api.ActionParameterTypeString,
 				Advanced: new(true),
+				Group:    new(groupManyParameters),
 				Required: new(false),
 			},
 			{
@@ -380,6 +409,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Label:    "Dummy Parameter 32",
 				Type:     action_kit_api.ActionParameterTypeString,
 				Advanced: new(true),
+				Group:    new(groupManyParameters),
 				Required: new(false),
 			},
 			{
@@ -387,6 +417,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Label:    "Dummy Parameter 33",
 				Type:     action_kit_api.ActionParameterTypeString,
 				Advanced: new(true),
+				Group:    new(groupManyParameters),
 				Required: new(false),
 			},
 			{
@@ -394,6 +425,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Label:    "Dummy Parameter 34",
 				Type:     action_kit_api.ActionParameterTypeString,
 				Advanced: new(true),
+				Group:    new(groupManyParameters),
 				Required: new(false),
 			},
 			{
@@ -401,6 +433,7 @@ func (l *logAction) Describe() action_kit_api.ActionDescription {
 				Label:    "Dummy Parameter 35",
 				Type:     action_kit_api.ActionParameterTypeString,
 				Advanced: new(true),
+				Group:    new(groupManyParameters),
 				Required: new(false),
 			},
 		},
