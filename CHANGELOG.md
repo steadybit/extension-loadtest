@@ -1,10 +1,7 @@
 # Changelog
 
-## v1.0.13
+## Unreleased
 
-- build(deps): bump github.com/KimMachineGun/automemlimit
-- build(deps): bump github.com/steadybit/action-kit/go/action_kit_api/v2
-- build(deps): bump github.com/steadybit/extension-kit
 - feat: the log action shows its parameters in the groups "Fault Injection", "Parameter Types" and "Many Parameters" on platforms that support parameter groups
 
 ## v1.0.12
